@@ -3,4 +3,7 @@ backend/data/
 __pycache__/
 *.pyc
 .cache/
-*.md
+AGENTS.md
+crawl_sources.md
+考研英语阅读外刊改写方案_v2.md
+英语阅读练习系统_实现方案.md
