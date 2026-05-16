@@ -1,0 +1,86 @@
+.article-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.article-header {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 0 24px;
+}
+
+.source-tag, .word-count-tag {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.source-tag {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.word-count-tag {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.article-title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.3;
+    padding: 20px 24px 0;
+}
+
+.article-body {
+    background: var(--bg-secondary);
+    padding: 24px;
+    min-height: 200px;
+    margin-bottom: 16px;
+}
+
+.article-body .paragraph {
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 2;
+}
+
+.article-body .sentence {
+    cursor: pointer;
+    padding: 2px 0;
+    border-radius: 2px;
+    transition: background 0.15s;
+}
+
+.article-body .sentence:hover {
+    background: var(--bg-tertiary);
+}
+
+.article-body .sentence.selected {
+    background: var(--selected-bg);
+    border-bottom: 2px solid var(--selected-border);
+}
+
+.article-body .focus-highlight {
+    background: #fef08a;
+    border-bottom: 2px solid #eab308;
+    border-radius: 2px;
+}
+
+.focus-word-selected {
+    background: #fef08a;
+    border-bottom: 2px solid #eab308;
+    border-radius: 2px;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+}
+
+

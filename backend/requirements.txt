@@ -1,0 +1,9 @@
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+langchain==0.3.27
+langchain-openai>=0.1.0
+filelock>=3.13.0
+pydantic>=2.7.0
+pydantic-settings>=2.2.0
+apscheduler>=3.10.0
+python-dotenv>=1.0.0

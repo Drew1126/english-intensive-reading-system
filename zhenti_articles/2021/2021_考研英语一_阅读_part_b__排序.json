@@ -1,0 +1,49 @@
+{
+  "title": "考研英语一 阅读 Part B (排序)",
+  "source": "考研英语一真题",
+  "word_count": 146,
+  "paragraphs": [
+    {
+      "index": 0,
+      "sentences": [
+        "I replace the boring parts of your job.",
+        "If you're doing research, you can have AI go out and look for relevant sources and information that otherwise you just wouldn't have time for."
+      ],
+      "key_vocab": {},
+      "translations": []
+    },
+    {
+      "index": 1,
+      "sentences": [
+        "There are also companies like Acquisio, which analyzes advertising performance across multiple channels like Adwords, Bing and social media and makes adjustments or suggestions about where advertising funds will yield best results."
+      ],
+      "key_vocab": {},
+      "translations": []
+    },
+    {
+      "index": 2,
+      "sentences": [
+        "One accounting firm, EY, uses an AI system that helps review contracts during an audit.",
+        "This process, along with employees reviewing the contracts, is faster and more accurate."
+      ],
+      "key_vocab": {},
+      "translations": []
+    },
+    {
+      "index": 3,
+      "sentences": [
+        "You want to predict if something needs attention now and point to where it's useful for employees to go to."
+      ],
+      "key_vocab": {},
+      "translations": []
+    },
+    {
+      "index": 4,
+      "sentences": [
+        "Before, they might not insure the ones who felt like a high risk or charge them too much, or they would charge them too little and then it would cost the company money."
+      ],
+      "key_vocab": {},
+      "translations": []
+    }
+  ]
+}

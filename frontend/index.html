@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英语精读练习系统</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/article.css">
+    <link rel="stylesheet" href="css/panel.css">
+</head>
+<body>
+    <main class="main-content">
+        <section class="article-section">
+            <header class="header">
+                <div class="header-left">
+                    <span class="today-date" id="todayDate"></span>
+                </div>
+                <nav class="article-nav-bar">
+                    <button class="btn-next-article" id="btnNextArticle">再来一篇</button>
+                </nav>
+            </header>
+
+            <div class="article-content">
+                <div class="article-header">
+                    <span class="source-tag" id="sourceTag"></span>
+                    <span class="word-count-tag" id="wordCountTag"></span>
+                </div>
+                <h2 class="article-title" id="articleTitle"></h2>
+                <div class="article-body" id="articleBody">
+                    <div class="loading" id="articleLoading">加载中...</div>
+                </div>
+            </div>
+        </section>
+
+        <aside class="agent-panel">
+            <div class="selected-sentence" id="selectedSentence">
+                <p class="placeholder">点击文章中的句子开始提问</p>
+            </div>
+            <div class="translation-toggle-row">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="sentenceTranslationToggle">
+                    <span class="slider"></span>
+                    <span class="label-text">显示翻译</span>
+                </label>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="quick-questions">
+                <button class="quick-btn" data-question="请分析这句话的语法结构">语法结构</button>
+                <button class="quick-btn" data-question="解释选中内容在句子释义">句中释义</button>
+                <button class="quick-btn" data-question="请翻译这句话">中文翻译</button>
+                <button class="quick-btn" data-question="这句话在考研中有什么考点">考研考点</button>
+            </div>
+            <div class="input-area">
+                <input type="text" id="questionInput" placeholder="输入你的问题..." autocomplete="off">
+                <button class="btn-send" id="btnSend">发送</button>
+            </div>
+        </aside>
+    </main>
+
+
+    <script src="js/api.js"></script>
+    <script src="js/article.js"></script>
+    <script src="js/agent.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

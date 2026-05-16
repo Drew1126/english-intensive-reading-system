@@ -1,0 +1,230 @@
+.agent-panel {
+    background: var(--bg-secondary);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 80px);
+    position: sticky;
+    top: 24px;
+    align-self: flex-start;
+    overflow: hidden;
+}
+
+.selected-sentence {
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    min-height: 40px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.selected-sentence .placeholder {
+    color: var(--text-muted);
+    text-align: center;
+    font-style: italic;
+}
+
+.selected-sentence .focus-word {
+    display: inline-block;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 500;
+    border-bottom: 2px solid #f59e0b;
+    margin-left: 4px;
+}
+
+.selected-sentence .clear-focus {
+    display: inline-block;
+    background: #d1d5db;
+    color: #374151;
+    padding: 0 6px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 4px;
+    cursor: pointer;
+    line-height: 18px;
+    vertical-align: middle;
+}
+
+.selected-sentence .clear-focus:hover {
+    background: #f59e0b;
+    color: white;
+}
+
+.focus-tag {
+    display: inline-block;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 500;
+    border-bottom: 1px solid #f59e0b;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 16px;
+    padding-right: 4px;
+}
+
+.chat-messages::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 2px;
+}
+
+.message {
+    margin-bottom: 16px;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message .question-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.message .answer-content {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+}
+
+.quick-questions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.quick-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+    color: var(--text-secondary);
+}
+
+.quick-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+.translation-toggle-row {
+    display: flex;
+    align-items: center;
+    padding: 4px 0 8px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 12px;
+}
+
+.translation-toggle-row .toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.translation-toggle-row .toggle-switch input {
+    display: none;
+}
+
+.translation-toggle-row .slider {
+    width: 36px;
+    height: 20px;
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+    position: relative;
+    transition: background 0.2s;
+}
+
+.translation-toggle-row .slider::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.translation-toggle-row .toggle-switch input:checked + .slider {
+    background: var(--accent-primary);
+}
+
+.translation-toggle-row .toggle-switch input:checked + .slider::after {
+    transform: translateX(16px);
+}
+
+.translation-toggle-row .label-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.input-area {
+    display: flex;
+    gap: 8px;
+}
+
+.input-area input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-area input:focus {
+    border-color: var(--accent-primary);
+}
+
+.btn-send {
+    padding: 10px 18px;
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.btn-send:hover {
+    background: var(--accent-hover);
+}
+
+.btn-send:disabled {
+    background: var(--text-muted);
+    cursor: not-allowed;
+}

@@ -1,0 +1,8 @@
+查看运行状态	sudo systemctl status english-reader
+重启服务	sudo systemctl restart english-reader
+停止服务	sudo systemctl stop english-reader
+启动服务	sudo systemctl start english-reader
+禁用开机自启	sudo systemctl disable english-reader
+实时滚动日志	sudo journalctl -u english-reader -f
+最近 100 行	sudo journalctl -u english-reader -n 100
+今天的日志	sudo journalctl -u english-reader --since "today"
