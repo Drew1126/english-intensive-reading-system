@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="css/article.css?v=4">
     <link rel="stylesheet" href="css/panel.css?v=4">
 </head>
-<body>
-    <div id="debug-box" style="position:fixed;top:0;left:0;right:0;background:#fff3cd;padding:8px 12px;font-size:12px;z-index:9999;border-bottom:1px solid #ffc107;font-family:monospace;">检测中...</div>
+<body onload="try{var d=document.getElementById('db');d.textContent='JS OK';d.style.background='#d4edda'}catch(e){document.getElementById('db').textContent='JS ERROR:'+e.message}">
+    <div id="db" style="position:fixed;top:0;left:0;right:0;background:#fff3cd;padding:8px 12px;font-size:12px;z-index:9999;font-family:monospace;">loading...</div>
     <main class="main-content" style="margin-top:40px;">
         <section class="article-section">
             <header class="header">
@@ -59,25 +59,20 @@
     </main>
 
 
-    <script src="js/api.js?v=5"></script>
-    <script src="js/article.js?v=5"></script>
-    <script src="js/agent.js?v=5"></script>
-    <script src="js/main.js?v=5"></script>
+    <script src="js/api.js?v=6"></script>
+    <script src="js/article.js?v=6"></script>
+    <script src="js/agent.js?v=6"></script>
+    <script src="js/main.js?v=6"></script>
     <script>
-    (function() {
-        const box = document.getElementById("debug-box");
-        const log = (msg) => { box.textContent += " | " + msg; console.log(msg); };
-        log("api=" + typeof api);
-        log("articleModule=" + typeof articleModule);
-        log("agentModule=" + typeof agentModule);
-        log("initApp=" + typeof initApp);
-        if (typeof api !== "undefined") log("BASE=" + (typeof BASE !== "undefined" ? BASE : "undefined"));
-        log("测试 fetch...");
-        fetch("/english/data/article/current", { cache: "no-store" })
-            .then(r => { log("HTTP " + r.status); return r.json(); })
-            .then(d => { log("成功: " + (d.article?.title || "无标题").substring(0, 40) + "..."); })
-            .catch(e => { log("失败: " + e.message); });
-    })();
+    document.getElementById("db").textContent += " | api=" + typeof api;
+    fetch("/english/data/article/current")
+        .then(r => r.json())
+        .then(d => {
+            document.getElementById("db").textContent += " | OK:" + d.article.title.substring(0,30);
+        })
+        .catch(e => {
+            document.getElementById("db").textContent += " | FAIL:" + e.message;
+        });
     </script>
 </body>
 </html>
