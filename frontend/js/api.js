@@ -1,4 +1,4 @@
-const BASE = "/data";
+const BASE = "/english/data";
 console.log(">>> api.js loaded, BASE =", BASE);
 
 const api = {
