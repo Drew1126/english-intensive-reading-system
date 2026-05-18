@@ -4,7 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/r/article", tags=["article"])
+router = APIRouter(prefix="/data/article", tags=["article"])
 
 
 @router.get("/current")

@@ -4,7 +4,7 @@ from schemas.article import TranslateRequest, TranslateResponse
 from storage import read_json, write_json
 from config import ARTICLES_DIR
 
-router = APIRouter(prefix="/r/translate", tags=["translate"])
+router = APIRouter(prefix="/data/translate", tags=["translate"])
 
 
 @router.post("", response_model=TranslateResponse)

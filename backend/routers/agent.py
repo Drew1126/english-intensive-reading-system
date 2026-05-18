@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from services.agent_service import stream_agent_response
 
-router = APIRouter(prefix="/r/agent", tags=["agent"])
+router = APIRouter(prefix="/data/agent", tags=["agent"])
 
 
 @router.get("/ask")
