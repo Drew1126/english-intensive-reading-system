@@ -1,0 +1,41 @@
+Astronomers at the University of Warwick have confirmed more than 100 exoplanets, including 31 newly identified worlds, using a new artificial intelligence system. The team applied this tool to data from NASA's Transiting Exoplanet Survey Satellite (TESS), a mission that scans the sky for slight dips in starlight that occur when a planet crosses in front of its host star.
+
+Their findings, published inMNRAS, are based on a detailed analysis of observations from more than 2.2 million stars gathered during TESS's first four years. The researchers focused on planets that orbit very close to their stars, completing a full orbit in less than 16 days. This approach has produced one of the most precise measurements yet of how common these short-period planets are.
+
+"Using our newly developed RAVEN pipeline, we were able to validate 118 new planets, and over 2,000 high-quality planet candidates, nearly 1,000 of them entirely new," said first author Dr. Marina Lafarga Magro, Postdoctoral Researcher at the University of Warwick. "This represents one of the best characterized samples of close in planets and will help us identify the most promising systems for future study."
+
+Rare and Extreme Planet Types Identified
+
+The newly confirmed planets include several especially interesting categories. Some are ultra-short-period planets that circle their stars in under 24 hours. Others belong to the so-called 'Neptunian desert,' a region where few planets are expected to exist based on current theories. The study also revealed tightly packed multi-planet systems, including previously unknown pairs of planets orbiting the same star.
+
+How RAVEN Improves Planet Detection
+
+Modern planet-hunting missions often flag thousands of possible planets, but determining which signals are genuine remains difficult. Many false signals can mimic planets, including eclipsing binary stars.
+
+"The challenge lies in identifying if the dimming is indeed caused by a planet in orbit around the star or by something else, like eclipsing binary stars, which is what RAVEN tries to answer. Its strength stems from our carefully created dataset of hundreds of thousands of realistically simulated planets and other astrophysical events that can masquerade as planets. We trained machine learning models to identify patterns in the data that can tell us the type of event we have detected, something that AI models excel at." said Warwick's Dr. Andreas Hadjigeorghiou, who led the development of the pipeline.
+
+"In addition, RAVEN is designed to handle the whole process in one go, from detecting the signal, to vetting it with machine learning and statistically validating it. This gives the pipeline an additional edge over contemporary tools that only focus on specific parts of the workflow."
+
+Dr. David Armstrong, Associate Professor at Warwick and senior co-author on the RAVEN studies, added: "RAVEN allows us to analyse enormous datasets consistently and objectively. Because the pipeline is well-tested and carefully validated, this is not just a list of potential planets -- it is also reliable enough use as a sample to map the prevalence of distinct types of planets around Sun-like stars."
+
+Measuring How Common Planets Really Are
+
+With this carefully validated dataset, the researchers were able to go beyond individual discoveries and examine broader patterns. In a companionMNRASstudy, they measured how often close-in planets occur around Sun-like stars, mapping results by orbital period and planet size with an unprecedented level of detail.
+
+The results show that about 9-10% of Sun-like stars host a close-in planet. This aligns with earlier findings from NASA's Kepler mission -- a space telescope that previously measured planet occurrence rates, but the new analysis reduces uncertainties by up to a factor of ten.
+
+The team also made the first direct measurement of how rare 'Neptunian desert' planets are, finding that they appear around just 0.08% of Sun-like stars.
+
+"For the first time, we can put a precise number on just how empty this 'desert' is," said Dr. Kaiming Cui, Postdoctoral Researcher at Warwick and first author of the population study. "These measurements show that TESS can now match, and in some cases surpass, Kepler for studying planetary populations."
+
+A New Era for Planet Discovery
+
+Together, these studies highlight how advances in artificial intelligence are transforming astronomy. By combining massive datasets with machine learning, researchers can uncover new planets while also improving the tools themselves through challenging real-world data.
+
+The team has also released interactive catalogs and tools so other scientists can explore the results and identify promising targets for follow-up observations using ground-based telescopes and future missions such as ESA's PLATO.
+
+What Is RAVEN
+
+RAVEN is an automated system designed to address one of astronomy's biggest challenges, turning enormous volumes of space telescope data into reliable discoveries. It scans data from millions of stars to find the tiny drops in brightness caused by planets passing in front of them. The system then uses artificial intelligence trained on realistic simulations to filter out false signals such as binary stars or instrument noise, before statistically confirming the strongest candidates.
+
+Importantly, RAVEN also evaluates which types of planets are easier or harder to detect, helping researchers correct for hidden biases. This means it not only speeds up the discovery of new worlds but also produces cleaner, more reliable datasets that can be used to answer larger questions about how common different kinds of planets are across the galaxy.

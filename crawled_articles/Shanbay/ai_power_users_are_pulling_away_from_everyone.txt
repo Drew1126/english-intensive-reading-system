@@ -1,0 +1,25 @@
+Artificial intelligence is helping knowledge workers do things that weren't previously possible, according to a new report.
+
+In the company's latest Work Trend Index report, which includes results from a survey of 20,000 knowledge workers who use AI at work, 66% of the AI users surveyed say that AI allows them to spend more time on high-value work, and 58% reveal that they're producing work they couldn't have produced just one year ago. That number rises to 80% among a category of AI power users the report dubs "frontier professionals."
+
+"Instead of just automating away what people used to do, and that's an efficiency gain, what we're seeing is much more exciting," says Katy George, corporate vice president of workforce transformation at the company. "What we're calling 'capability add.'"
+
+Examples range from new uses of AI to find and address software security vulnerabilities, to salespeople being able to quickly get up to speed before a customer meeting to an extent previously impossible or impractical. And while the benefits may come first to those AI power users, they can, in turn, pass their knowledge on to colleagues — or benefit from a supportive environment: A previous study found employees more likely to get value out of agentic AI when their managers serve as role models for effective use.
+
+Those AI power users aren't simply deferring to AI in every circumstance. George says some will, in fact, sometimes take longer to complete a particular task so that they can see how it can best be handled with the help of AI. But the survey also indicates that 43% of frontier professionals — and 30% of AI users overall — purposely do some tasks without AI assistance to keep their skills sharp. And 53% of frontier professionals — and 33% of AI users overall — intentionally take time before starting a task to decide what aspects should be done by AI versus a human.
+
+That's likely because human judgment, critical thinking, and the ability to provide quality control for AI results remain important, even when AI use becomes more prevalent. Anecdotally, reports of AI hallucinations and errors are well known, even as the technology improves for many tasks, so it's not surprising that 86% of those surveyed say they tend to treat AI output as a starting point rather than a final answer.
+
+"What declines is the amount of tactical, step-by-step execution work humans do themselves," wrote Jared Spataro, CMO for AI at Work at the company, in a blog post. "And what rises is the need for humans to set direction, define standards, and evaluate outcomes."
+
+In essence, even workers who don't supervise any humans are now putting management and delegation skills to work supervising AI, along with their subject-specific training that lets them devise tasks for AI and evaluate the answers.
+
+"People with real judgment and expertise are driving kind of the most effective use of AI," George says.
+
+That can also involve IT and cybersecurity experts setting up permissions and environments for AI operations, which can also overlap with skills already used to manage people's digital access. "IT becomes the control plane for agent operations, extending the same rigor already applied to people and applications so that scale does not come at the cost of visibility," according to the report.
+
+Still, that's not to say that AI won't significantly change the way people work. The report acknowledges that the workforce landscape will continue to evolve with technological advancements.
+
+But while the report suggests that AI has the potential to make some knowledge workers more efficient, it's not necessarily the case that employers should be demanding a particular level of AI usage from employees. The appropriate usage will likely follow from employees' expertise and experimentation with the tools, George suggests.
+
+"Therefore, we're not so worried about, 'Did you use it twice a day or 10 times a day,'" she says.

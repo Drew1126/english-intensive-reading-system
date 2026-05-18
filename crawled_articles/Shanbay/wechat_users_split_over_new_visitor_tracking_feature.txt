@@ -1,0 +1,13 @@
+On Monday evening, the hashtag "WeChatStatusVisitorLog" trended on China's social media platform Weibo, triggering widespread discussion among users.
+
+The buzz began with a post from a user who noticed a possible new feature on WeChat: "Why can WeChat Status now show visitors?" According to the user, the feature appears to be in internal testing. The displayed number likely represents the people who have viewed your status, not the number of clicks. Tapping on a viewer icon reveals both those who have seen your status and those who have also posted their own status. The user also noted that the viewing data for older status updates may not be accurate and has limited practical value.
+
+The news drew strong reactions online. Many users expressed clear opposition: "No! With this feature, how can I still check others without being seen?" "Please stop upgrading — next thing you know, we'll have a friend feed visitor log." "Can't we keep some privacy?"
+
+However, a smaller group welcomed the update, with one user commenting: "I need this —
+
+I've posted statuses visible only to certain people."
+
+Notably, most commenters shared opinions based on speculation rather than actual handson experience with the feature.
+
+In response to user inquiries, a customer service representative from Tencent, WeChat's parent company, told Beijing Daily that during the validity period of a WeChat status, users can view the number of visitors in the lowerright corner of the status screen. If a viewer also has an active status of their own, tapping their avatar will display that person's current status.
