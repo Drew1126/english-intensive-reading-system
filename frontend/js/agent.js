@@ -1,4 +1,4 @@
-const agentModule = {
+window.agentModule = {
     isStreaming: false,
     selectedFocusWord: "",
 

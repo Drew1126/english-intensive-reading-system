@@ -1,7 +1,7 @@
-const BASE = "/english/data";
+var BASE = "/english/data";
 console.log(">>> api.js loaded, BASE =", BASE);
 
-const api = {
+window.api = {
     async getCurrentArticle() {
         const url = `${BASE}/article/current`;
         console.log("[api] fetching:", url);
@@ -43,3 +43,4 @@ const api = {
         return new EventSource(url);
     }
 };
+console.log(">>> window.api defined");

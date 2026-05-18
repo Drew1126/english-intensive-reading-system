@@ -1,4 +1,4 @@
-const articleModule = {
+window.articleModule = {
     currentArticle: null,
     showTranslation: false,
     selectedSentenceIdx: null,

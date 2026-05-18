@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initApp();
 });
 
-async function initApp() {
+window.initApp = async function() {
     try {
         await articleModule.loadCurrent();
     } catch (err) {
