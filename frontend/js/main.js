@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    console.log(">>> DOMContentLoaded, main.js v3 loaded");
     const today = new Date();
     document.getElementById("todayDate").textContent = today.toLocaleDateString("zh-CN", {
         year: "numeric",
