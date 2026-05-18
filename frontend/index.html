@@ -178,9 +178,14 @@ var articleModule = {
         var pendingClickInfo = null;
 
         bodyEl.addEventListener("click", function(e) {
-            if (!e.target.closest(".sentence")) return;
+            var sentenceEl = e.target.closest(".sentence");
+            if (!sentenceEl) return;
             var wordInfo = self.getWordInfoAtPoint(e.clientX, e.clientY);
-            if (!wordInfo) return;
+            if (!wordInfo) {
+                var db = document.getElementById("db");
+                if (db) { db.textContent = "click but no word at point"; }
+                return;
+            }
             clearTimeout(clickTimer);
             pendingClickInfo = wordInfo;
             clickTimer = setTimeout(function() {
@@ -245,6 +250,8 @@ var articleModule = {
             if (n === node) { sentenceOffset += start; break; }
             sentenceOffset += n.textContent.length;
         }
+        var db = document.getElementById("db");
+        if (db) { db.textContent = "click word: '" + word + "' offset:" + sentenceOffset; }
         return { word: word, sentenceEl: sentenceEl, offset: sentenceOffset };
     },
 
