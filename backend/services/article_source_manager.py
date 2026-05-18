@@ -14,13 +14,12 @@ PRIORITY = {
     "The_Economist": 1,
     "The_Guardian": 1,
     "Scientific_American": 1,
-    "Shanbay": 2,
-    "The_Atlantic": 3,
-    "Wired": 3,
-    "Nature": 4,
-    "Nautilus": 4,
-    "The_New_Yorker": 4,
-    "ScienceMag": 4,
+    "The_Atlantic": 2,
+    "Wired": 2,
+    "Nature": 3,
+    "Nautilus": 3,
+    "The_New_Yorker": 3,
+    "ScienceMag": 3,
 }
 
 
@@ -32,27 +31,23 @@ def _parse_article_file(path: Path) -> dict | None:
         return None
 
     body_start = content.find("=" * 60)
-    if body_start != -1:
-        header_lines = content[:body_start].strip().split("\n")
-        body = content[body_start + 60:].strip()
-        header = {}
-        for line in header_lines:
-            m = re.match(r"^(\w[\w\s]+):\s*(.*)", line)
-            if m:
-                header[m.group(1).strip()] = m.group(2).strip()
-        source = header.get("Source", path.parent.name)
-        title = header.get("Title", path.stem)
-        wc_str = header.get("Word Count", "0")
-        try:
-            wc = int(wc_str)
-        except ValueError:
-            wc = len(body.split())
-    else:
-        body = content.strip()
-        if not body:
-            return None
-        source = path.parent.name
-        title = path.stem.replace("_", " ").title()
+    if body_start == -1:
+        return None
+    header_lines = content[:body_start].strip().split("\n")
+    body = content[body_start + 60:].strip()
+
+    header = {}
+    for line in header_lines:
+        m = re.match(r"^(\w[\w\s]+):\s*(.*)", line)
+        if m:
+            header[m.group(1).strip()] = m.group(2).strip()
+
+    source = header.get("Source", path.parent.name)
+    title = header.get("Title", path.stem)
+    wc_str = header.get("Word Count", "0")
+    try:
+        wc = int(wc_str)
+    except ValueError:
         wc = len(body.split())
 
     return {"source": source, "title": title, "word_count": wc, "body": body, "path": str(path)}
