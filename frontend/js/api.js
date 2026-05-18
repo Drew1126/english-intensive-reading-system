@@ -1,4 +1,4 @@
-const BASE = "api";
+const BASE = "r";
 
 const api = {
     async getCurrentArticle() {
