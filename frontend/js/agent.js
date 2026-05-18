@@ -1,4 +1,4 @@
-window.agentModule = {
+var agentModule = window.agentModule = {
     isStreaming: false,
     selectedFocusWord: "",
 

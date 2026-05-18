@@ -1,7 +1,7 @@
 var BASE = "/english/data";
 console.log(">>> api.js loaded, BASE =", BASE);
 
-window.api = {
+var api = window.api = {
     async getCurrentArticle() {
         const url = `${BASE}/article/current`;
         console.log("[api] fetching:", url);

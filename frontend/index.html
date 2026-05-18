@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>英语精读练习系统</title>
-    <link rel="stylesheet" href="css/main.css?v=7">
-    <link rel="stylesheet" href="css/article.css?v=7">
-    <link rel="stylesheet" href="css/panel.css?v=7">
+    <link rel="stylesheet" href="css/main.css?v=8">
+    <link rel="stylesheet" href="css/article.css?v=8">
+    <link rel="stylesheet" href="css/panel.css?v=8">
 </head>
 <body onload="try{var d=document.getElementById('db');d.textContent+=' | modules loaded';d.style.background='#d4edda'}catch(e){document.getElementById('db').textContent='JS ERROR:'+e.message}">
     <div id="db" style="position:fixed;top:0;left:0;right:0;background:#fff3cd;padding:8px 12px;font-size:12px;z-index:9999;font-family:monospace;">loading...</div>
@@ -59,21 +59,28 @@
     </main>
 
 
-    <script src="js/api.js?v=7"></script>
-    <script src="js/article.js?v=7"></script>
-    <script src="js/agent.js?v=7"></script>
-    <script src="js/main.js?v=7"></script>
+    <script src="js/api.js?v=8"></script>
+    <script src="js/article.js?v=8"></script>
+    <script src="js/agent.js?v=8"></script>
+    <script src="js/main.js?v=8"></script>
     <script>
-    document.getElementById("db").textContent += " | api=" + typeof api + " | articleModule=" + typeof window.articleModule;
+    var db = document.getElementById("db");
+    db.textContent += " | api=" + (typeof api) + "(win=" + (typeof window.api) + ")";
+    db.textContent += " | art=" + (typeof articleModule) + "(win=" + (typeof window.articleModule) + ")";
     fetch("/english/data/article/current")
         .then(r => r.json())
         .then(d => {
-            document.getElementById("db").textContent += " | OK:" + d.article.title.substring(0,30);
-            try { window.articleModule.loadCurrent(); } catch(e) { document.getElementById("db").textContent += " | loadError:" + e.message; }
+            db.textContent += " | Data OK";
+            if (typeof window.articleModule !== "undefined") {
+                try {
+                    window.articleModule.loadCurrent();
+                    db.textContent += " | loadCurrent() called";
+                } catch(e) { db.textContent += " | Error:" + e.message; }
+            } else {
+                db.textContent += " | articleModule missing";
+            }
         })
-        .catch(e => {
-            document.getElementById("db").textContent += " | FAIL:" + e.message;
-        });
+        .catch(e => { db.textContent += " | NetFail:" + e.message; });
     </script>
 </body>
 </html>
