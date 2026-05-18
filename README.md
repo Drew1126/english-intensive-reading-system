@@ -9,8 +9,18 @@ cd backend
 cp .env.example .env    # set LLM_API_KEY
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
-# → http://localhost:8000
+# → http://localhost:8000  (dev only)
 ```
+
+### Production Access
+
+The app is served at **`/english`** on port 80 via a reverse proxy:
+
+```
+http://<server-ip>/english
+```
+
+This coexists with other services on port 80 (e.g. `/baidu.com`).
 
 Or use the startup script:
 
@@ -74,11 +84,29 @@ LLM_API_KEY=sk-your_key_here
 ## Deployment (systemd)
 
 ```bash
-# status / restart / logs
+# English app (port 8000)
 sudo systemctl status english-reader
 sudo systemctl restart english-reader
 sudo journalctl -u english-reader -f
-sudo journalctl -u english-reader --since "today"
+
+# Reverse proxy (port 80, serves /english)
+sudo systemctl status deepseek-proxy
+sudo systemctl restart deepseek-proxy
+```
+
+Port 80 is managed by `deepseek-proxy.service` which:
+- Serves the baidu.com app at `/` and `/baidu.com`
+- Proxies DeepSeek API at `/v1/*`
+- Forwards all unmatched requests (including `/english/*`) to the English app on port 8000
+
+### Architecture
+
+```
+Port 80 (deepseek-proxy)                    Port 8000 (english-reader)
+├── /              → baidu.com               ├── /api/article/*  → article API
+├── /baidu.com     → baidu.com               ├── /api/translate  → translate API
+├── /v1/*          → DeepSeek API proxy      ├── /api/agent/*    → agent API
+└── /english/*     → port 8000 ────────────▶ └── /*              → static frontend
 ```
 
 ## Testing

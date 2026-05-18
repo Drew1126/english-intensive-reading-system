@@ -1,6 +1,8 @@
+const BASE = "api";
+
 const api = {
     async getCurrentArticle() {
-        const res = await fetch("/api/article/current");
+        const res = await fetch(`${BASE}/article/current`);
         if (!res.ok) {
             const errData = await res.json().catch(() => ({}));
             throw new Error(errData.detail || `服务器错误 (${res.status})`);
@@ -9,7 +11,7 @@ const api = {
     },
 
     async getNextArticle() {
-        const res = await fetch("/api/article/next", { method: "POST" });
+        const res = await fetch(`${BASE}/article/next`, { method: "POST" });
         if (!res.ok) {
             const errData = await res.json().catch(() => ({}));
             throw new Error(errData.detail || `服务器错误 (${res.status})`);
@@ -18,7 +20,7 @@ const api = {
     },
 
     async translate(articleId, sentences) {
-        const res = await fetch(`/api/translate`, {
+        const res = await fetch(`${BASE}/translate`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ article_id: articleId, sentences })
@@ -28,7 +30,7 @@ const api = {
     },
 
     askAgent(sentence, question, articleId, focus) {
-        const url = `/api/agent/ask?sentence=${encodeURIComponent(sentence)}&question=${encodeURIComponent(question)}&article_id=${encodeURIComponent(articleId)}&focus=${encodeURIComponent(focus || "")}`;
+        const url = `${BASE}/agent/ask?sentence=${encodeURIComponent(sentence)}&question=${encodeURIComponent(question)}&article_id=${encodeURIComponent(articleId)}&focus=${encodeURIComponent(focus || "")}`;
         return new EventSource(url);
     }
 };
