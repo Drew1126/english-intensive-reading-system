@@ -181,11 +181,7 @@ var articleModule = {
             var sentenceEl = e.target.closest(".sentence");
             if (!sentenceEl) return;
             var wordInfo = self.getWordInfoAtPoint(e.clientX, e.clientY);
-            if (!wordInfo) {
-                var db = document.getElementById("db");
-                if (db) { db.textContent = "click but no word at point"; }
-                return;
-            }
+            if (!wordInfo) return;
             clearTimeout(clickTimer);
             pendingClickInfo = wordInfo;
             clickTimer = setTimeout(function() {
@@ -229,16 +225,23 @@ var articleModule = {
     },
 
     getWordInfoAtPoint: function(x, y) {
-        var pos = document.caretPositionFromPoint(x, y);
-        if (!pos || !pos.offsetNode) return null;
-        var node = pos.offsetNode;
-        if (node.nodeType !== Node.TEXT_NODE) return null;
+        var node, offset;
+        if (document.caretPositionFromPoint) {
+            var pos = document.caretPositionFromPoint(x, y);
+            if (pos && pos.offsetNode) { node = pos.offsetNode; offset = pos.offset; }
+        } else if (document.caretRangeFromPoint) {
+            var range = document.caretRangeFromPoint(x, y);
+            if (range && range.startContainer) { node = range.startContainer; offset = range.startOffset; }
+        } else {
+            var db = document.getElementById("db");
+            if (db) { db.textContent = "no caretPosition/range support"; }
+            return null;
+        }
         var sentenceEl = node.parentElement ? node.parentElement.closest(".sentence") : null;
         if (!sentenceEl) return null;
         var text = node.textContent;
-        var charPos = pos.offset;
         var wordRegex = /[\w'-]/;
-        var start = charPos, end = charPos;
+        var start = offset, end = offset;
         while (start > 0 && wordRegex.test(text[start - 1])) start--;
         while (end < text.length && wordRegex.test(text[end])) end++;
         if (start === end) return null;
@@ -250,8 +253,6 @@ var articleModule = {
             if (n === node) { sentenceOffset += start; break; }
             sentenceOffset += n.textContent.length;
         }
-        var db = document.getElementById("db");
-        if (db) { db.textContent = "click word: '" + word + "' offset:" + sentenceOffset; }
         return { word: word, sentenceEl: sentenceEl, offset: sentenceOffset };
     },
 
