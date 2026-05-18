@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>英语精读练习系统</title>
-    <link rel="stylesheet" href="css/main.css?v=9">
-    <link rel="stylesheet" href="css/article.css?v=9">
-    <link rel="stylesheet" href="css/panel.css?v=9">
+    <link rel="stylesheet" href="css/main.css?v=10">
+    <link rel="stylesheet" href="css/article.css?v=10">
+    <link rel="stylesheet" href="css/panel.css?v=10">
 </head>
 <body>
     <div id="db" style="position:fixed;top:0;left:0;right:0;background:#fff3cd;padding:8px 12px;font-size:12px;z-index:9999;font-family:monospace;">loading...</div>
@@ -79,7 +79,7 @@ var api = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ article_id: articleId, sentences: sentences })
-        }).then(function(res) { if (!res.ok) throw new Error("翻译失败"); return res.json(); });
+        }).then(function(res) { return res.json(); });
     },
     askAgent: function(sentence, question, articleId, focus) {
         var url = BASE + "/agent/ask?sentence=" + encodeURIComponent(sentence) + "&question=" + encodeURIComponent(question) + "&article_id=" + encodeURIComponent(articleId) + "&focus=" + encodeURIComponent(focus || "");
@@ -88,7 +88,10 @@ var api = {
 };
 
 var articleModule = {
-    currentArticle: null, selectedSentenceIdx: null, isLoading: false, focusWords: [],
+    currentArticle: null,
+    selectedSentenceIdx: null,
+    isLoading: false,
+    focusWords: [],
 
     loadCurrent: function() {
         var self = this;
@@ -100,11 +103,11 @@ var articleModule = {
             self._buildTranslations();
             self.renderArticle(self.currentArticle);
             var db = document.getElementById("db");
-            if (db) { db.textContent = "加载成功"; db.style.background = "#d4edda"; }
+            if (db) { db.textContent = "OK"; db.style.background = "#d4edda"; }
         }).catch(function(err) {
             document.getElementById("articleBody").innerHTML = '<div class="loading">加载失败：' + err.message + '</div>';
             var db = document.getElementById("db");
-            if (db) { db.textContent = "加载失败: " + err.message; db.style.background = "#f8d7da"; }
+            if (db) { db.textContent = "ERR: " + err.message; db.style.background = "#f8d7da"; }
         }).then(function() { self.isLoading = false; });
     },
 
@@ -309,7 +312,8 @@ var articleModule = {
 };
 
 var agentModule = {
-    isStreaming: false, selectedFocusWord: "",
+    isStreaming: false,
+    selectedFocusWord: "",
 
     showSelectedSentence: function(sentence, idx) {
         var el = document.getElementById("selectedSentence");
