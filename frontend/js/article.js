@@ -136,7 +136,7 @@ var articleModule = {
         document.getElementById("wordCountTag").textContent = article.word_count + " 词";
         document.getElementById("articleTitle").textContent = article.title;
         var bodyEl = document.getElementById("articleBody");
-        bodyEl.innerHTML = "";
+        var container = document.createElement("div");
         article.paragraphs.forEach(function(para, pIdx) {
             var paraEl = document.createElement("div");
             paraEl.className = "paragraph";
@@ -150,9 +150,11 @@ var articleModule = {
                 textEl.appendChild(span);
             });
             paraEl.appendChild(textEl);
-            bodyEl.appendChild(paraEl);
+            container.appendChild(paraEl);
         });
-        this.setupArticleInteractions(bodyEl);
+        bodyEl.innerHTML = "";
+        bodyEl.appendChild(container);
+        this.setupArticleInteractions(container);
         if (typeof updateCheckinArea === "function") { updateCheckinArea(); }
     },
 
