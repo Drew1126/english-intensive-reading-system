@@ -20,8 +20,8 @@ def save_article(index: int, data: dict) -> None:
 
 
 def cleanup_old_articles() -> None:
-    """Delete any article_*.json files outside the 2 slots (0,1)."""
-    keep = {0, 1}
+    """Delete any article_*.json files outside the 2 slots (0,1) and the PDF upload slot (-1)."""
+    keep = {0, 1, -1}
     for f in list(ARTICLES_DIR.glob("article_*.json")):
         try:
             idx = int(f.stem.split("_")[1])

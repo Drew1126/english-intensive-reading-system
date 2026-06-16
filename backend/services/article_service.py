@@ -75,7 +75,12 @@ async def _generate_and_save(slot: int) -> dict:
     max_attempts = 10
 
     for attempt in range(max_attempts):
-        source = get_next_source()
+        try:
+            source = get_next_source()
+        except Exception as e:
+            logger.error(f"get_next_source failed (attempt {attempt + 1}): {e}")
+            await asyncio.sleep(1)
+            continue
         if not source:
             raise RuntimeError(f"No source article available after {attempt} attempts")
 
@@ -177,15 +182,7 @@ async def advance_to_next() -> dict:
     if not session:
         raise RuntimeError("No session — cannot advance")
 
-    current = await run_in_threadpool(get_article, session["current_slot"])
-    if not current:
-        for _ in range(10):
-            await asyncio.sleep(2)
-            current = await run_in_threadpool(get_article, session["current_slot"])
-            if current:
-                break
-        if not current:
-            current = await _generate_and_save(session["current_slot"])
+    current = await _generate_and_save(session["current_slot"])
 
     asyncio.create_task(_generate_and_save(session["prefetch_slot"]))
 

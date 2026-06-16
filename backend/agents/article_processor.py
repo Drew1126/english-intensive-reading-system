@@ -325,8 +325,16 @@ class ArticleProcessor:
                 }
 
             if rewrite_attempt >= MAX_REWRITE_ATTEMPTS:
-                logger.warning(f"Format still failing after {MAX_REWRITE_ATTEMPTS} rewrites: {fmt['errors']}")
-                return None
+                logger.warning(f"Format still failing after {MAX_REWRITE_ATTEMPTS} rewrites: {fmt['errors']}, accepting anyway")
+                return {
+                    "text": rewritten,
+                    "word_count": fmt["word_count"],
+                    "paragraph_count": fmt["paragraph_count"],
+                    "source": source_name,
+                    "short_sentences": fmt["short_sentences"],
+                    "long_sentences": fmt["long_sentences"],
+                    "concessive_count": fmt["concessive_count"],
+                }
 
             logger.info(f"  Rewrite attempt {rewrite_attempt}: format errors: {fmt['errors']}")
             try:

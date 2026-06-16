@@ -4,20 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>外刊阅读</title>
-    <link rel="stylesheet" href="css/main.css?v=11">
-    <link rel="stylesheet" href="css/article.css?v=11">
-    <link rel="stylesheet" href="css/panel.css?v=11">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/article.css">
+    <link rel="stylesheet" href="css/panel.css">
 </head>
 <body>
+    <!-- Login overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-modal">
+            <h2>登录</h2>
+            <div class="login-form">
+                <input type="text" id="loginUsername" placeholder="用户名" autocomplete="off">
+                <input type="password" id="loginPassword" placeholder="密码">
+                <div class="login-error" id="loginError"></div>
+                <button id="loginBtn">登录</button>
+            </div>
+        </div>
+    </div>
+
     <main class="main-content">
         <section class="article-section">
             <header class="header">
                 <div class="header-left">
                     <span class="today-date" id="todayDate"></span>
                 </div>
-                <nav class="article-nav-bar">
-                    <button class="btn-next-article" id="btnNextArticle">再来一篇</button>
-                </nav>
+                <div class="header-right">
+                    <div class="user-info" id="userInfo" style="display:none">
+                        <img class="user-avatar" id="userAvatar" src="default-avatar.svg" alt="avatar">
+                        <span class="user-name" id="userName"></span>
+                        <button class="btn-logout" id="logoutBtn">退出</button>
+                    </div>
+                    <div class="user-info not-logged-in" id="notLoggedIn">
+                        <button class="btn-login" id="loginBtnHeader">登录</button>
+                    </div>
+                    <nav class="article-nav-bar">
+                        <button class="btn-history" id="btnHistory" title="历史文章">&#x1F4C2;</button>
+                        <button class="btn-upload-pdf" id="btnUploadPdf">上传 PDF</button>
+                        <input type="file" id="pdfFileInput" accept=".pdf" style="display:none">
+                    </nav>
+                </div>
             </header>
 
             <div class="article-content">
@@ -28,6 +53,11 @@
                 <h2 class="article-title" id="articleTitle"></h2>
                 <div class="article-body" id="articleBody">
                     <div class="loading" id="articleLoading">加载中...</div>
+                </div>
+                <div class="checkin-area" id="checkinArea" style="display:none">
+                    <div class="checkin-label">已打卡</div>
+                    <div class="checkin-users" id="checkinUsers"></div>
+                    <button class="btn-checkin" id="btnCheckin">打卡</button>
                 </div>
             </div>
         </section>
@@ -45,10 +75,7 @@
             </div>
             <div class="chat-messages" id="chatMessages"></div>
             <div class="quick-questions">
-                <button class="quick-btn" data-question="请分析这句话的语法结构">语法结构</button>
                 <button class="quick-btn" data-question="解释选中内容在句子释义">句中释义</button>
-                <button class="quick-btn" data-question="请翻译这句话">中文翻译</button>
-                <button class="quick-btn" data-question="这句话在考研中有什么考点">考研考点</button>
             </div>
             <div class="input-area">
                 <input type="text" id="questionInput" placeholder="输入你的问题..." autocomplete="off">
@@ -57,390 +84,28 @@
         </aside>
     </main>
 
-    <script>
-var BASE = "/english/data";
+    <div class="history-overlay" id="historyOverlay">
+        <div class="history-panel">
+            <div class="history-header">
+                <h3>历史文章</h3>
+                <button class="history-close" id="historyClose">&times;</button>
+            </div>
+            <div class="history-list" id="historyList"></div>
+        </div>
+    </div>
 
-var api = {
-    getCurrentArticle: function() {
-        return fetch(BASE + "/article/current").then(function(res) {
-            if (!res.ok) { return res.json().then(function(e) { throw new Error(e.detail || "服务器错误 (" + res.status + ")"); }).catch(function() { throw new Error("服务器错误 (" + res.status + ")"); }); }
-            return res.json();
-        });
-    },
-    getNextArticle: function() {
-        return fetch(BASE + "/article/next", { method: "POST" }).then(function(res) {
-            if (!res.ok) { return res.json().then(function(e) { throw new Error(e.detail || "服务器错误 (" + res.status + ")"); }).catch(function() { throw new Error("服务器错误 (" + res.status + ")"); }); }
-            return res.json();
-        });
-    },
-    translate: function(articleId, sentences) {
-        return fetch(BASE + "/translate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ article_id: articleId, sentences: sentences })
-        }).then(function(res) { return res.json(); });
-    },
-    askAgent: function(sentence, question, articleId, focus) {
-        var url = BASE + "/agent/ask?sentence=" + encodeURIComponent(sentence) + "&question=" + encodeURIComponent(question) + "&article_id=" + encodeURIComponent(articleId) + "&focus=" + encodeURIComponent(focus || "");
-        return new EventSource(url);
-    }
-};
+    <div class="avatar-overlay" id="avatarOverlay" style="display:none">
+        <div class="avatar-modal">
+            <h3>更换头像</h3>
+            <input type="file" id="avatarFileInput" accept="image/*">
+            <button id="avatarUploadBtn">上传</button>
+            <button class="avatar-cancel" id="avatarCancelBtn">取消</button>
+        </div>
+    </div>
 
-var articleModule = {
-    currentArticle: null,
-    selectedSentenceIdx: null,
-    isLoading: false,
-    focusWords: [],
-
-    loadCurrent: function() {
-        var self = this;
-        if (this.isLoading) return;
-        this.isLoading = true;
-        this._resetView();
-        api.getCurrentArticle().then(function(data) {
-            self.currentArticle = data.article;
-            self._buildTranslations();
-            self.renderArticle(self.currentArticle);
-            var db = document.getElementById("db");
-            if (db) { db.textContent = "OK"; db.style.background = "#d4edda"; }
-        }).catch(function(err) {
-            document.getElementById("articleBody").innerHTML = '<div class="loading">加载失败：' + err.message + '</div>';
-            var db = document.getElementById("db");
-            if (db) { db.textContent = "ERR: " + err.message; db.style.background = "#f8d7da"; }
-        }).then(function() { self.isLoading = false; });
-    },
-
-    loadNext: function() {
-        var self = this;
-        if (this.isLoading) return;
-        document.getElementById("btnNextArticle").disabled = true;
-        this.isLoading = true;
-        api.getNextArticle().then(function(data) {
-            self.currentArticle = data.article;
-            self._buildTranslations();
-            self._resetView();
-            self.renderArticle(data.article);
-        }).catch(function(err) { console.error("获取文章失败:", err); }).then(function() {
-            document.getElementById("btnNextArticle").disabled = false;
-            self.isLoading = false;
-        });
-    },
-
-    _resetView: function() {
-        this.selectedSentenceIdx = null;
-        window.__showTrans = false;
-        var toggle = document.getElementById("sentenceTranslationToggle");
-        if (toggle) toggle.checked = false;
-        agentModule.clearFocus();
-        document.getElementById("chatMessages").innerHTML = "";
-        document.getElementById("articleBody").innerHTML = '<div class="loading">加载中...</div>';
-    },
-
-    _buildTranslations: function() {
-        window.__translations = {};
-        if (!this.currentArticle || !this.currentArticle.paragraphs) return;
-        this.currentArticle.paragraphs.forEach(function(para, pIdx) {
-            (para.translations || []).forEach(function(t, sIdx) {
-                window.__translations[pIdx + "-" + sIdx] = t;
-            });
-        });
-    },
-
-    renderArticle: function(article) {
-        document.getElementById("sourceTag").textContent = article.source;
-        document.getElementById("wordCountTag").textContent = article.word_count + " 词";
-        document.getElementById("articleTitle").textContent = article.title;
-        var bodyEl = document.getElementById("articleBody");
-        bodyEl.innerHTML = "";
-        article.paragraphs.forEach(function(para, pIdx) {
-            var paraEl = document.createElement("div");
-            paraEl.className = "paragraph";
-            paraEl.dataset.paraIndex = pIdx;
-            var textEl = document.createElement("p");
-            para.sentences.forEach(function(sentence, sIdx) {
-                var span = document.createElement("span");
-                span.className = "sentence";
-                span.dataset.idx = pIdx + "-" + sIdx;
-                span.textContent = sentence + " ";
-                textEl.appendChild(span);
-            });
-            paraEl.appendChild(textEl);
-            bodyEl.appendChild(paraEl);
-        });
-        this.setupArticleInteractions(bodyEl);
-    },
-
-    setupArticleInteractions: function(bodyEl) {
-        var self = this;
-        this.focusWords = [];
-        var clickTimer = null;
-        var pendingClickInfo = null;
-
-        bodyEl.addEventListener("click", function(e) {
-            var sentenceEl = e.target.closest(".sentence");
-            if (!sentenceEl) return;
-            var wordInfo = self.getWordInfoAtPoint(e.clientX, e.clientY);
-            if (!wordInfo) return;
-            clearTimeout(clickTimer);
-            pendingClickInfo = wordInfo;
-            clickTimer = setTimeout(function() {
-                if (!pendingClickInfo) return;
-                var info = pendingClickInfo;
-                pendingClickInfo = null;
-                var sentenceEl = info.sentenceEl;
-                var idx = sentenceEl ? sentenceEl.dataset.idx : null;
-                if (idx) {
-                    document.querySelectorAll(".sentence.selected").forEach(function(s) { s.classList.remove("selected"); });
-                    sentenceEl.classList.add("selected");
-                    self.selectedSentenceIdx = idx;
-                    window.__currentIdx = idx;
-                    agentModule.showSelectedSentence(sentenceEl.textContent.trim(), idx);
-                }
-                if (self.focusWords.length > 0 && self.focusWords[0].sentenceEl !== info.sentenceEl) { self.focusWords = []; }
-                var existingIdx = self.focusWords.findIndex(function(fw) { return fw.sentenceEl === info.sentenceEl && fw.offset === info.offset; });
-                if (existingIdx !== -1) { self.focusWords.splice(existingIdx, 1); } else { self.focusWords.push(info); }
-                self.updateFocusWordDisplay();
-            }, 220);
-        });
-
-        bodyEl.addEventListener("dblclick", function(e) {
-            clearTimeout(clickTimer);
-            pendingClickInfo = null;
-            var sentenceSpan = e.target.closest(".sentence");
-            if (!sentenceSpan) return;
-            self.focusWords = [];
-            self.clearWordHighlight();
-            agentModule.clearFocus();
-            var text = sentenceSpan.textContent.trim();
-            var idx = sentenceSpan.dataset.idx;
-            document.querySelectorAll(".sentence.selected").forEach(function(s) { s.classList.remove("selected"); });
-            sentenceSpan.classList.add("selected");
-            self.selectedSentenceIdx = idx;
-            window.__currentIdx = idx;
-            agentModule.showSelectedSentence(text, idx);
-        });
-
-        bodyEl.addEventListener("contextmenu", function(e) { e.preventDefault(); });
-    },
-
-    getWordInfoAtPoint: function(x, y) {
-        var node, offset;
-        if (document.caretPositionFromPoint) {
-            var pos = document.caretPositionFromPoint(x, y);
-            if (pos && pos.offsetNode) { node = pos.offsetNode; offset = pos.offset; }
-        } else if (document.caretRangeFromPoint) {
-            var range = document.caretRangeFromPoint(x, y);
-            if (range && range.startContainer) { node = range.startContainer; offset = range.startOffset; }
-        } else {
-            var db = document.getElementById("db");
-            if (db) { db.textContent = "no caretPosition/range support"; }
-            return null;
-        }
-        var sentenceEl = node.parentElement ? node.parentElement.closest(".sentence") : null;
-        if (!sentenceEl) return null;
-        var text = node.textContent;
-        var wordRegex = /[\w'-]/;
-        var start = offset, end = offset;
-        while (start > 0 && wordRegex.test(text[start - 1])) start--;
-        while (end < text.length && wordRegex.test(text[end])) end++;
-        if (start === end) return null;
-        var word = text.slice(start, end);
-        var walker = document.createTreeWalker(sentenceEl, NodeFilter.SHOW_TEXT, null);
-        var sentenceOffset = 0;
-        var n;
-        while ((n = walker.nextNode())) {
-            if (n === node) { sentenceOffset += start; break; }
-            sentenceOffset += n.textContent.length;
-        }
-        return { word: word, sentenceEl: sentenceEl, offset: sentenceOffset };
-    },
-
-    updateFocusWordDisplay: function() {
-        this.clearWordHighlight();
-        if (this.focusWords.length === 0) { agentModule.selectedFocusWord = ""; return; }
-        var sorted = Array.prototype.slice.call(this.focusWords).sort(function(a, b) { return a.offset - b.offset; });
-        var sentenceText = sorted[0].sentenceEl.textContent;
-        var groups = [[sorted[0]]];
-        for (var i = 1; i < sorted.length; i++) {
-            var prev = sorted[i - 1], curr = sorted[i];
-            var between = sentenceText.slice(prev.offset + prev.word.length, curr.offset);
-            if (/^\s*$/.test(between)) { groups[groups.length - 1].push(curr); } else { groups.push([curr]); }
-        }
-        var focusString = groups.map(function(g) { return g.map(function(fw) { return fw.word; }).join(" "); }).join("...");
-        for (var j = 0; j < this.focusWords.length; j++) {
-            this.highlightWordAtOffset(this.focusWords[j].sentenceEl, this.focusWords[j].offset, this.focusWords[j].word.length);
-        }
-        var selEl = sorted[0].sentenceEl;
-        document.querySelectorAll(".sentence.selected").forEach(function(s) { s.classList.remove("selected"); });
-        selEl.classList.add("selected");
-        this.selectedSentenceIdx = selEl.dataset.idx;
-        agentModule.selectFocusWord(focusString);
-    },
-
-    highlightWordAtOffset: function(sentenceEl, targetOffset, length) {
-        var walker = document.createTreeWalker(sentenceEl, NodeFilter.SHOW_TEXT, null);
-        var cumOffset = 0;
-        var node;
-        while ((node = walker.nextNode())) {
-            var nodeLen = node.textContent.length;
-            if (cumOffset + nodeLen > targetOffset) {
-                var localOffset = targetOffset - cumOffset;
-                if (localOffset >= 0 && localOffset + length <= nodeLen) {
-                    try {
-                        var range = document.createRange();
-                        range.setStart(node, localOffset);
-                        range.setEnd(node, localOffset + length);
-                        var span = document.createElement("span");
-                        span.className = "focus-word-selected";
-                        range.surroundContents(span);
-                    } catch (err) { /* skip */ }
-                    return;
-                }
-            }
-            cumOffset += nodeLen;
-        }
-    },
-
-    clearWordHighlight: function() {
-        document.querySelectorAll(".focus-word-selected").forEach(function(el) {
-            var parent = el.parentNode;
-            parent.replaceChild(document.createTextNode(el.textContent), el);
-            parent.normalize();
-        });
-    },
-
-    selectSentence: function(idx, sentence, el) {
-        document.querySelectorAll(".sentence.selected").forEach(function(s) { s.classList.remove("selected"); });
-        el.classList.add("selected");
-        this.selectedSentenceIdx = idx;
-        window.__currentIdx = idx;
-        agentModule.showSelectedSentence(sentence, idx);
-    }
-};
-
-var agentModule = {
-    isStreaming: false,
-    selectedFocusWord: "",
-
-    showSelectedSentence: function(sentence, idx) {
-        var el = document.getElementById("selectedSentence");
-        el.innerHTML = "";
-        var translation = (window.__translations && window.__translations[idx]) || "";
-        var showTrans = window.__showTrans && translation;
-        var text = showTrans ? sentence + "\n" + translation : sentence;
-        var p = document.createElement("p");
-        p.className = "sentence-text";
-        p.textContent = text;
-        p.style.cssText = "color:var(--text-primary);font-style:normal;margin:0;white-space:pre-wrap;";
-        el.appendChild(p);
-        if (this.selectedFocusWord) {
-            var focusEl = document.createElement("span");
-            focusEl.className = "focus-wrapper";
-            focusEl.innerHTML = '<span class="focus-word">' + this.escapeHtml(this.selectedFocusWord) + '</span> <span class="clear-focus" onclick="agentModule.clearFocus()">\u00d7</span>';
-            el.appendChild(focusEl);
-        }
-    },
-
-    selectFocusWord: function(word) {
-        this.selectedFocusWord = word;
-        var p = document.querySelector("#selectedSentence .sentence-text");
-        if (p && p.textContent.trim()) {
-            this.showSelectedSentence(p.textContent.split("\n")[0], window.__currentIdx);
-        } else if (window.__currentIdx) {
-            var sentenceEl = document.querySelector('.sentence[data-idx="' + window.__currentIdx + '"]');
-            if (sentenceEl) { this.showSelectedSentence(sentenceEl.textContent.trim(), window.__currentIdx); }
-        }
-    },
-
-    clearFocus: function() {
-        this.selectedFocusWord = "";
-        if (articleModule.focusWords) { articleModule.focusWords = []; articleModule.clearWordHighlight(); }
-        var p = document.querySelector("#selectedSentence .sentence-text");
-        if (p && p.textContent.trim()) {
-            this.showSelectedSentence(p.textContent, window.__currentIdx);
-        } else {
-            document.getElementById("selectedSentence").innerHTML = '<p style="color:var(--text-muted);text-align:center;font-style:italic;">点击文章中的句子开始提问</p>';
-        }
-    },
-
-    clearFocusHighlight: function() {
-        document.querySelectorAll(".focus-highlight").forEach(function(el) { el.classList.remove("focus-highlight"); });
-    },
-
-    sendQuestion: function(question) {
-        var sentence = document.querySelector(".sentence.selected");
-        if (!sentence && !this.selectedFocusWord) { alert("请先点击文章中的内容"); return; }
-        var sentenceText = sentence ? sentence.textContent.trim() : this.selectedFocusWord;
-        var articleId = (articleModule.currentArticle && articleModule.currentArticle.id) || "";
-        this.streamAnswer(sentenceText, question, articleId, this.selectedFocusWord);
-    },
-
-    streamAnswer: function(sentence, question, articleId, focus) {
-        if (this.isStreaming) { this.isStreaming = false; document.getElementById("btnSend").disabled = false; }
-        this.isStreaming = true;
-        document.getElementById("btnSend").disabled = true;
-        var container = document.getElementById("chatMessages");
-        var msgEl = document.createElement("div");
-        msgEl.className = "message";
-        var focusLabel = focus ? '<span class="focus-tag">' + this.escapeHtml(focus) + '</span> ' : "";
-        msgEl.innerHTML = '<div class="question-label">' + focusLabel + 'Q: ' + this.escapeHtml(question) + '</div><div class="answer-content"></div>';
-        container.appendChild(msgEl);
-        var answerEl = msgEl.querySelector(".answer-content");
-        msgEl.scrollIntoView({ block: "start", behavior: "smooth" });
-        var self = this;
-        var fullAnswer = "";
-        var source = api.askAgent(sentence, question, articleId, focus);
-        var timeout = setTimeout(function() {
-            source.close(); self.isStreaming = false; document.getElementById("btnSend").disabled = false;
-            if (!fullAnswer) { answerEl.textContent = "请求超时，请重试"; }
-        }, 90000);
-        source.onmessage = function(e) {
-            if (e.data === "[DONE]") {
-                clearTimeout(timeout); source.close(); self.isStreaming = false;
-                self.clearFocusHighlight(); self.selectedFocusWord = "";
-                document.getElementById("btnSend").disabled = false; return;
-            }
-            try { var p = JSON.parse(e.data); fullAnswer += p.text; answerEl.textContent = fullAnswer; } catch (err) { console.error("Parse SSE error:", err); }
-        };
-        source.onerror = function() {
-            clearTimeout(timeout); source.close(); self.isStreaming = false;
-            document.getElementById("btnSend").disabled = false;
-            if (!fullAnswer) { answerEl.textContent = "请求失败，请重试"; }
-        };
-    },
-
-    escapeHtml: function(text) {
-        var div = document.createElement("div");
-        div.textContent = text;
-        return div.innerHTML;
-    }
-};
-
-document.addEventListener("DOMContentLoaded", function() {
-    var today = new Date();
-    document.getElementById("todayDate").textContent = today.toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric", weekday: "long" });
-    document.getElementById("btnNextArticle").addEventListener("click", function() { articleModule.loadNext(); });
-    document.getElementById("sentenceTranslationToggle").addEventListener("change", function(e) {
-        window.__showTrans = e.target.checked;
-        var p = document.querySelector("#selectedSentence .sentence-text");
-        if (p && window.__currentIdx) {
-            var trans = (window.__translations && window.__translations[window.__currentIdx]) || "";
-            if (e.target.checked && trans) { p.textContent = p.textContent.split("\n")[0] + "\n" + trans; } else { p.textContent = p.textContent.split("\n")[0]; }
-        }
-    });
-    document.getElementById("btnSend").addEventListener("click", function() {
-        var input = document.getElementById("questionInput");
-        var q = input.value.trim();
-        if (q) { agentModule.sendQuestion(q); input.value = ""; }
-    });
-    document.getElementById("questionInput").addEventListener("keydown", function(e) {
-        if (e.key === "Enter") { document.getElementById("btnSend").click(); }
-    });
-    document.querySelectorAll(".quick-btn").forEach(function(btn) {
-        btn.addEventListener("click", function() { agentModule.sendQuestion(btn.dataset.question); });
-    });
-    articleModule.loadCurrent();
-});
-    </script>
+    <script src="js/api.js"></script>
+    <script src="js/article.js"></script>
+    <script src="js/agent.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
