@@ -201,15 +201,25 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
 }
 
-.checkin-indicator {
-    font-size: 12px;
-    margin-right: 2px;
+.checkin-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 4px;
+    flex-shrink: 0;
 }
 
-.checkin-indicator.checkin-missing {
-    opacity: 0.3;
+.checkin-dot-yes {
+    background: #22c55e;
+}
+
+.checkin-dot-no {
+    background: #ef4444;
 }
 
 .history-item-meta {

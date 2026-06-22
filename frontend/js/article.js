@@ -78,7 +78,7 @@ var articleModule = {
                 }
                 var info = document.createElement("div");
                 info.className = "history-item-info";
-                var checkMark = a.checked_in ? '<span class="checkin-indicator">&#x2705;</span> ' : '<span class="checkin-indicator checkin-missing">&#x2B1C;</span> ';
+                var checkMark = a.checked_in ? '<span class="checkin-dot checkin-dot-yes"></span> ' : '<span class="checkin-dot checkin-dot-no"></span> ';
                 info.innerHTML = '<div class="history-item-title">' + checkMark + (a.title || "无标题") + '</div><div class="history-item-meta">' + (a.source || "?") + ' · ' + (a.word_count || "?") + ' 词 · ' + (a.date || "?") + '</div>';
                 info.addEventListener("click", function(idx) {
                     return function() {
