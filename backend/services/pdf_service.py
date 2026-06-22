@@ -167,12 +167,15 @@ def parse_pdf(file_path: str) -> Optional[dict]:
                 word_count = int(m.group(1))
             body_start = i + 1
             break
-        if _has_chinese(stripped):
-            m = re.match(r'^([A-Za-z]+)', stripped)
-            if m and len(m.group(1)) >= 3:
-                source = m.group(1)
-        if not _has_chinese(stripped) and len(stripped.split()) >= 3:
-            title = (title + " " + stripped).strip()
+        if not _has_chinese(stripped):
+            if re.match(r"^[A-Za-z'\u2018\u2019][A-Za-z0-9\s'\"\-\:,\?\!]+$", stripped) and len(stripped) >= 3:
+                title = (title + " " + stripped).strip()
+        else:
+            m = re.match(r'^([A-Za-z\s]+)(?:[\u4e00-\u9fff]|$)', stripped)
+            if m:
+                s = m.group(1).strip()
+                if len(s) >= 3:
+                    source = s
 
     if body_start:
         while body_start < len(lines) and not lines[body_start].strip():

@@ -203,6 +203,15 @@ body {
     text-overflow: ellipsis;
 }
 
+.checkin-indicator {
+    font-size: 12px;
+    margin-right: 2px;
+}
+
+.checkin-indicator.checkin-missing {
+    opacity: 0.3;
+}
+
 .history-item-meta {
     font-size: 12px;
     color: var(--text-muted);

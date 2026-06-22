@@ -2,7 +2,7 @@ import os
 import tempfile
 from fastapi import APIRouter, HTTPException, UploadFile, File, Query
 from services.pdf_service import process_uploaded_pdf, get_latest_article, get_article_by_index, get_article_list, delete_article
-from services.auth_service import get_user_by_token
+from services.auth_service import get_user_by_token, get_user_checkins
 import logging
 
 logger = logging.getLogger(__name__)
@@ -21,8 +21,16 @@ async def get_current():
 
 
 @router.get("/list")
-async def list_articles():
-    return {"articles": get_article_list()}
+async def list_articles(token: str = Query(default="")):
+    articles = get_article_list()
+    checkins = set()
+    if token:
+        username = get_user_by_token(token)
+        if username:
+            checkins = get_user_checkins(username)
+    for a in articles:
+        a["checked_in"] = a.get("id") in checkins
+    return {"articles": articles}
 
 
 @router.get("/{index}")

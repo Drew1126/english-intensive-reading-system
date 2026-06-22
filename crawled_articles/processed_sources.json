@@ -1,4 +1,27 @@
 {
-  "used": [],
-  "last_reset": null
+  "used": [
+    "/home/admin/English/crawled_articles/The_Guardian/hantavirus_misinformation_runs_rampant_as_the_us_is_unequipp.txt",
+    "/home/admin/English/crawled_articles/Scientific_American/us_neutrino_megaproject_takes_shape_in_abandoned_gold_mine.txt",
+    "/home/admin/English/crawled_articles/Scientific_American/there_is_no_vaccine_for_deadly_hantavirus_but_this_scientist.txt",
+    "/home/admin/English/crawled_articles/Scientific_American/pentagon_releases_trove_of_new_ufo_files_but_skeptics_arent_.txt",
+    "/home/admin/English/crawled_articles/Scientific_American/see_the_pentagons_new_ufo_image_release.txt",
+    "/home/admin/English/crawled_articles/The_Guardian/tim_dowling_ive_come_to_respect_the_fox_but_our_dog_is_still.txt",
+    "/home/admin/English/crawled_articles/Scientific_American/wildfire_breaks_out_inside_chernobyl_exclusion_zone.txt",
+    "/home/admin/English/crawled_articles/The_Guardian/worried_britons_prepping_for_major_disruption_with_stash_of_.txt",
+    "/home/admin/English/crawled_articles/The_Economist/germany_claims_it_has_the_worlds_best_bread.txt",
+    "/home/admin/English/crawled_articles/The_Economist/a_chinese_high-seas_misadventure_in_luxury_yachts.txt",
+    "/home/admin/English/crawled_articles/The_Economist/the_surprising_supply-chain_choke_point_for_cricket_bats.txt",
+    "/home/admin/English/crawled_articles/The_Economist/the_energy_shock_triggers_an_asian_dash_for_biofuels.txt",
+    "/home/admin/English/crawled_articles/The_Guardian/country_diary_a_terrible_time_for_a_tractor_breakdown_colin_.txt",
+    "/home/admin/English/crawled_articles/The_Economist/in_an_age_of_status_symbols_tiaras_take_the_crown.txt",
+    "/home/admin/English/crawled_articles/The_Atlantic/the_feeling_of_becoming_less_and_less_of_a_person.txt",
+    "/home/admin/English/crawled_articles/The_Atlantic/have_accommodations_become_an_unfair_advantage_in_higher_edu.txt",
+    "/home/admin/English/crawled_articles/The_Atlantic/the_eighth_deadly_sin.txt",
+    "/home/admin/English/crawled_articles/Wired/what_its_like_watching_dozens_of_bodies_decompose_for_scienc.txt",
+    "/home/admin/English/crawled_articles/Wired/life_without_screens_this_camp_is_a_teens_worst_nightmare.txt",
+    "/home/admin/English/crawled_articles/Wired/chinese_ev_batteries_are_eating_the_world.txt",
+    "/home/admin/English/crawled_articles/Wired/magazine_articles.txt",
+    "/home/admin/English/crawled_articles/Wired/does_anyone_know_what_wellness_means_anymore.txt"
+  ],
+  "last_reset": "2026-06-08T19:24:35.850814"
 }

@@ -7,8 +7,10 @@ var api = {
             return res.json();
         });
     },
-    getArticleList: function() {
-        return fetch(BASE + "/article/list").then(function(res) {
+    getArticleList: function(token) {
+        var url = BASE + "/article/list";
+        if (token) { url += "?token=" + encodeURIComponent(token); }
+        return fetch(url).then(function(res) {
             if (!res.ok) { throw new Error("获取历史列表失败 (" + res.status + ")"); }
             return res.json();
         });

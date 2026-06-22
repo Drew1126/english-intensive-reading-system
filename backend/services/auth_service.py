@@ -72,6 +72,12 @@ def get_user_info(username: str) -> Optional[dict]:
     }
 
 
+def get_user_checkins(username: str) -> set:
+    users = _get_users()
+    user = users.get(username, {})
+    return set(user.get("checkins", {}).keys())
+
+
 def toggle_checkin(username: str, article_id: str) -> dict:
     users = _get_users()
     user = users.setdefault(username, {"name": username, "avatar": None, "checkins": {}})

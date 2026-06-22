@@ -63,7 +63,7 @@ var articleModule = {
         list.innerHTML = '<div class="loading">加载中...</div>';
         overlay.style.display = "flex";
         var token = getToken && getToken();
-        api.getArticleList().then(function(data) {
+        api.getArticleList(token).then(function(data) {
             list.innerHTML = "";
             var articles = data.articles || [];
             if (articles.length === 0) {
@@ -78,7 +78,8 @@ var articleModule = {
                 }
                 var info = document.createElement("div");
                 info.className = "history-item-info";
-                info.innerHTML = '<div class="history-item-title">' + (a.title || "无标题") + '</div><div class="history-item-meta">' + (a.source || "?") + ' · ' + (a.word_count || "?") + ' 词 · ' + (a.date || "?") + '</div>';
+                var checkMark = a.checked_in ? '<span class="checkin-indicator">&#x2705;</span> ' : '<span class="checkin-indicator checkin-missing">&#x2B1C;</span> ';
+                info.innerHTML = '<div class="history-item-title">' + checkMark + (a.title || "无标题") + '</div><div class="history-item-meta">' + (a.source || "?") + ' · ' + (a.word_count || "?") + ' 词 · ' + (a.date || "?") + '</div>';
                 info.addEventListener("click", function(idx) {
                     return function() {
                         overlay.style.display = "none";
