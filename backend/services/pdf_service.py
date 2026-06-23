@@ -155,6 +155,7 @@ def parse_pdf(file_path: str) -> Optional[dict]:
     source = "PDF"
     title = ""
     word_count = 0
+    found_source = False
 
     body_start = None
     for i, line in enumerate(lines):
@@ -167,15 +168,38 @@ def parse_pdf(file_path: str) -> Optional[dict]:
                 word_count = int(m.group(1))
             body_start = i + 1
             break
-        if not _has_chinese(stripped):
-            if re.match(r"^[A-Za-z'\u2018\u2019][A-Za-z0-9\s'\"\-\:,\?\!]+$", stripped) and len(stripped) >= 3:
-                title = (title + " " + stripped).strip()
+        if _has_chinese(stripped):
+            if not found_source:
+                m = re.match(r'^([A-Za-z\s]+)(?:[\u4e00-\u9fff]|$)', stripped)
+                if m:
+                    s = m.group(1).strip()
+                    words = re.findall(r'[A-Z]?[a-z]+|[A-Z]+(?=[A-Z][a-z]|\b)', s)
+                    while len(words) >= 2 and len(words) % 2 == 0:
+                        mid = len(words) // 2
+                        if words[:mid] == words[mid:]:
+                            words = words[:mid]
+                        else:
+                            break
+                    s = " ".join(words)
+                    if len(s) >= 3:
+                        source = s
+                        found_source = True
         else:
-            m = re.match(r'^([A-Za-z\s]+)(?:[\u4e00-\u9fff]|$)', stripped)
-            if m:
-                s = m.group(1).strip()
-                if len(s) >= 3:
-                    source = s
+            if not found_source:
+                cleaned = re.sub(r'^([A-Za-z]+)\1$', r'\1', stripped)
+                words = re.findall(r'[A-Z]?[a-z]+|[A-Z]+(?=[A-Z][a-z]|\b)', cleaned)
+                while len(words) >= 2 and len(words) % 2 == 0:
+                    mid = len(words) // 2
+                    if words[:mid] == words[mid:]:
+                        words = words[:mid]
+                    else:
+                        break
+                if 1 <= len(words) <= 4:
+                    source = " ".join(words)
+                    found_source = True
+                    continue
+            if re.match(r"^[A-Za-z'\u2018\u2019][A-Za-z0-9\s'\"\u2019\u2018\-\:,\?\!]+$", stripped) and len(stripped) >= 3:
+                title = (title + " " + stripped).strip()
 
     if body_start:
         while body_start < len(lines) and not lines[body_start].strip():
