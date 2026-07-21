@@ -45,8 +45,9 @@
 
 .article-body .paragraph {
     margin-bottom: 20px;
-    font-size: 16px;
-    line-height: 2;
+    font-size: 15px;
+    line-height: 1.8;
+    text-align: justify;
 }
 
 .article-body .sentence {
