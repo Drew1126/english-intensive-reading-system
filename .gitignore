@@ -1,5 +1,4 @@
 .env
-backend/data/
 __pycache__/
 *.pyc
 .cache/
@@ -7,3 +6,8 @@ AGENTS.md
 crawl_sources.md
 考研英语阅读外刊改写方案_v2.md
 英语阅读练习系统_实现方案.md
+
+# Runtime data - exclude sensitive/transient, keep articles + user state
+backend/data/chat_history/
+backend/data/avatars/
+backend/data/auth_sessions.json

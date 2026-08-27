@@ -1,0 +1,133 @@
+{
+  "next": 21,
+  "articles": [
+    {
+      "id": "article_3",
+      "index": 3,
+      "title": "Gaming in their golden years: why millions of seniors are playing video",
+      "source": "Guardian",
+      "word_count": 728,
+      "date": "2026-06-13"
+    },
+    {
+      "id": "article_4",
+      "index": 4,
+      "title": "Should You Use a Standing Desk?",
+      "source": "The Economist",
+      "word_count": 538,
+      "date": "2026-06-13"
+    },
+    {
+      "id": "article_5",
+      "index": 5,
+      "title": "Retired UK civil servant ordered to pay back £25,000 after pension scheme error",
+      "source": "Guardian",
+      "word_count": 698,
+      "date": "2026-06-14"
+    },
+    {
+      "id": "article_6",
+      "index": 6,
+      "title": "Is It True That I 'Don't Get",
+      "source": "Guardian",
+      "word_count": 793,
+      "date": "2026-06-15"
+    },
+    {
+      "id": "article_7",
+      "index": 7,
+      "title": "Streamlining what universities offer could backfire for disadvantaged students",
+      "source": "The Conversation",
+      "word_count": 638,
+      "date": "2026-06-16"
+    },
+    {
+      "id": "article_8",
+      "index": 8,
+      "title": "Niksen Is the Dutch Lifestyle Concept of Doing Nothing",
+      "source": "Time",
+      "word_count": 623,
+      "date": "2026-06-17"
+    },
+    {
+      "id": "article_9",
+      "index": 9,
+      "title": "England's national curriculum review misses opportunity to revitalise language learning",
+      "source": "The Conversation",
+      "word_count": 801,
+      "date": "2026-06-18"
+    },
+    {
+      "id": "article_10",
+      "index": 10,
+      "title": "How to Greet People at Work",
+      "source": "The Economist",
+      "word_count": 704,
+      "date": "2026-06-19"
+    },
+    {
+      "id": "article_13",
+      "index": 13,
+      "title": "'Technofossils': What's Humanity's Eternal Testament?",
+      "source": "Guardian",
+      "word_count": 548,
+      "date": "2026-06-22"
+    },
+    {
+      "id": "article_14",
+      "index": 14,
+      "title": "Social media needs a reset button",
+      "source": "The Boston Globe",
+      "word_count": 730,
+      "date": "2026-06-22"
+    },
+    {
+      "id": "article_15",
+      "index": 15,
+      "title": "How First-Time Job Seekers Can Negotiate Without Settling For Less",
+      "source": "Forbes",
+      "word_count": 690,
+      "date": "2026-06-23"
+    },
+    {
+      "id": "article_16",
+      "index": 16,
+      "title": "New Study Shows How Your Brain Changes at Four Key Ages: 9, 32, 66 and 83",
+      "source": "Washington Post",
+      "word_count": 829,
+      "date": "2026-07-05"
+    },
+    {
+      "id": "article_17",
+      "index": 17,
+      "title": "Can Big Food Adapt to Healthier Diets?",
+      "source": "The Economist",
+      "word_count": 692,
+      "date": "2026-07-08"
+    },
+    {
+      "id": "article_18",
+      "index": 18,
+      "title": "UK ‘Most Expensive Place’ to Build Nuclear Power, Review Finds",
+      "source": "Guardian",
+      "word_count": 566,
+      "date": "2026-07-13"
+    },
+    {
+      "id": "article_19",
+      "index": 19,
+      "title": "Joys of Spring: Gardening Tips for the Growing Season",
+      "source": "Guardian",
+      "word_count": 733,
+      "date": "2026-07-14"
+    },
+    {
+      "id": "article_20",
+      "index": 20,
+      "title": "The Kenyan Ranger Who Risks His Life to Save Rare Animal He’s Seen Once",
+      "source": "Others",
+      "word_count": 669,
+      "date": "2026-07-21"
+    }
+  ]
+}

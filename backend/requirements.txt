@@ -5,5 +5,5 @@ langchain-openai>=0.1.0
 filelock>=3.13.0
 pydantic>=2.7.0
 pydantic-settings>=2.2.0
-apscheduler>=3.10.0
 python-dotenv>=1.0.0
+pdfminer.six>=20221105
