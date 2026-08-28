@@ -234,7 +234,23 @@ def _extract_questions(text: str) -> list[str]:
         if num is not None:
             qtext = f"{num}. " + qtext
         result.append(qtext)
-    return result
+
+    return _drop_stray_title_questions(result)
+
+
+def _drop_stray_title_questions(questions: list[str]) -> list[str]:
+    """A 考研 text has at most ONE 'best title' question, always the LAST one.
+
+    OCR sometimes picks up a stray 'best title' question from an adjacent
+    text (e.g. the previous text's last question). If more than one 'best
+    title' question is detected, keep only the last occurrence.
+    """
+    title_idx = [i for i, q in enumerate(questions)
+                 if re.search(r'best title|title for the text', q, re.IGNORECASE)]
+    if len(title_idx) <= 1:
+        return questions
+    drop = set(title_idx[:-1])
+    return [questions[i] for i in range(len(questions)) if i not in drop]
 
 
 def _clean_question_lines(lines: list[str]) -> list[str]:
