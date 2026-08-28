@@ -94,5 +94,11 @@ var api = {
             if (!res.ok) { return res.json().then(function(e) { throw new Error(e.detail || "上传失败"); }); }
             return res.json();
         });
+    },
+    deleteZhenti: function(year, text) {
+        return fetch(BASE + "/zhenti/" + year + "/" + text, { method: "DELETE" }).then(function(res) {
+            if (!res.ok) { return res.json().then(function(e) { throw new Error(e.detail || "删除失败"); }); }
+            return res.json();
+        });
     }
 };

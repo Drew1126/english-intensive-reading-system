@@ -128,6 +128,34 @@ var zhentiModule = {
             var cell = document.createElement("div");
             cell.className = "zhenti-text" + (exists ? " exists" : " empty");
             cell.innerHTML = '<div class="zhenti-text-label">Text ' + i + '</div><div class="zhenti-text-status">' + (exists ? "已收录" : "未收录") + '</div>';
+            if (exists) {
+                var delBtn = document.createElement("button");
+                delBtn.className = "zhenti-text-del";
+                delBtn.title = "删除";
+                delBtn.textContent = "\u00d7";
+                delBtn.addEventListener("click", function(yr, t) {
+                    return function(e) {
+                        e.stopPropagation();
+                        if (!confirm("确定删除 " + yr + "年 Text " + t + " 吗？")) return;
+                        api.deleteZhenti(yr, t).then(function() {
+                            if (articleModule.currentArticle && articleModule.currentArticle.id === "zhenti_" + yr + "_" + t) {
+                                articleModule.currentArticle = null;
+                                document.getElementById("articleBody").innerHTML = '<div class="loading">文章已删除</div>';
+                                document.getElementById("checkinArea").style.display = "none";
+                            }
+                            api.getZhentiList().then(function(data) {
+                                var years = data.years || [];
+                                var updated = null;
+                                for (var k = 0; k < years.length; k++) {
+                                    if (years[k].year === yr) { updated = years[k]; break; }
+                                }
+                                if (updated) { self.showTexts(updated); }
+                            });
+                        }).catch(function(err) { alert("删除失败: " + err.message); });
+                    };
+                }(this.currentYear, i));
+                cell.appendChild(delBtn);
+            }
             cell.addEventListener("click", function(t, ex) {
                 return function() {
                     if (ex) {

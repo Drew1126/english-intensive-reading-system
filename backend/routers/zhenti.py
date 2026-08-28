@@ -2,7 +2,7 @@ import os
 import tempfile
 from typing import List
 from fastapi import APIRouter, HTTPException, UploadFile, File
-from services.zhenti_service import list_years, get_article, process_upload
+from services.zhenti_service import list_years, get_article, process_upload, delete_article
 import logging
 
 logger = logging.getLogger(__name__)
@@ -27,6 +27,15 @@ async def zhenti_article(year: int, text_num: int):
     if not article:
         raise HTTPException(status_code=404, detail="文章不存在")
     return {"article": article}
+
+
+@router.delete("/{year}/{text_num}")
+async def zhenti_delete(year: int, text_num: int):
+    if text_num not in (1, 2, 3, 4):
+        raise HTTPException(status_code=400, detail="text_num must be 1-4")
+    if not delete_article(year, text_num):
+        raise HTTPException(status_code=404, detail="文章不存在")
+    return {"success": True}
 
 
 @router.post("/{year}/{text_num}/upload")

@@ -83,6 +83,15 @@ def get_article(year: int, text_num: int) -> Optional[dict]:
     return read_json(str(path), None)
 
 
+def delete_article(year: int, text_num: int) -> bool:
+    path = _article_path(year, text_num)
+    if not path.exists():
+        return False
+    path.unlink()
+    logger.info(f"Zhenti deleted: {year} text {text_num}")
+    return True
+
+
 def save_article(year: int, text_num: int, article: dict) -> dict:
     path = _article_path(year, text_num)
     path.parent.mkdir(parents=True, exist_ok=True)
