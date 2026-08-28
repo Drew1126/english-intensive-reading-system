@@ -18,21 +18,26 @@ ZHENTI_DIR = DATA_DIR / "zhenti"
 ZHENTI_YEARS = list(range(2000, 2027))
 ZHENTI_TEXTS = [1, 2, 3, 4]
 
-_TRANSLATE_SYSTEM = """You are an expert at processing English passages for the Chinese graduate entrance exam (考研英语阅读).
+_TRANSLATE_SYSTEM = """You are an expert at processing English exam passages for the Chinese graduate entrance exam (考研英语阅读).
 
-The passage you receive was extracted from scanned images or PDFs by OCR, so it may contain artificial line breaks or image boundaries in the MIDDLE of a sentence. Your tasks:
+The text you receive was extracted from scanned images or PDFs by OCR. It contains TWO parts:
+1. A reading passage (article text)
+2. Multiple-choice questions that follow the passage (each question has a stem plus options A/B/C/D)
 
-1. Split the text into individual sentences accurately.
+Your tasks:
+
+1. Split the reading passage into individual sentences accurately.
 2. CRITICAL: when text before and after a line break / image boundary together form ONE grammatical sentence, merge them into a SINGLE sentence. Only treat them as two sentences if each side is grammatically complete on its own.
-3. Preserve the passage's original paragraph structure: assign each sentence a paragraph number (starting at 0).
-4. Translate each sentence accurately into Chinese.
+3. KEEP ALL multiple-choice questions — do NOT drop them. Each question is ONE unit: combine its stem and options (A. ... B. ... C. ... D. ...) into a single "en" value.
+4. Paragraph numbers: passage sentences get para numbers starting at 0. After the last passage paragraph, each question gets its OWN new para number (continuing 1 by 1).
+5. Translate each passage sentence and each question into Chinese.
 
-Output ONLY a valid JSON array. Each element: {"en": "English sentence", "zh": "Chinese translation", "para": 0}
-The number of elements must exactly match the number of sentences."""
+Output ONLY a valid JSON array. Each element: {"en": "English sentence or question", "zh": "Chinese translation", "para": 0}
+The number of elements must exactly match the number of sentences plus questions."""
 
-_TRANSLATE_USER = """Return ONLY a valid JSON array. No other text. Each element: {{"en": "English sentence", "zh": "Chinese translation", "para": 0}}
+_TRANSLATE_USER = """Return ONLY a valid JSON array. No other text. Each element: {{"en": "English sentence or question", "zh": "Chinese translation", "para": 0}}
 
-Passage (may contain artificial line breaks inside sentences caused by scanning):
+Text (may contain artificial line breaks inside sentences caused by scanning):
 {text}"""
 
 
