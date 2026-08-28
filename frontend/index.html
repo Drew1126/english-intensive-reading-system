@@ -90,7 +90,32 @@
                 <h3>历史文章</h3>
                 <button class="history-close" id="historyClose">&times;</button>
             </div>
-            <div class="history-list" id="historyList"></div>
+            <div class="history-tabs">
+                <button class="history-tab active" data-tab="waikan" id="tabWaikanBtn">外刊</button>
+                <button class="history-tab" data-tab="zhenti" id="tabZhentiBtn">考研真题</button>
+            </div>
+            <div class="history-body">
+                <div class="history-tab-content" id="tabWaikanContent">
+                    <div class="history-list" id="historyList"></div>
+                </div>
+                <div class="history-tab-content" id="tabZhentiContent" style="display:none">
+                    <div class="zhenti-year-list" id="zhentiYearList"></div>
+                    <div class="zhenti-text-view" id="zhentiTextView" style="display:none">
+                        <button class="zhenti-back" id="zhentiBack">&larr; 返回年份</button>
+                        <div class="zhenti-year-title" id="zhentiYearTitle"></div>
+                        <div class="zhenti-text-grid" id="zhentiTextGrid"></div>
+                        <div class="zhenti-upload-area" id="zhentiUploadArea" style="display:none">
+                            <div class="zhenti-upload-title" id="zhentiUploadTitle"></div>
+                            <input type="file" id="zhentiFileInput" accept=".pdf,.png,.jpg,.jpeg,.gif,.bmp,.webp" multiple>
+                            <div class="zhenti-upload-hint">支持 PDF，或图片（可多张连续选择）</div>
+                            <div class="zhenti-upload-actions">
+                                <button id="zhentiUploadBtn">上传</button>
+                                <button class="zhenti-cancel" id="zhentiUploadCancel">取消</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -105,6 +130,7 @@
 
     <script src="js/api.js"></script>
     <script src="js/article.js"></script>
+    <script src="js/zhenti.js"></script>
     <script src="js/agent.js"></script>
     <script src="js/main.js"></script>
 </body>

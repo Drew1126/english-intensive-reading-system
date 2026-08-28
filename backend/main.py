@@ -4,6 +4,7 @@ from routers.article import router as article_router
 from routers.agent import router as agent_router
 from routers.translate import router as translate_router
 from routers.auth import router as auth_router
+from routers.zhenti import router as zhenti_router
 from pathlib import Path
 import logging
 
@@ -18,6 +19,7 @@ app.include_router(article_router)
 app.include_router(agent_router)
 app.include_router(translate_router)
 app.include_router(auth_router)
+app.include_router(zhenti_router)
 
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 

@@ -73,5 +73,26 @@ var api = {
             if (!res.ok) { return res.json().then(function(e) { throw new Error(e.detail || "删除失败"); }); }
             return res.json();
         });
+    },
+    // Zhenti
+    getZhentiList: function() {
+        return fetch(BASE + "/zhenti/list").then(function(res) {
+            if (!res.ok) { throw new Error("获取真题列表失败"); }
+            return res.json();
+        });
+    },
+    getZhentiArticle: function(year, text) {
+        return fetch(BASE + "/zhenti/" + year + "/" + text).then(function(res) {
+            if (!res.ok) { return res.json().then(function(e) { throw new Error(e.detail || "获取文章失败"); }); }
+            return res.json();
+        });
+    },
+    uploadZhenti: function(year, text, files) {
+        var formData = new FormData();
+        for (var i = 0; i < files.length; i++) { formData.append("files", files[i]); }
+        return fetch(BASE + "/zhenti/" + year + "/" + text + "/upload", { method: "POST", body: formData }).then(function(res) {
+            if (!res.ok) { return res.json().then(function(e) { throw new Error(e.detail || "上传失败"); }); }
+            return res.json();
+        });
     }
 };

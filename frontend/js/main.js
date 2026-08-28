@@ -141,6 +141,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("historyOverlay").addEventListener("click", function(e) {
         if (e.target === this) { this.style.display = "none"; }
     });
+    if (typeof zhentiModule !== "undefined") { zhentiModule.init(); }
     document.getElementById("avatarOverlay").addEventListener("click", function(e) {
         if (e.target === this) { this.style.display = "none"; }
     });

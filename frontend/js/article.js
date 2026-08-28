@@ -56,12 +56,36 @@ var articleModule = {
         });
     },
 
-    showHistory: function() {
+    loadZhenti: function(year, text) {
         var self = this;
+        if (this.isLoading) return;
+        this.isLoading = true;
+        this._resetView();
+        document.getElementById("articleBody").innerHTML = '<div class="loading">加载中...</div>';
+        api.getZhentiArticle(year, text).then(function(data) {
+            self.currentArticle = data.article;
+            self._buildTranslations();
+            self.renderArticle(data.article);
+        }).catch(function(err) {
+            document.getElementById("articleBody").innerHTML = '<div class="loading">加载失败：' + err.message + '</div>';
+        }).then(function() { self.isLoading = false; });
+    },
+
+    showHistory: function() {
         var overlay = document.getElementById("historyOverlay");
-        var list = document.getElementById("historyList");
-        list.innerHTML = '<div class="loading">加载中...</div>';
         overlay.style.display = "flex";
+        if (typeof zhentiModule !== "undefined" && zhentiModule.showTab) {
+            zhentiModule.showTab("waikan");
+        } else {
+            this.renderHistoryList();
+        }
+    },
+
+    renderHistoryList: function() {
+        var self = this;
+        var list = document.getElementById("historyList");
+        var overlay = document.getElementById("historyOverlay");
+        list.innerHTML = '<div class="loading">加载中...</div>';
         var token = getToken && getToken();
         api.getArticleList(token).then(function(data) {
             list.innerHTML = "";
@@ -96,7 +120,7 @@ var articleModule = {
                             e.stopPropagation();
                             if (!confirm("确定删除《" + (a.title || "无标题") + "》？")) return;
                             api.deleteArticle(idx, token).then(function() {
-                                self.showHistory();
+                                self.renderHistoryList();
                                 if (self.currentArticle && self.currentArticle.article_index === idx) {
                                     self.currentArticle = null;
                                     document.getElementById("articleBody").innerHTML = '<div class="loading">文章已删除</div>';

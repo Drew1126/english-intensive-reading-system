@@ -7,3 +7,5 @@ pydantic>=2.7.0
 pydantic-settings>=2.2.0
 python-dotenv>=1.0.0
 pdfminer.six>=20221105
+Pillow>=10.0.0
+pytesseract>=0.3.10
