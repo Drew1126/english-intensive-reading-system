@@ -3,6 +3,7 @@ var zhentiModule = {
     currentYear: null,
     currentText: null,
     isUploading: false,
+    pendingFiles: [],
 
     init: function() {
         var self = this;
@@ -18,7 +19,59 @@ var zhentiModule = {
         document.getElementById("zhentiUploadBtn").addEventListener("click", function() { self.doUpload(); });
         document.getElementById("zhentiUploadCancel").addEventListener("click", function() {
             document.getElementById("zhentiUploadArea").style.display = "none";
-            document.getElementById("zhentiFileInput").value = "";
+            self.pendingFiles = [];
+            self.renderFileList();
+        });
+
+        var pasteZone = document.getElementById("zhentiPasteZone");
+        pasteZone.addEventListener("click", function() { document.getElementById("zhentiFileInput").click(); });
+        document.getElementById("zhentiFileInput").addEventListener("change", function(e) {
+            var files = e.target.files;
+            for (var i = 0; i < files.length; i++) { self.pendingFiles.push(files[i]); }
+            e.target.value = "";
+            self.renderFileList();
+        });
+
+        pasteZone.addEventListener("dragover", function(e) {
+            e.preventDefault();
+            pasteZone.classList.add("dragging");
+        });
+        pasteZone.addEventListener("dragleave", function() { pasteZone.classList.remove("dragging"); });
+        pasteZone.addEventListener("drop", function(e) {
+            e.preventDefault();
+            pasteZone.classList.remove("dragging");
+            var files = e.dataTransfer.files;
+            for (var i = 0; i < files.length; i++) {
+                if (/image\//.test(files[i].type) || /\.(pdf)$/i.test(files[i].name)) {
+                    self.pendingFiles.push(files[i]);
+                }
+            }
+            self.renderFileList();
+        });
+
+        document.addEventListener("paste", function(e) {
+            if (document.getElementById("zhentiUploadArea").style.display === "none") return;
+            var target = e.target;
+            if (target && (target.id === "questionInput" || target.tagName === "INPUT")) return;
+            var items = e.clipboardData && e.clipboardData.items;
+            if (!items) return;
+            var added = false;
+            var pasteIndex = 0;
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                if (item.type && item.type.indexOf("image") === 0) {
+                    var file = item.getAsFile();
+                    if (file) {
+                        var fname = "pasted_" + (Date.now()) + "_" + (++pasteIndex) + ".png";
+                        file = new File([file], fname, { type: file.type });
+                        self.pendingFiles.push(file);
+                        added = true;
+                    }
+                }
+            }
+            if (added) {
+                self.renderFileList();
+            }
         });
     },
 
@@ -90,21 +143,63 @@ var zhentiModule = {
 
     showUpload: function(textNum) {
         this.currentText = textNum;
+        this.pendingFiles = [];
         document.getElementById("zhentiUploadTitle").textContent = this.currentYear + "年 Text " + textNum + " 上传";
         document.getElementById("zhentiUploadArea").style.display = "block";
+        this.renderFileList();
+    },
+
+    renderFileList: function() {
+        var self = this;
+        var listEl = document.getElementById("zhentiFileList");
+        listEl.innerHTML = "";
+        this.pendingFiles.forEach(function(file, idx) {
+            var item = document.createElement("div");
+            item.className = "zhenti-file-item";
+            if (file.type && file.type.indexOf("image") === 0) {
+                var img = document.createElement("img");
+                img.className = "zhenti-file-thumb";
+                img.src = URL.createObjectURL(file);
+                img.onload = function() { URL.revokeObjectURL(this.src); };
+                item.appendChild(img);
+            } else {
+                var icon = document.createElement("span");
+                icon.className = "zhenti-file-icon";
+                icon.textContent = "PDF";
+                item.appendChild(icon);
+            }
+            var name = document.createElement("span");
+            name.className = "zhenti-file-name";
+            name.textContent = file.name || ("图片 " + (idx + 1));
+            item.appendChild(name);
+            var del = document.createElement("button");
+            del.className = "zhenti-file-del";
+            del.textContent = "x";
+            del.addEventListener("click", function(fi) {
+                return function(e) {
+                    e.stopPropagation();
+                    self.pendingFiles.splice(fi, 1);
+                    self.renderFileList();
+                };
+            }(idx));
+            item.appendChild(del);
+            listEl.appendChild(item);
+        });
+        if (this.pendingFiles.length === 0) {
+            listEl.innerHTML = '<div class="zhenti-file-empty">暂未添加文件</div>';
+        }
     },
 
     doUpload: function() {
         var self = this;
-        var input = document.getElementById("zhentiFileInput");
-        var files = input.files;
-        if (!files || files.length === 0) { alert("请先选择文件"); return; }
+        if (this.pendingFiles.length === 0) { alert("请先选择或粘贴文件"); return; }
         if (this.isUploading) return;
         this.isUploading = true;
         document.getElementById("zhentiUploadBtn").disabled = true;
         document.getElementById("zhentiUploadBtn").textContent = "解析中...";
+        var files = this.pendingFiles.slice();
         api.uploadZhenti(this.currentYear, this.currentText, files).then(function(data) {
-            input.value = "";
+            self.pendingFiles = [];
             document.getElementById("zhentiUploadArea").style.display = "none";
             articleModule.loadZhenti(self.currentYear, self.currentText);
             self.loadYears();

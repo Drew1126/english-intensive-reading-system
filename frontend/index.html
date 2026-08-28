@@ -106,8 +106,12 @@
                         <div class="zhenti-text-grid" id="zhentiTextGrid"></div>
                         <div class="zhenti-upload-area" id="zhentiUploadArea" style="display:none">
                             <div class="zhenti-upload-title" id="zhentiUploadTitle"></div>
-                            <input type="file" id="zhentiFileInput" accept=".pdf,.png,.jpg,.jpeg,.gif,.bmp,.webp" multiple>
-                            <div class="zhenti-upload-hint">支持 PDF，或图片（可多张连续选择）</div>
+                            <div class="zhenti-paste-zone" id="zhentiPasteZone">
+                                <p>点击选择文件，或将图片复制后 <b>Ctrl+V</b> 粘贴到这里</p>
+                            </div>
+                            <input type="file" id="zhentiFileInput" accept=".pdf,.png,.jpg,.jpeg,.gif,.bmp,.webp" multiple style="display:none">
+                            <div class="zhenti-upload-hint">支持 PDF，或图片（可多张连续选择 / 连续粘贴）</div>
+                            <div class="zhenti-file-list" id="zhentiFileList"></div>
                             <div class="zhenti-upload-actions">
                                 <button id="zhentiUploadBtn">上传</button>
                                 <button class="zhenti-cancel" id="zhentiUploadCancel">取消</button>

@@ -342,6 +342,100 @@ body {
     margin-bottom: 10px;
 }
 
+.zhenti-paste-zone {
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.15s;
+    background: var(--bg-secondary);
+}
+
+.zhenti-paste-zone:hover {
+    border-color: var(--accent-primary);
+    color: var(--text-secondary);
+}
+
+.zhenti-paste-zone.dragging {
+    border-color: var(--accent-primary);
+    background: var(--selected-bg);
+    color: var(--accent-primary);
+}
+
+.zhenti-file-list {
+    margin-bottom: 10px;
+}
+
+.zhenti-file-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 6px;
+}
+
+.zhenti-file-thumb {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.zhenti-file-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    background: #dc2626;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.zhenti-file-name {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.zhenti-file-del {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.zhenti-file-del:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.zhenti-file-empty {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 6px;
+}
+
 .zhenti-upload-actions {
     display: flex;
     gap: 8px;
