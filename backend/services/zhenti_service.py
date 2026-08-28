@@ -1,5 +1,7 @@
 import re
 import os
+import json
+import asyncio
 import logging
 from datetime import date
 from pathlib import Path
@@ -8,7 +10,7 @@ from typing import Optional
 from pdfminer.high_level import extract_text
 from storage import read_json, write_json
 from config import DATA_DIR, ARTICLES_DIR
-from services.pdf_service import _translate_paragraph
+from services.pdf_service import _translate_paragraph, _call_llm
 
 logger = logging.getLogger(__name__)
 
@@ -16,11 +18,40 @@ ZHENTI_DIR = DATA_DIR / "zhenti"
 ZHENTI_YEARS = list(range(2000, 2027))
 ZHENTI_TEXTS = [1, 2, 3, 4]
 
-_TEXT_PATTERNS = [
-    r"Text\s*(\d+)",
-    r"Passage\s*(\d+)",
-    r"Section\s*II?\s*Part\s*A?\s*Text\s*(\d+)",
-]
+_TRANSLATE_SYSTEM = """You are an expert at processing English passages for the Chinese graduate entrance exam (考研英语阅读).
+
+The passage you receive was extracted from scanned images or PDFs by OCR, so it may contain artificial line breaks or image boundaries in the MIDDLE of a sentence. Your tasks:
+
+1. Split the text into individual sentences accurately.
+2. CRITICAL: when text before and after a line break / image boundary together form ONE grammatical sentence, merge them into a SINGLE sentence. Only treat them as two sentences if each side is grammatically complete on its own.
+3. Preserve the passage's original paragraph structure: assign each sentence a paragraph number (starting at 0).
+4. Translate each sentence accurately into Chinese.
+
+Output ONLY a valid JSON array. Each element: {"en": "English sentence", "zh": "Chinese translation", "para": 0}
+The number of elements must exactly match the number of sentences."""
+
+_TRANSLATE_USER = """Return ONLY a valid JSON array. No other text. Each element: {{"en": "English sentence", "zh": "Chinese translation", "para": 0}}
+
+Passage (may contain artificial line breaks inside sentences caused by scanning):
+{text}"""
+
+
+async def _translate_passage(text: str) -> Optional[list[dict]]:
+    """One LLM call: sentence split (handling cross-image breaks) + paragraph grouping + translation."""
+    prompt = _TRANSLATE_USER.format(text=text[:8000])
+    for attempt in range(3):
+        try:
+            content = await _call_llm(_TRANSLATE_SYSTEM, prompt)
+            if content.startswith("```"):
+                content = content.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+            data = json.loads(content)
+            if isinstance(data, list) and all("en" in item and "zh" in item for item in data):
+                return data
+            logger.warning(f"Zhenti LLM invalid format (attempt {attempt + 1}): {content[:100]}")
+        except Exception as e:
+            logger.warning(f"Zhenti LLM failed (attempt {attempt + 1}): {e}")
+            await asyncio.sleep(1)
+    return None
 
 
 def _zhenti_dir(year: int) -> Path:
@@ -109,11 +140,11 @@ async def process_upload(year: int, text_num: int, file_paths: list[str]) -> dic
         else:
             raise RuntimeError(f"Unsupported file type: {ext}")
 
-    full_text = "\n\n".join(texts)
+    # Join with single newline so a sentence split across two images
+    # stays contiguous for the LLM to correctly merge.
+    full_text = "\n".join(t.strip() for t in texts if t.strip())
     if not full_text.strip():
         raise RuntimeError("No text extracted from files")
-
-    paragraphs = _split_raw_paragraphs(full_text)
 
     article = {
         "title": f"{year}年考研英语阅读 Text {text_num}",
@@ -124,19 +155,45 @@ async def process_upload(year: int, text_num: int, file_paths: list[str]) -> dic
         "paragraphs": [],
     }
 
-    for i, para_text in enumerate(paragraphs):
-        result = await _translate_paragraph(para_text)
-        if result:
+    result = await _translate_passage(full_text)
+
+    if result:
+        paragraphs = []
+        cur_para = None
+        cur_en = []
+        cur_zh = []
+
+        def flush():
+            if cur_en:
+                paragraphs.append({
+                    "index": len(paragraphs),
+                    "sentences": cur_en[:],
+                    "translations": cur_zh[:],
+                })
+
+        for item in result:
+            pnum = item.get("para", 0)
+            if cur_para is None:
+                cur_para = pnum
+            if pnum != cur_para:
+                flush()
+                cur_en = []
+                cur_zh = []
+                cur_para = pnum
+            cur_en.append(item["en"])
+            cur_zh.append(item["zh"])
+        flush()
+
+        article["paragraphs"] = paragraphs
+    else:
+        # Fallback: per-paragraph split + translate (old behavior)
+        paragraphs = _split_raw_paragraphs(full_text)
+        for i, para_text in enumerate(paragraphs):
+            r = await _translate_paragraph(para_text)
             article["paragraphs"].append({
                 "index": i,
-                "sentences": [item["en"] for item in result],
-                "translations": [item["zh"] for item in result],
-            })
-        else:
-            article["paragraphs"].append({
-                "index": i,
-                "sentences": [para_text],
-                "translations": [""],
+                "sentences": [item["en"] for item in r] if r else [para_text],
+                "translations": [item["zh"] for item in r] if r else [""],
             })
 
     total_wc = sum(len(s.split()) for p in article["paragraphs"] for s in p["sentences"])
