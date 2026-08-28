@@ -139,8 +139,11 @@ def _split_raw_paragraphs(text: str) -> list[str]:
     return paras
 
 
-_NUM_ONLY_RE = re.compile(r'^(\d{1,2})\.\s*$')
-_NUM_PREFIX_RE = re.compile(r'^(\d{1,2})\.\s+(.*)$')
+# OCR often misreads the period in "21." as "z"/"l"/"I" (e.g. "21z"),
+# so tolerate trailing noise characters after the question number.
+_NUM_NOISE = r'[\s\.\)\],zlI]*'
+_NUM_ONLY_RE = re.compile(r'^(\d{1,2})' + _NUM_NOISE + r'$')
+_NUM_PREFIX_RE = re.compile(r'^(\d{1,2})' + r'[\s\.\)\],zlI]+' + r'\s*(.*)$')
 _OPTION_RE = re.compile(r'^\s*[A-Da-d][\.\)、]\s*')
 
 
