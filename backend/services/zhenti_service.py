@@ -139,6 +139,91 @@ def _split_raw_paragraphs(text: str) -> list[str]:
     return paras
 
 
+_QUESTION_NUM_RE = re.compile(r'^\s*(\d{1,2})\.\s*')
+_OPTION_RE = re.compile(r'^\s*[A-Da-d][\.\)、]\s*')
+
+
+def _split_passage_and_questions(text: str) -> tuple[str, list[str]]:
+    """Split OCR text into (passage, questions[]).
+
+    Questions are detected by a question number line (e.g. '36.') followed
+    within a few lines by an option line (A. B. C. D.).
+    """
+    lines = text.split("\n")
+
+    question_start = None
+    for i, line in enumerate(lines):
+        if not _QUESTION_NUM_RE.match(line):
+            continue
+        for j in range(i + 1, min(i + 15, len(lines))):
+            if _OPTION_RE.match(lines[j]):
+                question_start = i
+                break
+        if question_start is not None:
+            break
+
+    if question_start is None:
+        return text, []
+
+    passage = "\n".join(lines[:question_start])
+    q_text = "\n".join(lines[question_start:])
+
+    questions = []
+    current = []
+    for line in q_text.split("\n"):
+        if _QUESTION_NUM_RE.match(line):
+            if current:
+                questions.append(_clean_question("\n".join(current)))
+            current = [line]
+        elif current:
+            current.append(line)
+    if current:
+        questions.append(_clean_question("\n".join(current)))
+
+    return passage, questions
+
+
+def _clean_question(text: str) -> str:
+    lines = [l.rstrip() for l in text.strip().split("\n")]
+    lines = [l for l in lines if l.strip()]
+    out = []
+    for l in lines:
+        l = re.sub(r'^(\d{1,2})\.(?=\S)', r'\1. ', l)
+        l = re.sub(r'^\s*([A-Da-d])[\.\)、]\s*', lambda m: m.group(1).upper() + ". ", l)
+        out.append(l)
+    return "\n".join(out)
+
+
+_QUESTION_SYSTEM = """You are a translator for the Chinese graduate entrance exam (考研英语). Translate the given English multiple-choice question into Chinese.
+
+Rules:
+- KEEP the question number (e.g. 36.) at the beginning of the translation.
+- KEEP each option label (A. B. C. D.) and put each option on its OWN line.
+- Translate the stem and each option accurately.
+- Output ONLY the translated text, no extra commentary."""
+
+_QUESTION_USER = """Translate this multiple-choice question into Chinese. Keep the question number, and keep each option on its own line:
+
+{text}"""
+
+
+async def _translate_question(text: str) -> str:
+    prompt = _QUESTION_USER.format(text=text)
+    for attempt in range(3):
+        try:
+            content = await _call_llm(_QUESTION_SYSTEM, prompt)
+            content = content.strip()
+            if content.startswith("```"):
+                content = content.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+            if content:
+                return content
+            logger.warning(f"Question translate empty (attempt {attempt + 1})")
+        except Exception as e:
+            logger.warning(f"Question translate failed (attempt {attempt + 1}): {e}")
+            await asyncio.sleep(1)
+    return ""
+
+
 async def process_upload(year: int, text_num: int, file_paths: list[str]) -> dict:
     """Process uploaded files (PDF or images) into a translated article."""
     if not file_paths:
@@ -169,46 +254,56 @@ async def process_upload(year: int, text_num: int, file_paths: list[str]) -> dic
         "paragraphs": [],
     }
 
-    result = await _translate_passage(full_text)
+    # Split out multiple-choice questions first (keep them intact with number + options).
+    passage_text, questions = _split_passage_and_questions(full_text)
 
-    if result:
-        paragraphs = []
-        cur_para = None
-        cur_en = []
-        cur_zh = []
+    # ── Passage: sentence split + translation (one LLM call) ──
+    if passage_text.strip():
+        result = await _translate_passage(passage_text)
+        if result:
+            cur_para = None
+            cur_en = []
+            cur_zh = []
 
-        def flush():
-            if cur_en:
-                paragraphs.append({
-                    "index": len(paragraphs),
-                    "sentences": cur_en[:],
-                    "translations": cur_zh[:],
+            def flush():
+                if cur_en:
+                    article["paragraphs"].append({
+                        "index": len(article["paragraphs"]),
+                        "sentences": cur_en[:],
+                        "translations": cur_zh[:],
+                    })
+
+            for item in result:
+                pnum = item.get("para", 0)
+                if cur_para is None:
+                    cur_para = pnum
+                if pnum != cur_para:
+                    flush()
+                    cur_en = []
+                    cur_zh = []
+                    cur_para = pnum
+                cur_en.append(item["en"])
+                cur_zh.append(item["zh"])
+            flush()
+        else:
+            # Fallback: per-paragraph split + translate (old behavior)
+            paragraphs = _split_raw_paragraphs(passage_text)
+            for i, para_text in enumerate(paragraphs):
+                r = await _translate_paragraph(para_text)
+                article["paragraphs"].append({
+                    "index": i,
+                    "sentences": [item["en"] for item in r] if r else [para_text],
+                    "translations": [item["zh"] for item in r] if r else [""],
                 })
 
-        for item in result:
-            pnum = item.get("para", 0)
-            if cur_para is None:
-                cur_para = pnum
-            if pnum != cur_para:
-                flush()
-                cur_en = []
-                cur_zh = []
-                cur_para = pnum
-            cur_en.append(item["en"])
-            cur_zh.append(item["zh"])
-        flush()
-
-        article["paragraphs"] = paragraphs
-    else:
-        # Fallback: per-paragraph split + translate (old behavior)
-        paragraphs = _split_raw_paragraphs(full_text)
-        for i, para_text in enumerate(paragraphs):
-            r = await _translate_paragraph(para_text)
-            article["paragraphs"].append({
-                "index": i,
-                "sentences": [item["en"] for item in r] if r else [para_text],
-                "translations": [item["zh"] for item in r] if r else [""],
-            })
+    # ── Questions: keep original text (number + options on separate lines), translate as unit ──
+    for q in questions:
+        zh = await _translate_question(q)
+        article["paragraphs"].append({
+            "index": len(article["paragraphs"]),
+            "sentences": [q],
+            "translations": [zh],
+        })
 
     total_wc = sum(len(s.split()) for p in article["paragraphs"] for s in p["sentences"])
     article["word_count"] = total_wc
