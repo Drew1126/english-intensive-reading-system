@@ -139,24 +139,26 @@ def _split_raw_paragraphs(text: str) -> list[str]:
     return paras
 
 
-_QUESTION_NUM_RE = re.compile(r'^\s*(\d{1,2})\.\s*')
+_NUM_ONLY_RE = re.compile(r'^(\d{1,2})\.\s*$')
+_NUM_PREFIX_RE = re.compile(r'^(\d{1,2})\.\s+(.*)$')
 _OPTION_RE = re.compile(r'^\s*[A-Da-d][\.\)、]\s*')
 
 
 def _split_passage_and_questions(text: str) -> tuple[str, list[str]]:
     """Split OCR text into (passage, questions[]).
 
-    Questions are detected by a question number line (e.g. '36.') followed
-    within a few lines by an option line (A. B. C. D.).
+    The questions section starts at the first question-number line or stem
+    that is followed within a few lines by an option line (A. B. C. D.).
     """
     lines = text.split("\n")
 
     question_start = None
     for i, line in enumerate(lines):
-        if not _QUESTION_NUM_RE.match(line):
+        s = line.strip()
+        if not (_NUM_ONLY_RE.match(s) or _NUM_PREFIX_RE.match(s)):
             continue
-        for j in range(i + 1, min(i + 15, len(lines))):
-            if _OPTION_RE.match(lines[j]):
+        for j in range(i + 1, min(i + 20, len(lines))):
+            if _OPTION_RE.match(lines[j].strip()):
                 question_start = i
                 break
         if question_start is not None:
@@ -167,31 +169,77 @@ def _split_passage_and_questions(text: str) -> tuple[str, list[str]]:
 
     passage = "\n".join(lines[:question_start])
     q_text = "\n".join(lines[question_start:])
+    return passage, _extract_questions(q_text)
+
+
+def _extract_questions(text: str) -> list[str]:
+    """Group question text into individual questions.
+
+    Each question = stem line(s) + 4 option lines (A./B./C./D.).
+    OCR often puts all question numbers ("36." "37." ...) as isolated lines
+    BEFORE the actual stems; those are collected separately and re-attached
+    in order to the detected questions.
+    """
+    nums = []
+    clean = []
+    for line in text.split("\n"):
+        s = line.strip()
+        if not s:
+            continue
+        m = _NUM_ONLY_RE.match(s)
+        if m:
+            nums.append(int(m.group(1)))
+            continue
+        m = _NUM_PREFIX_RE.match(s)
+        if m:
+            nums.append(int(m.group(1)))
+            clean.append(m.group(2))
+            continue
+        clean.append(s)
 
     questions = []
-    current = []
-    for line in q_text.split("\n"):
-        if _QUESTION_NUM_RE.match(line):
-            if current:
-                questions.append(_clean_question("\n".join(current)))
-            current = [line]
-        elif current:
-            current.append(line)
-    if current:
-        questions.append(_clean_question("\n".join(current)))
+    cur = []
+    option_count = 0
+    for s in clean:
+        if _OPTION_RE.match(s):
+            cur.append(s)
+            option_count += 1
+            if option_count >= 4:
+                questions.append(cur)
+                cur = []
+                option_count = 0
+        else:
+            if option_count > 0:
+                if cur:
+                    questions.append(cur)
+                cur = [s]
+                option_count = 0
+            else:
+                cur.append(s)
+    if cur:
+        questions.append(cur)
 
-    return passage, questions
+    result = []
+    for i, q in enumerate(questions):
+        if i < len(nums):
+            num = nums[i]
+        elif nums:
+            num = nums[-1] + (i - len(nums) + 1)
+        else:
+            num = None
+        qtext = "\n".join(_clean_question_lines(q))
+        if num is not None:
+            qtext = f"{num}. " + qtext
+        result.append(qtext)
+    return result
 
 
-def _clean_question(text: str) -> str:
-    lines = [l.rstrip() for l in text.strip().split("\n")]
-    lines = [l for l in lines if l.strip()]
+def _clean_question_lines(lines: list[str]) -> list[str]:
     out = []
     for l in lines:
-        l = re.sub(r'^(\d{1,2})\.(?=\S)', r'\1. ', l)
         l = re.sub(r'^\s*([A-Da-d])[\.\)、]\s*', lambda m: m.group(1).upper() + ". ", l)
         out.append(l)
-    return "\n".join(out)
+    return out
 
 
 _QUESTION_SYSTEM = """You are a translator for the Chinese graduate entrance exam (考研英语). Translate the given English multiple-choice question into Chinese.
