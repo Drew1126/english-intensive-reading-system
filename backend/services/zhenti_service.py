@@ -18,26 +18,27 @@ ZHENTI_DIR = DATA_DIR / "zhenti"
 ZHENTI_YEARS = list(range(2000, 2027))
 ZHENTI_TEXTS = [1, 2, 3, 4]
 
-_TRANSLATE_SYSTEM = """You are an expert at processing English exam passages for the Chinese graduate entrance exam (考研英语阅读).
+_TRANSLATE_SYSTEM = """You are processing a single English reading passage for the Chinese graduate entrance exam (考研英语阅读).
 
-The text you receive was extracted from scanned images or PDFs by OCR. It contains TWO parts:
-1. A reading passage (article text)
-2. Multiple-choice questions that follow the passage (each question has a stem plus options A/B/C/D)
+The text you receive is a READING PASSAGE ONLY. It does NOT contain any questions.
 
-Your tasks:
+Your ONLY task is:
+1. Split the passage into individual sentences accurately.
+2. When text before and after a line break / image boundary together form ONE grammatical sentence, merge them into a SINGLE sentence. Only treat them as two sentences if each side is grammatically complete on its own.
+3. Assign each sentence its paragraph number (starting at 0).
+4. Translate each sentence into Chinese.
 
-1. Split the reading passage into individual sentences accurately.
-2. CRITICAL: when text before and after a line break / image boundary together form ONE grammatical sentence, merge them into a SINGLE sentence. Only treat them as two sentences if each side is grammatically complete on its own.
-3. KEEP ALL multiple-choice questions — do NOT drop them. Each question is ONE unit: combine its stem and options (A. ... B. ... C. ... D. ...) into a single "en" value.
-4. Paragraph numbers: passage sentences get para numbers starting at 0. After the last passage paragraph, each question gets its OWN new para number (continuing 1 by 1).
-5. Translate each passage sentence and each question into Chinese.
+STRICT RULES:
+- Output ONLY sentences that appear VERBATIM in the passage text provided.
+- NEVER generate, add, invent, or fabricate any multiple-choice questions, question stems, options, titles, or any content NOT present in the passage.
+- The passage contains ONLY the article text. There are NO questions after it.
+- Do NOT append anything after the last passage sentence.
 
-Output ONLY a valid JSON array. Each element: {"en": "English sentence or question", "zh": "Chinese translation", "para": 0}
-The number of elements must exactly match the number of sentences plus questions."""
+Output ONLY a valid JSON array. Each element: {"en": "English sentence", "zh": "Chinese translation", "para": 0}"""
 
-_TRANSLATE_USER = """Return ONLY a valid JSON array. No other text. Each element: {{"en": "English sentence or question", "zh": "Chinese translation", "para": 0}}
+_TRANSLATE_USER = """Return ONLY a valid JSON array. No other text. Each element: {{"en": "English sentence", "zh": "Chinese translation", "para": 0}}
 
-Text (may contain artificial line breaks inside sentences caused by scanning):
+Reading passage (may contain artificial line breaks inside sentences caused by scanning). Output sentences ONLY from this passage:
 {text}"""
 
 
@@ -139,11 +140,11 @@ def _split_raw_paragraphs(text: str) -> list[str]:
     return paras
 
 
-# OCR often misreads the period in "21." as "z"/"l"/"I" (e.g. "21z"),
-# so tolerate trailing noise characters after the question number.
-_NUM_NOISE = r'[\s\.\)\],zlI]*'
+# OCR often reads the question number with a colon (e.g. "21:") or misreads
+# the period as "z"/"l"/"I" (e.g. "21z"), so tolerate trailing noise characters.
+_NUM_NOISE = r'[\s\.\)\],zlI:]*'
 _NUM_ONLY_RE = re.compile(r'^(\d{1,2})' + _NUM_NOISE + r'$')
-_NUM_PREFIX_RE = re.compile(r'^(\d{1,2})' + r'[\s\.\)\],zlI]+' + r'\s*(.*)$')
+_NUM_PREFIX_RE = re.compile(r'^(\d{1,2})' + r'[\s\.\)\],zlI:]+' + r'\s*(.*)$')
 _OPTION_RE = re.compile(r'^\s*[A-Da-d][\.\)、]\s*')
 
 
@@ -235,22 +236,7 @@ def _extract_questions(text: str) -> list[str]:
             qtext = f"{num}. " + qtext
         result.append(qtext)
 
-    return _drop_stray_title_questions(result)
-
-
-def _drop_stray_title_questions(questions: list[str]) -> list[str]:
-    """A 考研 text has at most ONE 'best title' question, always the LAST one.
-
-    OCR sometimes picks up a stray 'best title' question from an adjacent
-    text (e.g. the previous text's last question). If more than one 'best
-    title' question is detected, keep only the last occurrence.
-    """
-    title_idx = [i for i, q in enumerate(questions)
-                 if re.search(r'best title|title for the text', q, re.IGNORECASE)]
-    if len(title_idx) <= 1:
-        return questions
-    drop = set(title_idx[:-1])
-    return [questions[i] for i in range(len(questions)) if i not in drop]
+    return result
 
 
 def _clean_question_lines(lines: list[str]) -> list[str]:
