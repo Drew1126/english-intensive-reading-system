@@ -167,7 +167,13 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     document.querySelectorAll(".quick-btn").forEach(function(btn) {
-        btn.addEventListener("click", function() { agentModule.sendQuestion(btn.dataset.question); });
+        btn.addEventListener("click", function() {
+            if (btn.dataset.nofocus === "1") {
+                agentModule.selectedFocusWord = "";
+                articleModule.clearWordHighlight();
+            }
+            agentModule.sendQuestion(btn.dataset.question);
+        });
     });
 
     articleModule.loadCurrent();
