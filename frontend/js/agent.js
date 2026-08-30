@@ -70,7 +70,7 @@ var agentModule = {
         var self = this;
         var fullAnswer = "";
         var streamFinished = false;
-        var source = api.askAgent(sentence, question, articleId, focus);
+        var source = api.askAgent(sentence, question, articleId, focus, (typeof getName === "function") ? getName() : "");
         var timeout = setTimeout(function() {
             if (!streamFinished) {
                 streamFinished = true;

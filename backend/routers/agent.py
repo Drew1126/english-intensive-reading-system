@@ -6,8 +6,8 @@ router = APIRouter(prefix="/data/agent", tags=["agent"])
 
 
 @router.get("/ask")
-async def ask_agent(sentence: str, question: str, article_id: str = "", focus: str = ""):
+async def ask_agent(sentence: str, question: str, article_id: str = "", focus: str = "", user: str = ""):
     return StreamingResponse(
-        stream_agent_response(question, sentence, article_id, focus),
+        stream_agent_response(question, sentence, article_id, focus, user),
         media_type="text/event-stream"
     )

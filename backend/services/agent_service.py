@@ -5,7 +5,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from config import LLM_API_KEY, LLM_MODEL, LLM_API_BASE, CHAT_HISTORY_DIR
 from storage import read_json, write_json
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import uuid
 
@@ -43,6 +43,16 @@ SYSTEM_PROMPT = """你是考研英语辅导专家。
 绝对禁止输出含 "---" 的表格分隔行。
 
 ## 首要原则：只回答用户真正问的那件事，不主动扩展。
+
+## 规则 0 · 自由追问（最先判断，优先级高于一切卡片规则）
+
+触发条件：用户问题**不含**以下任一模板请求关键词——
+释义、词义、什么意思、怎么用、是什么词、句子结构、括号标注、逐层划分、翻译、译成、直译、意译、结构、成分、语法、主语、谓语、宾语、从句、倒装、虚拟、全面分析、详细解析
+
+若满足触发条件，则该问题视为自由追问/澄清/闲聊（例如"那坚果呢""为什么""能再解释一下吗""还有别的意思吗"）。此时：
+- 直接结合【对话上下文】和【当前句子】用自然的中文对话方式回答
+- **禁止套用任何卡片模板**
+- 不需要分点编号或固定结构，简洁自然即可
 
 ## 意图识别规则（按优先级匹配，命中第一条即停止）
 
@@ -126,10 +136,37 @@ _prompt = ChatPromptTemplate.from_messages([
         "文章背景：{article_context}\n\n"
         "选中的句子：{sentence}\n\n"
         "用户圈定的词或短语（空表示未圈定）：{focus}\n\n"
+        "最近的对话上下文（用户之前的提问与你的回答，空表示没有）：\n{chat_history}\n\n"
         "用户问题：{input}"
     )),
     ("placeholder", "{agent_scratchpad}")
 ])
+
+
+def _load_recent_history(article_id: str, user: str, max_turns: int = 4) -> str:
+    """Load recent Q&A turns for the same article + user to use as context."""
+    if not article_id or not user:
+        return ""
+    records = []
+    for d in range(3):
+        day = (datetime.now() - timedelta(days=d)).strftime("%Y-%m-%d")
+        f = CHAT_HISTORY_DIR / f"{day}.json"
+        if f.exists():
+            day_records = read_json(str(f), [])
+            for r in day_records:
+                if r.get("article_id") == article_id and r.get("user") == user:
+                    records.append(r)
+    if not records:
+        return ""
+    lines = []
+    for r in records[-max_turns * 2:]:
+        q = (r.get("question") or "").strip()
+        a = (r.get("answer") or "").strip()
+        if q:
+            lines.append(f"用户：{q}")
+        if a:
+            lines.append(f"助手：{a}")
+    return "\n".join(lines)
 
 
 # ── Agent 构建 ───────────────────────────────────────────────────────────────
@@ -157,8 +194,10 @@ async def stream_agent_response(
     sentence: str,
     article_id: str = "",
     focus: str = "",
+    user: str = "",
 ) -> AsyncGenerator[str, None]:
     executor = build_agent_executor()
+    chat_history = _load_recent_history(article_id, user)
     answer_parts = []
     async for event in executor.astream_events(
         {
@@ -166,6 +205,7 @@ async def stream_agent_response(
             "sentence": sentence,
             "article_context": article_id,
             "focus": focus,
+            "chat_history": chat_history,
         },
         version="v2"
     ):
@@ -183,6 +223,7 @@ async def stream_agent_response(
         "focus": focus,
         "question": question,
         "answer": "".join(answer_parts),
+        "user": user,
         "created_at": datetime.now().isoformat()
     }
     today = datetime.now().strftime("%Y-%m-%d")
