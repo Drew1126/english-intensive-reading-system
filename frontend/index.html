@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>外刊阅读</title>
-    <link rel="stylesheet" href="css/main.css?v=2">
-    <link rel="stylesheet" href="css/article.css?v=3">
+    <link rel="stylesheet" href="css/main.css?v=3">
+    <link rel="stylesheet" href="css/article.css?v=4">
     <link rel="stylesheet" href="css/panel.css?v=2">
 </head>
 <body>
@@ -49,6 +49,7 @@
                 <div class="article-header">
                     <span class="source-tag" id="sourceTag"></span>
                     <span class="word-count-tag" id="wordCountTag"></span>
+                    <button class="btn-edit-article" id="btnEditArticle" style="display:none">编辑</button>
                 </div>
                 <h2 class="article-title" id="articleTitle"></h2>
                 <div class="article-body" id="articleBody">
@@ -131,6 +132,16 @@
             <input type="file" id="avatarFileInput" accept="image/*">
             <button id="avatarUploadBtn">上传</button>
             <button class="avatar-cancel" id="avatarCancelBtn">取消</button>
+        </div>
+    </div>
+
+    <div class="edit-confirm-overlay" id="editConfirmOverlay" style="display:none">
+        <div class="edit-confirm-modal">
+            <p>是否更新翻译？</p>
+            <div class="edit-confirm-actions">
+                <button id="editConfirmYes">是</button>
+                <button id="editConfirmNo">否</button>
+            </div>
         </div>
     </div>
 

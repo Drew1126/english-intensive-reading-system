@@ -63,6 +63,16 @@ var api = {
     getCheckinStatus: function(articleId) {
         return fetch(BASE + "/auth/checkin-status/" + articleId).then(function(res) { return res.json(); });
     },
+    updateArticle: function(id, paragraphs, retranslate) {
+        return fetch(BASE + "/article/update", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: id, paragraphs: paragraphs, retranslate: !!retranslate })
+        }).then(function(res) {
+            if (!res.ok) { return res.json().then(function(e) { throw new Error(e.detail || "保存失败"); }); }
+            return res.json();
+        });
+    },
     uploadAvatar: function(token, file) {
         var formData = new FormData();
         formData.append("file", file);

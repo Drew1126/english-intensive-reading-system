@@ -3,11 +3,14 @@ var articleModule = {
     selectedSentenceIdx: null,
     isLoading: false,
     focusWords: [],
+    editing: false,
+    _pendingEdit: null,
 
     loadCurrent: function() {
         var self = this;
         if (this.isLoading) return;
         this.isLoading = true;
+        this._resetView();
         document.getElementById("articleBody").innerHTML = '<div class="loading">加载中...</div>';
         api.getCurrentArticle().then(function(data) {
             if (!data.article) {
@@ -140,6 +143,10 @@ var articleModule = {
     _resetView: function() {
         this.selectedSentenceIdx = null;
         window.__showTrans = false;
+        this.editing = false;
+        this._pendingEdit = null;
+        var editBtn = document.getElementById("btnEditArticle");
+        if (editBtn) { editBtn.disabled = false; editBtn.textContent = "编辑"; }
         var toggle = document.getElementById("sentenceTranslationToggle");
         if (toggle) toggle.checked = false;
         agentModule.clearFocus();
@@ -160,6 +167,7 @@ var articleModule = {
         document.getElementById("sourceTag").textContent = article.source;
         document.getElementById("wordCountTag").textContent = article.word_count + " 词";
         document.getElementById("articleTitle").textContent = article.title;
+        document.getElementById("btnEditArticle").style.display = "inline-block";
         var bodyEl = document.getElementById("articleBody");
         var container = document.createElement("div");
         article.paragraphs.forEach(function(para, pIdx) {
@@ -183,6 +191,67 @@ var articleModule = {
         if (typeof updateCheckinArea === "function") { updateCheckinArea(); }
     },
 
+    // ── 编辑模式 ──
+    enterEditMode: function() {
+        if (!this.currentArticle) return;
+        this.editing = true;
+        this._pendingEdit = null;
+        var btn = document.getElementById("btnEditArticle");
+        btn.textContent = "确认";
+        document.querySelectorAll("#articleBody .sentence").forEach(function(span) {
+            span.contentEditable = "true";
+            span.classList.add("editing");
+        });
+        document.querySelectorAll("#articleBody .sentence.selected").forEach(function(s) { s.classList.remove("selected"); });
+        agentModule.clearFocus();
+        if (this.focusWords) { this.focusWords = []; this.clearWordHighlight(); }
+        this.selectedSentenceIdx = null;
+    },
+
+    exitEditMode: function() {
+        this.editing = false;
+        this._pendingEdit = null;
+        var btn = document.getElementById("btnEditArticle");
+        btn.disabled = false;
+        btn.textContent = "编辑";
+    },
+
+    confirmEdit: function() {
+        var self = this;
+        if (!this.currentArticle || !this.currentArticle.id) return;
+        var paragraphs = [];
+        document.querySelectorAll("#articleBody .paragraph").forEach(function(pEl) {
+            var sentences = [];
+            pEl.querySelectorAll(".sentence").forEach(function(span) {
+                var t = span.textContent.replace(/\s+$/, "");
+                if (t) sentences.push(t);
+            });
+            paragraphs.push({ index: parseInt(pEl.dataset.paraIndex, 10), sentences: sentences });
+        });
+        this._pendingEdit = paragraphs;
+        document.getElementById("editConfirmOverlay").style.display = "flex";
+    },
+
+    saveEdit: function(paragraphs, retranslate) {
+        var self = this;
+        var art = this.currentArticle;
+        if (!art || !art.id) return;
+        var btn = document.getElementById("btnEditArticle");
+        btn.disabled = true;
+        btn.textContent = "保存中...";
+        api.updateArticle(art.id, paragraphs, retranslate).then(function(data) {
+            self.currentArticle = data.article;
+            self._buildTranslations();
+            self.editing = false;
+            self.renderArticle(data.article);
+            self.exitEditMode();
+        }).catch(function(err) {
+            alert("保存失败: " + err.message);
+            btn.disabled = false;
+            btn.textContent = "确认";
+        });
+    },
+
     setupArticleInteractions: function(bodyEl) {
         var self = this;
         this.focusWords = [];
@@ -190,6 +259,7 @@ var articleModule = {
         var pendingClickInfo = null;
 
         bodyEl.addEventListener("click", function(e) {
+            if (self.editing) return;
             var sentenceEl = e.target.closest(".sentence");
             if (!sentenceEl) return;
             var wordInfo = self.getWordInfoAtPoint(e.clientX, e.clientY);
@@ -217,6 +287,7 @@ var articleModule = {
         });
 
         bodyEl.addEventListener("dblclick", function(e) {
+            if (self.editing) return;
             clearTimeout(clickTimer);
             pendingClickInfo = null;
             var sentenceSpan = e.target.closest(".sentence");
@@ -234,6 +305,9 @@ var articleModule = {
         });
 
         bodyEl.addEventListener("contextmenu", function(e) { e.preventDefault(); });
+        bodyEl.addEventListener("keydown", function(e) {
+            if (self.editing && e.key === "Enter") { e.preventDefault(); }
+        });
     },
 
     getWordInfoAtPoint: function(x, y) {

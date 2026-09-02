@@ -146,6 +146,28 @@ document.addEventListener("DOMContentLoaded", function() {
         if (e.target === this) { this.style.display = "none"; }
     });
 
+    // Edit article
+    document.getElementById("btnEditArticle").addEventListener("click", function() {
+        if (articleModule.editing) {
+            articleModule.confirmEdit();
+        } else {
+            articleModule.enterEditMode();
+        }
+    });
+    document.getElementById("editConfirmYes").addEventListener("click", function() {
+        var p = articleModule._pendingEdit;
+        document.getElementById("editConfirmOverlay").style.display = "none";
+        if (p) { articleModule.saveEdit(p, true); }
+    });
+    document.getElementById("editConfirmNo").addEventListener("click", function() {
+        var p = articleModule._pendingEdit;
+        document.getElementById("editConfirmOverlay").style.display = "none";
+        if (p) { articleModule.saveEdit(p, false); }
+    });
+    document.getElementById("editConfirmOverlay").addEventListener("click", function(e) {
+        if (e.target === this) { this.style.display = "none"; }
+    });
+
     // Translation toggle
     document.getElementById("sentenceTranslationToggle").addEventListener("change", function(e) {
         window.__showTrans = e.target.checked;

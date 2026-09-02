@@ -1,6 +1,8 @@
 import os
 import tempfile
+from typing import List
 from fastapi import APIRouter, HTTPException, UploadFile, File, Query
+from pydantic import BaseModel
 from services.pdf_service import process_uploaded_pdf, get_latest_article, get_article_by_index, get_article_list, delete_article
 from services.auth_service import get_user_by_token, get_user_checkins
 import logging
@@ -10,6 +12,30 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/data/article", tags=["article"])
 
 ALLOWED_EXTENSIONS = {".pdf"}
+
+
+class ParagraphUpdate(BaseModel):
+    index: int
+    sentences: List[str]
+
+
+class ArticleUpdateRequest(BaseModel):
+    id: str
+    paragraphs: List[ParagraphUpdate]
+    retranslate: bool = False
+
+
+@router.post("/update")
+async def update_article(req: ArticleUpdateRequest):
+    from services.edit_service import update_article as do_update
+    try:
+        article = await do_update(req.id, req.paragraphs, req.retranslate)
+        return {"article": article}
+    except RuntimeError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        logger.error(f"Article update failed: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"更新失败: {str(e)}")
 
 
 @router.get("/current")
