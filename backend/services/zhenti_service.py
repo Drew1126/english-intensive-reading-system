@@ -145,7 +145,11 @@ def _split_raw_paragraphs(text: str) -> list[str]:
 _NUM_NOISE = r'[\s\.\)\],zlI:]*'
 _NUM_ONLY_RE = re.compile(r'^(\d{1,2})' + _NUM_NOISE + r'$')
 _NUM_PREFIX_RE = re.compile(r'^(\d{1,2})' + r'[\s\.\)\],zlI:]+' + r'\s*(.*)$')
-_OPTION_RE = re.compile(r'^\s*[A-Da-d][\.\)、]\s*')
+# Option markers: A. / B) / C、 / or OCR-garbled "AL "/"Bl "/"AI " where the
+# period got misread as L/l/I/1. Requires a separator char after the letter so
+# stems like "A recent study..." or "Although..." are NOT treated as options.
+_OPTION_RE = re.compile(r'^\s*[A-Da-d](?:[\.\)\],:、]|[LlI1])\s+')
+_OPTION_FIX_RE = re.compile(r'^\s*([A-Da-d])(?:[\.\)\],:、]|[LlI1])\s+')
 
 
 def _split_passage_and_questions(text: str) -> tuple[str, list[str]]:
@@ -242,7 +246,7 @@ def _extract_questions(text: str) -> list[str]:
 def _clean_question_lines(lines: list[str]) -> list[str]:
     out = []
     for l in lines:
-        l = re.sub(r'^\s*([A-Da-d])[\.\)、]\s*', lambda m: m.group(1).upper() + ". ", l)
+        l = re.sub(_OPTION_FIX_RE, lambda m: m.group(1).upper() + ". ", l)
         out.append(l)
     return out
 

@@ -1,5 +1,5 @@
 {
-  "next": 21,
+  "next": 22,
   "articles": [
     {
       "id": "article_3",
@@ -128,6 +128,14 @@
       "source": "Others",
       "word_count": 669,
       "date": "2026-07-21"
+    },
+    {
+      "id": "article_21",
+      "index": 21,
+      "title": "Water Sommeliers Say the Simplest Drink Is the Future of Luxury",
+      "source": "The Economist",
+      "word_count": 575,
+      "date": "2026-09-01"
     }
   ]
 }
