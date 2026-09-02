@@ -173,8 +173,9 @@ document.addEventListener("DOMContentLoaded", function() {
         window.__showTrans = e.target.checked;
         var p = document.querySelector("#selectedSentence .sentence-text");
         if (p && window.__currentIdx) {
+            var en = p.dataset.en || p.textContent;
             var trans = (window.__translations && window.__translations[window.__currentIdx]) || "";
-            if (e.target.checked && trans) { p.textContent = p.textContent.split("\n")[0] + "\n" + trans; } else { p.textContent = p.textContent.split("\n")[0]; }
+            if (e.target.checked && trans) { p.textContent = en + "\n" + trans; } else { p.textContent = en; }
         }
     });
 

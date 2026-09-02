@@ -10,6 +10,7 @@ var agentModule = {
         var text = showTrans ? sentence + "\n" + translation : sentence;
         var p = document.createElement("p");
         p.className = "sentence-text";
+        p.dataset.en = sentence;
         p.textContent = text;
         p.style.cssText = "color:var(--text-primary);font-style:normal;margin:0;white-space:pre-wrap;";
         el.appendChild(p);
@@ -24,8 +25,8 @@ var agentModule = {
     selectFocusWord: function(word) {
         this.selectedFocusWord = word;
         var p = document.querySelector("#selectedSentence .sentence-text");
-        if (p && p.textContent.trim()) {
-            this.showSelectedSentence(p.textContent.split("\n")[0], window.__currentIdx);
+        if (p && (p.dataset.en || p.textContent).trim()) {
+            this.showSelectedSentence(p.dataset.en || p.textContent, window.__currentIdx);
         } else if (window.__currentIdx) {
             var sentenceEl = document.querySelector('.sentence[data-idx="' + window.__currentIdx + '"]');
             if (sentenceEl) { this.showSelectedSentence(sentenceEl.textContent.trim(), window.__currentIdx); }
@@ -36,8 +37,8 @@ var agentModule = {
         this.selectedFocusWord = "";
         if (articleModule.focusWords) { articleModule.focusWords = []; articleModule.clearWordHighlight(); }
         var p = document.querySelector("#selectedSentence .sentence-text");
-        if (p && p.textContent.trim()) {
-            this.showSelectedSentence(p.textContent, window.__currentIdx);
+        if (p && (p.dataset.en || p.textContent).trim()) {
+            this.showSelectedSentence(p.dataset.en || p.textContent, window.__currentIdx);
         } else {
             document.getElementById("selectedSentence").innerHTML = '<p style="color:var(--text-muted);text-align:center;font-style:italic;">点击文章中的句子开始提问</p>';
         }
