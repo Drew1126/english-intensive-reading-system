@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (p && window.__currentIdx) {
             var en = p.dataset.en || p.textContent;
             var trans = (window.__translations && window.__translations[window.__currentIdx]) || "";
-            if (e.target.checked && trans) { p.textContent = en + "\n" + trans; } else { p.textContent = en; }
+            if (e.target.checked && trans) { p.textContent = trans; } else { p.textContent = en; }
         }
     });
 
