@@ -539,17 +539,17 @@ body {
 
 .main-content {
     display: flex;
-    gap: 24px;
+    gap: 0;
     padding: 24px;
     flex: 1;
-    max-width: 1400px;
+    max-width: 1500px;
     margin: 0 auto;
     width: 100%;
 }
 
 .article-section {
     flex: 1;
-    min-width: 0;
+    min-width: 520px;
     background: var(--bg-secondary);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
@@ -566,18 +566,93 @@ body {
 }
 
 .agent-panel {
-    width: 400px;
+    width: clamp(440px, 34vw, 500px);
+    min-width: 380px;
+    max-width: 680px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
 }
 
-@media (max-width: 900px) {
+.layout-resizer {
+    position: relative;
+    flex: 0 0 28px;
+    cursor: col-resize;
+    touch-action: none;
+    outline: none;
+}
+
+.layout-resizer::before {
+    content: "";
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    left: 50%;
+    width: 3px;
+    border-radius: 2px;
+    background: var(--border-color);
+    transform: translateX(-50%);
+    transition: background 0.15s, width 0.15s;
+}
+
+.layout-resizer:hover::before,
+.layout-resizer:focus-visible::before,
+.layout-resizer.is-resizing::before {
+    width: 5px;
+    background: var(--accent-primary);
+}
+
+body.layout-resizing {
+    cursor: col-resize;
+    user-select: none;
+}
+
+.toast-region { position: fixed; top: 20px; right: 20px; z-index: 4000; display: flex; flex-direction: column; gap: 8px; }
+.toast { min-width: 220px; max-width: 360px; padding: 11px 14px; border-radius: 9px; color: #334155; background: white; border: 1px solid #dbe3ef; box-shadow: 0 8px 24px rgba(15,23,42,.14); animation: fadeIn .18s ease; }
+.toast.error { color: #991b1b; border-color: #fecaca; background: #fff7f7; }
+.toast.success { color: #166534; border-color: #bbf7d0; background: #f7fff9; }
+.confirm-overlay { position: fixed; inset: 0; z-index: 3500; background: rgba(15,23,42,.42); align-items: center; justify-content: center; }
+.confirm-modal { width: min(360px, calc(100vw - 32px)); padding: 22px; border-radius: 12px; background: white; box-shadow: 0 22px 60px rgba(15,23,42,.25); }
+.confirm-modal p { margin-bottom: 20px; color: var(--text-primary); }
+.confirm-actions { display: flex; justify-content: flex-end; gap: 9px; }
+.confirm-actions button { padding: 8px 18px; border-radius: 7px; cursor: pointer; }
+#confirmCancel { border: 1px solid var(--border-color); background: white; color: var(--text-secondary); }
+#confirmAccept { border: 0; background: #dc2626; color: white; }
+.mobile-agent-fab, .mobile-agent-backdrop { display: none; }
+
+@media (max-width: 1050px) {
     .main-content {
         flex-direction: column;
+        gap: 24px;
+    }
+    .article-section {
+        min-width: 0;
+        width: 100%;
     }
     .agent-panel {
-        width: 100%;
+        width: min(100%, 680px);
+        min-width: 0;
+        max-width: none;
+        position: fixed;
+        left: 50%;
+        bottom: 0;
+        top: auto;
+        z-index: 3000;
+        height: min(72vh, 720px);
+        border-radius: 16px 16px 0 0;
+        transform: translate(-50%, 105%);
+        transition: transform .24s ease, height .24s ease;
+        box-shadow: 0 -12px 40px rgba(15,23,42,.18);
+    }
+    .agent-panel.mobile-open { transform: translate(-50%, 0); }
+    .agent-panel.mobile-full { height: 96vh; }
+    .mobile-agent-fab { display: block; position: fixed; right: 18px; bottom: 18px; z-index: 2900; border: 0; border-radius: 999px; padding: 12px 20px; background: var(--accent-primary); color: white; box-shadow: 0 8px 24px rgba(37,99,235,.32); cursor: pointer; font-weight: 600; }
+    .mobile-agent-backdrop { position: fixed; inset: 0; z-index: 2990; background: rgba(15,23,42,.32); }
+    .mobile-agent-backdrop.visible { display: block; }
+    body.mobile-agent-open { overflow: hidden; }
+    .agent-context-toggle { cursor: ns-resize; }
+    .layout-resizer {
+        display: none;
     }
 }
 
@@ -639,6 +714,25 @@ body {
     color: var(--text-secondary);
     cursor: pointer;
 }
+.btn-account-manage { padding: 4px 11px; font-size: 12px; border: 1px solid #93c5fd; border-radius: 6px; background: #eff6ff; color: #2563eb; cursor: pointer; }
+.role-badge { padding: 1px 7px; border-radius: 999px; background: var(--bg-tertiary); color: var(--text-muted); font-size: 11px; }
+.role-badge.admin { color: #92400e; background: #fef3c7; }
+.account-overlay { position: fixed; inset: 0; z-index: 3600; background: rgba(15,23,42,.42); align-items: center; justify-content: center; }
+.account-modal { width: min(620px, calc(100vw - 32px)); max-height: 82vh; overflow: auto; padding: 22px; border-radius: 14px; background: white; box-shadow: 0 24px 70px rgba(15,23,42,.28); }
+.account-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.account-header h3 { font-size: 18px; }
+.account-header button { border: 0; background: transparent; color: var(--text-muted); font-size: 26px; cursor: pointer; }
+.account-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; padding: 12px; margin-bottom: 16px; border-radius: 10px; background: #f8fafc; }
+.account-form input, .account-form select { min-width: 0; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 7px; }
+.account-form button { border: 0; border-radius: 7px; padding: 8px 14px; background: var(--accent-primary); color: white; cursor: pointer; }
+.account-item { display: grid; grid-template-columns: minmax(100px,1fr) 110px auto; align-items: center; gap: 10px; padding: 10px 4px; border-bottom: 1px solid var(--border-color); }
+.account-item-name { font-weight: 600; overflow-wrap: anywhere; }
+.account-role { color: var(--text-muted); font-size: 12px; }
+.account-actions { display: flex; gap: 6px; }
+.account-actions input { width: 96px; min-width: 70px; padding: 5px 7px; border: 1px solid var(--border-color); border-radius: 6px; }
+.account-actions button { padding: 5px 9px; border: 1px solid var(--border-color); border-radius: 6px; background: white; cursor: pointer; color: var(--text-secondary); }
+.account-actions .danger { color: #dc2626; border-color: #fecaca; }
+@media (max-width: 650px) { .account-form { grid-template-columns: 1fr; } .account-item { grid-template-columns: 1fr auto; } .account-item select { grid-row: 2; } }
 .btn-logout:hover, .btn-login:hover { background: var(--bg-tertiary); }
 
 /* Check-in area */

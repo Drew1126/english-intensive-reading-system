@@ -46,7 +46,7 @@ var articleModule = {
         this.isLoading = true;
         document.getElementById("btnUploadPdf").disabled = true;
         document.getElementById("articleBody").innerHTML = '<div class="loading">解析 PDF 中...</div>';
-        api.uploadPdf(file).then(function(data) {
+        api.uploadPdf(file, getToken()).then(function(data) {
             self.currentArticle = data.article;
             self._buildTranslations();
             self._resetView();
@@ -114,21 +114,23 @@ var articleModule = {
                     };
                 }(a.index));
                 item.appendChild(info);
-                if (token) {
+                if (typeof isAdmin === "function" && isAdmin()) {
                     var delBtn = document.createElement("button");
                     delBtn.className = "history-del-btn";
                     delBtn.textContent = "删除";
                     delBtn.addEventListener("click", function(idx) {
                         return function(e) {
                             e.stopPropagation();
-                            if (!confirm("确定删除《" + (a.title || "无标题") + "》？")) return;
-                            api.deleteArticle(idx, token).then(function() {
-                                self.renderHistoryList();
-                                if (self.currentArticle && self.currentArticle.article_index === idx) {
-                                    self.currentArticle = null;
-                                    document.getElementById("articleBody").innerHTML = '<div class="loading">文章已删除</div>';
-                                }
-                            }).catch(function(err) { alert("删除失败: " + err.message); });
+                            showConfirm("确定删除《" + (a.title || "无标题") + "》？", function() {
+                                api.deleteArticle(idx, token).then(function() {
+                                    self.renderHistoryList();
+                                    showToast("文章已删除", "success");
+                                    if (self.currentArticle && self.currentArticle.article_index === idx) {
+                                        self.currentArticle = null;
+                                        document.getElementById("articleBody").innerHTML = '<div class="loading">文章已删除</div>';
+                                    }
+                                }).catch(function(err) { showToast("删除失败：" + err.message, "error"); });
+                            });
                         };
                     }(a.index));
                     item.appendChild(delBtn);
@@ -150,7 +152,7 @@ var articleModule = {
         var toggle = document.getElementById("sentenceTranslationToggle");
         if (toggle) toggle.checked = false;
         agentModule.clearFocus();
-        document.getElementById("chatMessages").innerHTML = "";
+        document.getElementById("chatMessages").innerHTML = '<div class="chat-empty" id="chatEmpty">点击左侧文章中的单词或句子，然后选择快捷问题，也可以直接输入问题。</div>';
     },
 
     _buildTranslations: function() {
@@ -167,7 +169,7 @@ var articleModule = {
         document.getElementById("sourceTag").textContent = article.source;
         document.getElementById("wordCountTag").textContent = article.word_count + " 词";
         document.getElementById("articleTitle").textContent = article.title;
-        document.getElementById("btnEditArticle").style.display = "inline-block";
+        document.getElementById("btnEditArticle").style.display = (typeof isAdmin === "function" && isAdmin()) ? "inline-block" : "none";
         var bodyEl = document.getElementById("articleBody");
         var container = document.createElement("div");
         article.paragraphs.forEach(function(para, pIdx) {
@@ -239,14 +241,15 @@ var articleModule = {
         var btn = document.getElementById("btnEditArticle");
         btn.disabled = true;
         btn.textContent = "保存中...";
-        api.updateArticle(art.id, paragraphs, retranslate).then(function(data) {
+        api.updateArticle(art.id, paragraphs, retranslate, getToken()).then(function(data) {
             self.currentArticle = data.article;
             self._buildTranslations();
             self.editing = false;
             self.renderArticle(data.article);
             self.exitEditMode();
+            showToast("文章已保存", "success");
         }).catch(function(err) {
-            alert("保存失败: " + err.message);
+            showToast("保存失败：" + err.message, "error");
             btn.disabled = false;
             btn.textContent = "确认";
         });
@@ -278,6 +281,7 @@ var articleModule = {
                     self.selectedSentenceIdx = idx;
                     window.__currentIdx = idx;
                     agentModule.showSelectedSentence(sentenceEl.textContent.trim(), idx);
+                    if (typeof window.openMobileAgent === "function") window.openMobileAgent();
                 }
                 if (self.focusWords.length > 0 && self.focusWords[0].sentenceEl !== info.sentenceEl) { self.focusWords = []; }
                 var existingIdx = self.focusWords.findIndex(function(fw) { return fw.sentenceEl === info.sentenceEl && fw.offset === info.offset; });
@@ -302,6 +306,7 @@ var articleModule = {
             self.selectedSentenceIdx = idx;
             window.__currentIdx = idx;
             agentModule.showSelectedSentence(text, idx);
+            if (typeof window.openMobileAgent === "function") window.openMobileAgent();
         });
 
         bodyEl.addEventListener("contextmenu", function(e) { e.preventDefault(); });

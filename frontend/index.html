@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>外刊阅读</title>
-    <link rel="stylesheet" href="css/main.css?v=3">
+    <link rel="stylesheet" href="css/main.css?v=7">
     <link rel="stylesheet" href="css/article.css?v=4">
-    <link rel="stylesheet" href="css/panel.css?v=2">
+    <link rel="stylesheet" href="css/panel.css?v=6">
 </head>
 <body>
     <!-- Login overlay -->
@@ -32,6 +32,8 @@
                     <div class="user-info" id="userInfo" style="display:none">
                         <img class="user-avatar" id="userAvatar" src="default-avatar.svg" alt="avatar">
                         <span class="user-name" id="userName"></span>
+                        <span class="role-badge" id="roleBadge"></span>
+                        <button class="btn-account-manage admin-only" id="btnAccountManage" style="display:none">账号管理</button>
                         <button class="btn-logout" id="logoutBtn">退出</button>
                     </div>
                     <div class="user-info not-logged-in" id="notLoggedIn">
@@ -63,29 +65,71 @@
             </div>
         </section>
 
-        <aside class="agent-panel">
-            <div class="selected-sentence" id="selectedSentence">
-                <p class="placeholder">点击文章中的句子开始提问</p>
+        <div class="layout-resizer" id="layoutResizer" role="separator" aria-label="调整文章与问答面板宽度" aria-orientation="vertical" aria-valuemin="380" tabindex="0"></div>
+
+        <aside class="agent-panel" id="agentPanel">
+            <section class="agent-context-section" id="agentContextSection">
+                <button class="agent-context-toggle" id="agentContextToggle" type="button" aria-expanded="true" aria-controls="agentContextBody">
+                    <span class="agent-context-title">选中内容</span>
+                    <span class="agent-context-action">
+                        <span id="agentContextToggleText">收起</span>
+                    </span>
+                </button>
+                <div class="agent-context-body" id="agentContextBody">
+                    <div class="selected-sentence" id="selectedSentence">
+                        <p class="placeholder">点击文章中的句子开始提问</p>
+                    </div>
+                    <div class="translation-toggle-row">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="sentenceTranslationToggle">
+                            <span class="slider"></span>
+                            <span class="label-text">显示翻译</span>
+                        </label>
+                        <button class="clear-selection-btn" id="clearSelectionBtn" type="button">清除选择</button>
+                    </div>
+                </div>
+            </section>
+            <div class="chat-messages" id="chatMessages" aria-live="polite">
+                <div class="chat-empty" id="chatEmpty">点击左侧文章中的单词或句子，然后选择快捷问题，也可以直接输入问题。</div>
             </div>
-            <div class="translation-toggle-row">
-                <label class="toggle-switch">
-                    <input type="checkbox" id="sentenceTranslationToggle">
-                    <span class="slider"></span>
-                    <span class="label-text">显示翻译</span>
-                </label>
-            </div>
-            <div class="chat-messages" id="chatMessages"></div>
             <div class="quick-questions">
                 <button class="quick-btn" data-question="解释选中内容在句子释义">句中释义</button>
                 <button class="quick-btn" data-nofocus="1" data-question="请用括号标注法分析这个句子的句子结构，逐层划分并说明各成分">句子结构</button>
                 <button class="quick-btn" data-question="请列出与选中内容相似的单词并辨析">相似词</button>
             </div>
             <div class="input-area">
-                <input type="text" id="questionInput" placeholder="输入你的问题..." autocomplete="off">
+                <textarea id="questionInput" rows="1" placeholder="输入你的问题..." autocomplete="off"></textarea>
                 <button class="btn-send" id="btnSend">发送</button>
             </div>
+            <div class="input-hint">Enter 发送 · Shift+Enter 换行</div>
         </aside>
     </main>
+
+    <button class="mobile-agent-fab" id="mobileAgentFab" type="button">问答</button>
+    <div class="mobile-agent-backdrop" id="mobileAgentBackdrop"></div>
+    <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+
+    <div class="confirm-overlay" id="confirmOverlay" style="display:none">
+        <div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirmMessage">
+            <p id="confirmMessage"></p>
+            <div class="confirm-actions">
+                <button id="confirmCancel" type="button">取消</button>
+                <button id="confirmAccept" type="button">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="account-overlay" id="accountOverlay" style="display:none">
+        <div class="account-modal" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+            <div class="account-header"><h3 id="accountTitle">账号管理</h3><button id="accountClose" type="button">&times;</button></div>
+            <form class="account-form" id="accountForm">
+                <input id="accountUsername" placeholder="账号名" maxlength="40" required>
+                <input id="accountPassword" type="password" placeholder="密码（至少6位）" minlength="6" required>
+                <button type="submit">添加账号</button>
+            </form>
+            <div class="account-list" id="accountList"></div>
+        </div>
+    </div>
 
     <div class="history-overlay" id="historyOverlay">
         <div class="history-panel">
@@ -145,10 +189,10 @@
         </div>
     </div>
 
-    <script src="js/api.js?v=2"></script>
-    <script src="js/article.js?v=2"></script>
-    <script src="js/zhenti.js?v=2"></script>
-    <script src="js/agent.js?v=2"></script>
-    <script src="js/main.js?v=2"></script>
+    <script src="js/api.js?v=3"></script>
+    <script src="js/article.js?v=3"></script>
+    <script src="js/zhenti.js?v=3"></script>
+    <script src="js/agent.js?v=4"></script>
+    <script src="js/main.js?v=6"></script>
 </body>
 </html>

@@ -1,8 +1,9 @@
 import os
 import tempfile
 from typing import List
-from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi import APIRouter, HTTPException, UploadFile, File, Query
 from services.zhenti_service import list_years, get_article, process_upload, delete_article
+from services.auth_service import require_admin_token
 import logging
 
 logger = logging.getLogger(__name__)
@@ -12,6 +13,14 @@ router = APIRouter(prefix="/data/zhenti", tags=["zhenti"])
 IMAGE_EXT = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp"}
 PDF_EXT = {".pdf"}
 ALLOWED_EXT = IMAGE_EXT | PDF_EXT
+
+
+def _require_admin(token: str):
+    try:
+        return require_admin_token(token)
+    except PermissionError as exc:
+        status = 401 if str(exc) == "请重新登录" else 403
+        raise HTTPException(status_code=status, detail=str(exc))
 
 
 @router.get("/list")
@@ -30,7 +39,8 @@ async def zhenti_article(year: int, text_num: int):
 
 
 @router.delete("/{year}/{text_num}")
-async def zhenti_delete(year: int, text_num: int):
+async def zhenti_delete(year: int, text_num: int, token: str = Query(...)):
+    _require_admin(token)
     if text_num not in (1, 2, 3, 4):
         raise HTTPException(status_code=400, detail="text_num must be 1-4")
     if not delete_article(year, text_num):
@@ -39,7 +49,8 @@ async def zhenti_delete(year: int, text_num: int):
 
 
 @router.post("/{year}/{text_num}/upload")
-async def zhenti_upload(year: int, text_num: int, files: List[UploadFile] = File(...)):
+async def zhenti_upload(year: int, text_num: int, files: List[UploadFile] = File(...), token: str = Query(...)):
+    _require_admin(token)
     if text_num not in (1, 2, 3, 4):
         raise HTTPException(status_code=400, detail="text_num must be 1-4")
 

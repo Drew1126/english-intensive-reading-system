@@ -128,7 +128,7 @@ var zhentiModule = {
             var cell = document.createElement("div");
             cell.className = "zhenti-text" + (exists ? " exists" : " empty");
             cell.innerHTML = '<div class="zhenti-text-label">Text ' + i + '</div><div class="zhenti-text-status">' + (exists ? "已收录" : "未收录") + '</div>';
-            if (exists) {
+            if (exists && typeof isAdmin === "function" && isAdmin()) {
                 var delBtn = document.createElement("button");
                 delBtn.className = "zhenti-text-del";
                 delBtn.title = "删除";
@@ -136,8 +136,8 @@ var zhentiModule = {
                 delBtn.addEventListener("click", function(yr, t) {
                     return function(e) {
                         e.stopPropagation();
-                        if (!confirm("确定删除 " + yr + "年 Text " + t + " 吗？")) return;
-                        api.deleteZhenti(yr, t).then(function() {
+                        showConfirm("确定删除 " + yr + "年 Text " + t + " 吗？", function() {
+                        api.deleteZhenti(yr, t, getToken()).then(function() {
                             if (articleModule.currentArticle && articleModule.currentArticle.id === "zhenti_" + yr + "_" + t) {
                                 articleModule.currentArticle = null;
                                 document.getElementById("articleBody").innerHTML = '<div class="loading">文章已删除</div>';
@@ -151,7 +151,8 @@ var zhentiModule = {
                                 }
                                 if (updated) { self.showTexts(updated); }
                             });
-                        }).catch(function(err) { alert("删除失败: " + err.message); });
+                        }).catch(function(err) { showToast("删除失败：" + err.message, "error"); });
+                        });
                     };
                 }(this.currentYear, i));
                 cell.appendChild(delBtn);
@@ -160,7 +161,7 @@ var zhentiModule = {
                 return function() {
                     if (ex) {
                         zhentiModule.loadArticle(t);
-                    } else {
+                    } else if (typeof isAdmin === "function" && isAdmin()) {
                         zhentiModule.showUpload(t);
                     }
                 };
@@ -220,19 +221,20 @@ var zhentiModule = {
 
     doUpload: function() {
         var self = this;
-        if (this.pendingFiles.length === 0) { alert("请先选择或粘贴文件"); return; }
+        if (this.pendingFiles.length === 0) { showToast("请先选择或粘贴文件", "error"); return; }
         if (this.isUploading) return;
         this.isUploading = true;
         document.getElementById("zhentiUploadBtn").disabled = true;
         document.getElementById("zhentiUploadBtn").textContent = "解析中...";
         var files = this.pendingFiles.slice();
-        api.uploadZhenti(this.currentYear, this.currentText, files).then(function(data) {
+        api.uploadZhenti(this.currentYear, this.currentText, files, getToken()).then(function(data) {
             self.pendingFiles = [];
             document.getElementById("zhentiUploadArea").style.display = "none";
             articleModule.loadZhenti(self.currentYear, self.currentText);
             self.loadYears();
+            showToast("上传成功", "success");
         }).catch(function(err) {
-            alert("上传失败：" + err.message);
+            showToast("上传失败：" + err.message, "error");
         }).then(function() {
             document.getElementById("zhentiUploadBtn").disabled = false;
             document.getElementById("zhentiUploadBtn").textContent = "上传";

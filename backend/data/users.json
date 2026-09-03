@@ -11,6 +11,29 @@
       "article_6": true,
       "article_17": true,
       "article_18": true
-    }
+    },
+    "role": "viewer",
+    "password_hash": "pbkdf2_sha256$120000$30685e2f123a44e3fa3a47f3f494bcdb$f50b3884d557de79f232b2a11f9e0024e94f1e8b467b3112e5123e85065d0856"
+  },
+  "root": {
+    "name": "root",
+    "password_hash": "pbkdf2_sha256$120000$6506c0f65838c78ad95835ab0ce1c098$7bc96947d0623004f9a6ed869f04abb7dbdfb927faf39abfba73849d02045f04",
+    "role": "admin",
+    "avatar": null,
+    "checkins": {}
+  },
+  "游客": {
+    "name": "游客",
+    "password_hash": "pbkdf2_sha256$120000$9f2dbe299e9a7187235937a9737efae7$66b6aa5990e9feb887f8614d8cd6a39335a5852e43a0d7b4fe134b17a90055c3",
+    "role": "viewer",
+    "avatar": null,
+    "checkins": {}
+  },
+  "张晓雯": {
+    "name": "张晓雯",
+    "password_hash": "pbkdf2_sha256$120000$293fedf22ffa2babeaace1ff6a9eba73$7ac4fb0c3d41c7e0cc7976d85566ccc2c85d48d440c95e50a4f8b85a2839291c",
+    "role": "viewer",
+    "avatar": null,
+    "checkins": {}
   }
 }

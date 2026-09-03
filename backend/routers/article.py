@@ -4,7 +4,7 @@ from typing import List
 from fastapi import APIRouter, HTTPException, UploadFile, File, Query
 from pydantic import BaseModel
 from services.pdf_service import process_uploaded_pdf, get_latest_article, get_article_by_index, get_article_list, delete_article
-from services.auth_service import get_user_by_token, get_user_checkins
+from services.auth_service import get_user_by_token, get_user_checkins, require_admin_token
 import logging
 
 logger = logging.getLogger(__name__)
@@ -25,8 +25,17 @@ class ArticleUpdateRequest(BaseModel):
     retranslate: bool = False
 
 
+def _require_admin(token: str):
+    try:
+        return require_admin_token(token)
+    except PermissionError as exc:
+        status = 401 if str(exc) == "请重新登录" else 403
+        raise HTTPException(status_code=status, detail=str(exc))
+
+
 @router.post("/update")
-async def update_article(req: ArticleUpdateRequest):
+async def update_article(req: ArticleUpdateRequest, token: str = Query(...)):
+    _require_admin(token)
     from services.edit_service import update_article as do_update
     try:
         article = await do_update(req.id, req.paragraphs, req.retranslate)
@@ -68,7 +77,8 @@ async def get_article(index: int):
 
 
 @router.post("/upload-pdf")
-async def upload_pdf(file: UploadFile = File(...)):
+async def upload_pdf(file: UploadFile = File(...), token: str = Query(...)):
+    _require_admin(token)
     ext = os.path.splitext(file.filename or "")[1].lower()
     if ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
@@ -101,9 +111,7 @@ async def upload_pdf(file: UploadFile = File(...)):
 
 @router.delete("/{index}")
 async def remove_article(index: int, token: str = Query(...)):
-    username = get_user_by_token(token)
-    if not username:
-        raise HTTPException(status_code=401, detail="请重新登录")
+    _require_admin(token)
     ok = delete_article(index)
     if not ok:
         raise HTTPException(status_code=404, detail="文章不存在")

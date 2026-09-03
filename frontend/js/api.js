@@ -22,10 +22,10 @@ var api = {
             return res.json();
         });
     },
-    uploadPdf: function(file) {
+    uploadPdf: function(file, token) {
         var formData = new FormData();
         formData.append("file", file);
-        return fetch(BASE + "/article/upload-pdf", { method: "POST", body: formData }).then(function(res) {
+        return fetch(BASE + "/article/upload-pdf?token=" + encodeURIComponent(token || ""), { method: "POST", body: formData }).then(function(res) {
             if (!res.ok) { return res.json().then(function(e) { throw new Error(e.detail || "上传失败 (" + res.status + ")"); }).catch(function() { throw new Error("上传失败 (" + res.status + ")"); }); }
             return res.json();
         });
@@ -64,8 +64,8 @@ var api = {
     getCheckinStatus: function(articleId) {
         return fetch(BASE + "/auth/checkin-status/" + articleId).then(function(res) { return res.json(); });
     },
-    updateArticle: function(id, paragraphs, retranslate) {
-        return fetch(BASE + "/article/update", {
+    updateArticle: function(id, paragraphs, retranslate, token) {
+        return fetch(BASE + "/article/update?token=" + encodeURIComponent(token || ""), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: id, paragraphs: paragraphs, retranslate: !!retranslate })
@@ -98,18 +98,39 @@ var api = {
             return res.json();
         });
     },
-    uploadZhenti: function(year, text, files) {
+    uploadZhenti: function(year, text, files, token) {
         var formData = new FormData();
         for (var i = 0; i < files.length; i++) { formData.append("files", files[i]); }
-        return fetch(BASE + "/zhenti/" + year + "/" + text + "/upload", { method: "POST", body: formData }).then(function(res) {
+        return fetch(BASE + "/zhenti/" + year + "/" + text + "/upload?token=" + encodeURIComponent(token || ""), { method: "POST", body: formData }).then(function(res) {
             if (!res.ok) { return res.json().then(function(e) { throw new Error(e.detail || "上传失败"); }); }
             return res.json();
         });
     },
-    deleteZhenti: function(year, text) {
-        return fetch(BASE + "/zhenti/" + year + "/" + text, { method: "DELETE" }).then(function(res) {
+    deleteZhenti: function(year, text, token) {
+        return fetch(BASE + "/zhenti/" + year + "/" + text + "?token=" + encodeURIComponent(token || ""), { method: "DELETE" }).then(function(res) {
             if (!res.ok) { return res.json().then(function(e) { throw new Error(e.detail || "删除失败"); }); }
             return res.json();
         });
+    },
+    listUsers: function(token) {
+        return fetch(BASE + "/auth/users?token=" + encodeURIComponent(token)).then(handleJson);
+    },
+    createUser: function(token, username, password, role) {
+        return fetch(BASE + "/auth/users?token=" + encodeURIComponent(token), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: username, password: password, role: role }) }).then(handleJson);
+    },
+    updateUser: function(token, username, password, role) {
+        var body = { role: role };
+        if (password) body.password = password;
+        return fetch(BASE + "/auth/users/" + encodeURIComponent(username) + "?token=" + encodeURIComponent(token), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }).then(handleJson);
+    },
+    deleteUser: function(token, username) {
+        return fetch(BASE + "/auth/users/" + encodeURIComponent(username) + "?token=" + encodeURIComponent(token), { method: "DELETE" }).then(handleJson);
     }
 };
+
+function handleJson(res) {
+    return res.json().catch(function() { return {}; }).then(function(data) {
+        if (!res.ok) throw new Error(data.detail || "请求失败 (" + res.status + ")");
+        return data;
+    });
+}
