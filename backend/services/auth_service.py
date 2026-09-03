@@ -1,9 +1,5 @@
-import os
-import json
 import secrets
 import logging
-import shutil
-from pathlib import Path
 from typing import Optional
 from config import DATA_DIR
 from storage import read_json, write_json

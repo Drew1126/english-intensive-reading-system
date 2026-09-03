@@ -1,4 +1,5 @@
-var BASE = "/english/data";
+var APP_PREFIX = window.location.pathname.indexOf("/english") === 0 ? "/english" : "";
+var BASE = APP_PREFIX + "/data";
 
 var api = {
     getCurrentArticle: function() {

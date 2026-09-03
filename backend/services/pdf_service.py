@@ -1,13 +1,10 @@
 import re
 import json
 import asyncio
-import time
 import logging
 import httpx
 from typing import Optional
 from datetime import date
-from pathlib import Path
-
 from pdfminer.high_level import extract_text
 from storage.article_store import save_article
 from storage import write_json, read_json

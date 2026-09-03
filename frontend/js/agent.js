@@ -44,10 +44,6 @@ var agentModule = {
         }
     },
 
-    clearFocusHighlight: function() {
-        document.querySelectorAll(".focus-highlight").forEach(function(el) { el.classList.remove("focus-highlight"); });
-    },
-
     sendQuestion: function(question) {
         var sentence = document.querySelector(".sentence.selected");
         if (!sentence && !this.selectedFocusWord) { alert("请先点击文章中的内容"); return; }
@@ -84,7 +80,7 @@ var agentModule = {
             if (e.data === "[DONE]") {
                 streamFinished = true;
                 clearTimeout(timeout); source.close(); self.isStreaming = false;
-                self.clearFocusHighlight(); self.selectedFocusWord = "";
+                self.selectedFocusWord = "";
                 document.getElementById("btnSend").disabled = false; return;
             }
             try { var p = JSON.parse(e.data); fullAnswer += p.text; answerEl.textContent = fullAnswer; } catch (err) { console.error("Parse SSE error:", err); }

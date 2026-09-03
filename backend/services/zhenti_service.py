@@ -9,7 +9,7 @@ from typing import Optional
 
 from pdfminer.high_level import extract_text
 from storage import read_json, write_json
-from config import DATA_DIR, ARTICLES_DIR
+from config import DATA_DIR
 from services.pdf_service import _translate_paragraph, _call_llm
 
 logger = logging.getLogger(__name__)

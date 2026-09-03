@@ -392,13 +392,5 @@ var articleModule = {
             parent.replaceChild(document.createTextNode(el.textContent), el);
             parent.normalize();
         });
-    },
-
-    selectSentence: function(idx, sentence, el) {
-        document.querySelectorAll(".sentence.selected").forEach(function(s) { s.classList.remove("selected"); });
-        el.classList.add("selected");
-        this.selectedSentenceIdx = idx;
-        window.__currentIdx = idx;
-        agentModule.showSelectedSentence(sentence, idx);
     }
 };

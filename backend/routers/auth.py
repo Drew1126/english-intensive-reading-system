@@ -18,11 +18,6 @@ class LoginRequest(BaseModel):
     password: str
 
 
-class LoginResponse(BaseModel):
-    token: str
-    name: str
-
-
 @router.post("/login")
 async def login(req: LoginRequest):
     token = verify_login(req.username, req.password)

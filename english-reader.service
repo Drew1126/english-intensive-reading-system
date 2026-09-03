@@ -8,8 +8,6 @@ User=admin
 WorkingDirectory=/home/admin/English/backend
 Environment="PATH=/home/admin/.local/bin:/usr/bin:/usr/local/bin"
 ExecStart=/usr/bin/python3 -m uvicorn main:app --host 0.0.0.0 --port 8000 --no-access-log
-Restart=always
-RestartSec=3
 # 防止内存泄漏导致OOM
 Restart=on-failure
 RestartSec=5

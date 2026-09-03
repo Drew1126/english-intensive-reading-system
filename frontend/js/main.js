@@ -6,7 +6,7 @@ function getName() { return localStorage.getItem(AUTH_NAME_KEY); }
 function setAuth(token, name) { localStorage.setItem(AUTH_TOKEN_KEY, token); localStorage.setItem(AUTH_NAME_KEY, name); }
 function clearAuth() { localStorage.removeItem(AUTH_TOKEN_KEY); localStorage.removeItem(AUTH_NAME_KEY); }
 
-function getAvatarUrl(name) { return "/english/data/auth/avatar/" + encodeURIComponent(name) + "?t=" + Date.now(); }
+function getAvatarUrl(name) { return BASE + "/auth/avatar/" + encodeURIComponent(name) + "?t=" + Date.now(); }
 
 function showLogin() { document.getElementById("loginOverlay").style.display = "flex"; }
 function hideLogin() { document.getElementById("loginOverlay").style.display = "none"; }

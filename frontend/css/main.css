@@ -64,27 +64,6 @@ body {
     color: var(--text-secondary);
 }
 
-.btn-next-article {
-    padding: 8px 18px;
-    border: none;
-    background: var(--accent-primary);
-    color: white;
-    border-radius: var(--radius);
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.btn-next-article:hover:not(:disabled) {
-    background: var(--accent-hover);
-}
-
-.btn-next-article:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
 .btn-upload-pdf {
     padding: 8px 18px;
     border: 1px solid var(--accent-primary);

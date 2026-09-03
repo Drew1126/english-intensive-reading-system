@@ -68,12 +68,6 @@
     border-bottom: 2px solid var(--selected-border);
 }
 
-.article-body .focus-highlight {
-    background: #fef08a;
-    border-bottom: 2px solid #eab308;
-    border-radius: 2px;
-}
-
 .focus-word-selected {
     background: #fef08a;
     border-bottom: 2px solid #eab308;
