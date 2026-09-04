@@ -1,0 +1,171 @@
+{
+  "title": "2019年考研英语阅读 Text 3",
+  "source": "考研真题 2019",
+  "category": "考研真题",
+  "word_count": 610,
+  "date": "2026-09-04",
+  "paragraphs": [
+    {
+      "index": 0,
+      "sentences": [
+        "This year marks exactly two centuries since the publication of Frankenstein; or, The Modern Prometheus, by Mary Shelley.",
+        "Even before the invention of the electric light bulb, the author produced a remarkable work of speculative fiction that would foreshadow many ethical questions to be raised by technologies yet to come."
+      ],
+      "translations": [
+        "今年恰逢玛丽·雪莱的《弗兰肯斯坦；或现代的普罗米修斯》出版整整两个世纪。",
+        "甚至在电灯泡发明之前，这位作者就创作了一部杰出的思辨小说，预示了未来技术将引发的许多伦理问题。"
+      ]
+    },
+    {
+      "index": 1,
+      "sentences": [
+        "Today the rapid growth of artificial intelligence (AI) raises fundamental questions: “What is intelligence, identity, or consciousness?",
+        "What makes humans humans? ”"
+      ],
+      "translations": [
+        "如今，人工智能（AI）的快速发展引发了根本性问题：“什么是智能、身份或意识？",
+        "是什么让人成为人？”"
+      ]
+    },
+    {
+      "index": 2,
+      "sentences": [
+        "What is being called artificial general intelligence, machines that would imitate the way humans think, continues to evade scientists.",
+        "Yet humans remain fascinated by the idea of robots that would look, move, and respond like humans, similar to those recently depicted on popular sci-fi TV series such as “Westworld” and “Humans. ”"
+      ],
+      "translations": [
+        "所谓的通用人工智能，即模仿人类思维方式的机器，仍然让科学家们难以捉摸。",
+        "然而，人类仍然对能够像人类一样外观、移动和回应的机器人想法着迷，类似于最近在热门科幻电视剧如《西部世界》和《人类》中描绘的那些机器人。"
+      ]
+    },
+    {
+      "index": 3,
+      "sentences": [
+        "Just how people think is still far too complex to be understood, let alone reproduced, says David Eagleman, a Stanford University neuroscientist.",
+        "“We are just in a situation where there are no good theories explaining what consciousness actually is and how you could ever build a machine to get there. ”"
+      ],
+      "translations": [
+        "斯坦福大学神经科学家大卫·伊格尔曼表示，人类究竟如何思考仍然过于复杂，难以理解，更不用说复制了。",
+        "“我们正处于这样一种境地：没有好的理论来解释意识到底是什么，以及你如何才能制造出一台机器来实现这一点。”"
+      ]
+    },
+    {
+      "index": 4,
+      "sentences": [
+        "But that doesn’t mean crucial ethical issues involving AI aren’t at hand.",
+        "The coming use of autonomous vehicles, for example, poses thorny ethical questions.",
+        "Human drivers sometimes must make split-second decisions.",
+        "Their reactions may be a complex combination of instant reflexes, input from past driving experiences, and what their eyes and ears tell them in that moment.",
+        "AI “vision” today is not nearly as sophisticated as that of humans.",
+        "And to anticipate every imaginable driving situation is a difficult programming problem."
+      ],
+      "translations": [
+        "但这并不意味着涉及人工智能的关键伦理问题并不迫在眉睫。",
+        "例如，自动驾驶汽车的即将使用就提出了棘手的伦理问题。",
+        "人类驾驶员有时必须做出瞬间决定。",
+        "他们的反应可能是即时反应、过去驾驶经验的信息输入以及那一刻眼睛和耳朵所获信息的复杂组合。",
+        "如今人工智能的“视觉”远不如人类的视觉复杂精密。",
+        "而预见到每一种可想象的驾驶情况是一个困难的编程问题。"
+      ]
+    },
+    {
+      "index": 5,
+      "sentences": [
+        "Whenever decisions are based on masses of data, “you quickly get into a lot of ethical questions,” notes Tan Kiat How, chief executive of a Singapore-based agency that is helping the government develop a voluntary code for the ethical use of AI.",
+        "Along with Singapore, other governments and mega-corporations are beginning to establish their own guidelines.",
+        "Britain is setting up a data ethics center.",
+        "India released its AI ethics strategy this spring."
+      ],
+      "translations": [
+        "新加坡一家机构的首席执行官陈杰豪指出，每当决策基于大量数据时，“你很快就会遇到许多伦理问题”，该机构正在帮助政府制定人工智能伦理使用的自愿准则。",
+        "与新加坡一样，其他政府和大型企业也开始制定自己的指导方针。",
+        "英国正在建立一个数据伦理中心。",
+        "印度今年春天发布了其人工智能伦理战略。"
+      ]
+    },
+    {
+      "index": 6,
+      "sentences": [
+        "On June 7 Google pledged not to “design or deploy AI” that would cause “overall harm,” or to develop Al-directed weapons or use AI for surveillance that would violate international norms.",
+        "It also pledged not to deploy AI whose use would violate international laws or human rights."
+      ],
+      "translations": [
+        "6月7日，谷歌承诺不会“设计或部署”会造成“全面伤害”的人工智能，也不会开发人工智能制导武器或将人工智能用于违反国际规范的监控。",
+        "它还承诺不会部署其使用会违反国际法或人权的AI。"
+      ]
+    },
+    {
+      "index": 7,
+      "sentences": [
+        "While the statement is vague, it represents one starting point.",
+        "So does the idea that decisions made by AI systems should be explainable, transparent, and fair."
+      ],
+      "translations": [
+        "虽然该声明含糊不清，但它代表了一个起点。",
+        "人工智能系统做出的决策应该是可解释、透明和公平的这一想法也是如此。"
+      ]
+    },
+    {
+      "index": 8,
+      "sentences": [
+        "To put it another way: How can we make sure that the thinking of intelligent machines reflects humanity’s highest values?",
+        "Only then will they be useful servants and not Frankenstein’s out-of-control monster."
+      ],
+      "translations": [
+        "换句话说：我们如何确保智能机器的思维反映人类的最高价值观？",
+        "只有这样，它们才会成为有用的仆人，而不是弗兰肯斯坦失控的怪物。"
+      ]
+    },
+    {
+      "index": 9,
+      "sentences": [
+        "31. Mary Shelley’s novel Frankenstein is mentioned because it\nA. involves some concerns raised by AI today.\nB. has remained popular for as long as 200 years.\nC. fascinates AI scientists all over the world.\nD. has sparked serious ethical controversies."
+      ],
+      "translations": [
+        "31. 玛丽·雪莱的小说《弗兰肯斯坦》被提及是因为它\nA. 涉及了当今人工智能引发的一些担忧。\nB. 已经流行了长达200年之久。\nC. 吸引了全世界的人工智能科学家。\nD. 引发了严重的伦理争议。"
+      ]
+    },
+    {
+      "index": 10,
+      "sentences": [
+        "32. In David Eagleman’s opinion, our current knowledge of consciousness\nA. helps explain artificial intelligence.\nB. is too limited for us to reproduce it.\nC. inspires popular sci-fi TV series.\nD. can be misleading to robot making."
+      ],
+      "translations": [
+        "32. 在大卫·伊格尔曼看来，我们目前对意识的认识\nA. 有助于解释人工智能。\nB. 过于有限，以至于我们无法复制它。\nC. 启发了受欢迎的科幻电视剧。\nD. 可能对机器人制造产生误导。"
+      ]
+    },
+    {
+      "index": 11,
+      "sentences": [
+        "33. The solution to the ethical issues brought by autonomous vehicles\nA. can hardly ever be found.\nB. has aroused much curiosity.\nC. is still beyond our capacity.\nD. causes little public concern."
+      ],
+      "translations": [
+        "33. 自动驾驶汽车带来的伦理问题的解决方案\nA. 几乎不可能找到。\nB. 已引起广泛好奇。\nC. 仍超出我们的能力范围。\nD. 很少引起公众关注。"
+      ]
+    },
+    {
+      "index": 12,
+      "sentences": [
+        "34. The author’s attitude toward Google’s pledges is one of\nA. contempt.\nB. skepticism.\nC. respect.\nD. affirmation."
+      ],
+      "translations": [
+        "34. 作者对谷歌承诺的态度是\nA. 蔑视。\nB. 怀疑。\nC. 尊重。\nD. 肯定。"
+      ]
+    },
+    {
+      "index": 13,
+      "sentences": [
+        "35. Which of the following would be the best title for the text?\nA. The Conscience of AI: Complex But Inevitable\nB. Frankenstein, the Novel Predicting the Age of AI\nC. AT’s Future: In the Hands of Tech Giants\nD. AI Shall Be Killers Once Out of Control"
+      ],
+      "translations": [
+        "35. 以下哪项最适合作为本文的标题？\nA. 人工智能的良知：复杂但不可避免\nB. 《弗兰肯斯坦》，预言人工智能时代的小说\nC. 人工智能的未来：掌握在科技巨头手中\nD. 一旦失控，人工智能将成为杀手"
+      ]
+    }
+  ],
+  "id": "zhenti_2019_3",
+  "article_index": -1,
+  "zhenti": {
+    "year": 2019,
+    "text": 3
+  }
+}
