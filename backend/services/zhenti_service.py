@@ -120,6 +120,14 @@ def extract_from_images(file_paths: list[str]) -> str:
     except ImportError as e:
         raise RuntimeError(f"OCR dependencies missing: {e}")
 
+    configured_cmd = os.getenv("TESSERACT_CMD")
+    if configured_cmd and Path(configured_cmd).is_file():
+        pytesseract.pytesseract.tesseract_cmd = configured_cmd
+    else:
+        local_cmd = Path(r"D:\Tesseract-OCR\tesseract.exe")
+        if local_cmd.is_file():
+            pytesseract.pytesseract.tesseract_cmd = str(local_cmd)
+
     parts = []
     for p in file_paths:
         img = Image.open(p)

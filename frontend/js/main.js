@@ -228,6 +228,7 @@ function updateCheckinArea() {
 
 document.addEventListener("DOMContentLoaded", function() {
     initFeedbackUI();
+    reviewModule.init();
     initMobileAgentDrawer();
     initResizableLayout();
     initAgentContextToggle();
@@ -276,6 +277,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // Logout
     document.getElementById("logoutBtn").addEventListener("click", function() {
         clearAuth();
+        agentModule.stopAnswer();
+        document.getElementById('chatMessages').replaceChildren();
+        reviewModule.reset();
         updateUserUI();
         document.getElementById("checkinArea").style.display = "none";
         showLogin();
@@ -403,7 +407,7 @@ document.addEventListener("DOMContentLoaded", function() {
         showToast("已清除选择");
     });
 
-    document.querySelectorAll(".quick-btn").forEach(function(btn) {
+    document.querySelectorAll(".quick-btn[data-question]").forEach(function(btn) {
         btn.addEventListener("click", function() {
             if (btn.dataset.nofocus === "1") {
                 agentModule.selectedFocusWord = "";

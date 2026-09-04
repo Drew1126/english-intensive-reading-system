@@ -108,6 +108,9 @@ var agentModule = {
         var focusLabel = focus ? '<span class="focus-tag">' + this.escapeHtml(focus) + '</span> ' : "";
         msgEl.innerHTML = '<div class="question-label">' + focusLabel + 'Q: ' + this.escapeHtml(question) + '</div><div class="answer-status"><span class="thinking-dot"></span><span>正在思考…</span></div><div class="answer-content"></div><div class="message-actions"></div>';
         container.appendChild(msgEl);
+        reviewModule.cursor = null;
+        reviewModule.updateNavigation();
+        var vocabularyEntry = reviewModule.record(focus, question);
         var answerEl = msgEl.querySelector(".answer-content");
         var statusEl = msgEl.querySelector(".answer-status");
         var actionsEl = msgEl.querySelector(".message-actions");
@@ -137,6 +140,7 @@ var agentModule = {
                 self.selectedFocusWord = "";
                 statusEl.innerHTML = "<span>回答完成 · " + ((performance.now() - startedAt) / 1000).toFixed(1) + " 秒</span>";
                 self.addMessageActions(request);
+                if (vocabularyEntry && fullAnswer.trim()) vocabularyEntry.meaning = fullAnswer.trim();
                 return;
             }
             try {

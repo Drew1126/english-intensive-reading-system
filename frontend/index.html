@@ -6,7 +6,7 @@
     <title>外刊阅读</title>
     <link rel="stylesheet" href="css/main.css?v=7">
     <link rel="stylesheet" href="css/article.css?v=4">
-    <link rel="stylesheet" href="css/panel.css?v=6">
+    <link rel="stylesheet" href="css/panel.css?v=12">
 </head>
 <body>
     <!-- Login overlay -->
@@ -49,6 +49,7 @@
 
             <div class="article-content">
                 <div class="article-header">
+                    <label class="font-size-control">文章字号 <select id="articleFontSize" aria-label="文章字号"></select></label>
                     <span class="source-tag" id="sourceTag"></span>
                     <span class="word-count-tag" id="wordCountTag"></span>
                     <button class="btn-edit-article" id="btnEditArticle" style="display:none">编辑</button>
@@ -61,6 +62,7 @@
                     <div class="checkin-label">已打卡</div>
                     <div class="checkin-users" id="checkinUsers"></div>
                     <button class="btn-checkin" id="btnCheckin">打卡</button>
+                    <button class="btn-checkin" id="btnVocabularyReview" type="button">生词回顾（0）</button>
                 </div>
             </div>
         </section>
@@ -68,6 +70,7 @@
         <div class="layout-resizer" id="layoutResizer" role="separator" aria-label="调整文章与问答面板宽度" aria-orientation="vertical" aria-valuemin="380" tabindex="0"></div>
 
         <aside class="agent-panel" id="agentPanel">
+            <label class="font-size-control chat-font-control">对话字号 <select id="chatFontSize" aria-label="对话字号"></select></label>
             <section class="agent-context-section" id="agentContextSection">
                 <button class="agent-context-toggle" id="agentContextToggle" type="button" aria-expanded="true" aria-controls="agentContextBody">
                     <span class="agent-context-title">选中内容</span>
@@ -89,8 +92,14 @@
                     </div>
                 </div>
             </section>
+            <div class="chat-scroll-area">
             <div class="chat-messages" id="chatMessages" aria-live="polite">
                 <div class="chat-empty" id="chatEmpty">点击左侧文章中的单词或句子，然后选择快捷问题，也可以直接输入问题。</div>
+            </div>
+                <nav class="chat-question-nav" aria-label="提问跳转">
+                    <button id="btnPreviousQuestion" type="button" title="上一个提问" aria-label="上一个提问" disabled>↑</button>
+                    <button id="btnNextQuestion" type="button" title="下一个提问" aria-label="下一个提问" disabled>↓</button>
+                </nav>
             </div>
             <div class="quick-questions">
                 <button class="quick-btn" data-question="解释选中内容在句子释义">句中释义</button>
@@ -108,6 +117,11 @@
     <button class="mobile-agent-fab" id="mobileAgentFab" type="button">问答</button>
     <div class="mobile-agent-backdrop" id="mobileAgentBackdrop"></div>
     <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+    <dialog id="vocabularyDialog" class="vocabulary-dialog" aria-labelledby="vocabularyTitle">
+        <div class="vocabulary-header"><h3 id="vocabularyTitle">本次对话 · 生词回顾</h3><button id="vocabularyClose" type="button" aria-label="关闭生词回顾">×</button></div>
+        <p class="vocabulary-hint">先回忆意思，再点击单词或词组查看句中释义。刷新页面或切换文章后清空。</p>
+        <div id="vocabularyList"></div>
+    </dialog>
 
     <div class="confirm-overlay" id="confirmOverlay" style="display:none">
         <div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirmMessage">
@@ -189,10 +203,12 @@
         </div>
     </div>
 
+    <script src="js/font-size.js?v=1"></script>
     <script src="js/api.js?v=3"></script>
-    <script src="js/article.js?v=3"></script>
+    <script src="js/review.js?v=2"></script>
+    <script src="js/article.js?v=4"></script>
     <script src="js/zhenti.js?v=3"></script>
-    <script src="js/agent.js?v=4"></script>
-    <script src="js/main.js?v=6"></script>
+    <script src="js/agent.js?v=5"></script>
+    <script src="js/main.js?v=7"></script>
 </body>
 </html>

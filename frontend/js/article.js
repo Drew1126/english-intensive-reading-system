@@ -143,6 +143,7 @@ var articleModule = {
     },
 
     _resetView: function() {
+        agentModule.stopAnswer();
         this.selectedSentenceIdx = null;
         window.__showTrans = false;
         this.editing = false;
@@ -153,6 +154,7 @@ var articleModule = {
         if (toggle) toggle.checked = false;
         agentModule.clearFocus();
         document.getElementById("chatMessages").innerHTML = '<div class="chat-empty" id="chatEmpty">点击左侧文章中的单词或句子，然后选择快捷问题，也可以直接输入问题。</div>';
+        reviewModule.reset();
     },
 
     _buildTranslations: function() {
