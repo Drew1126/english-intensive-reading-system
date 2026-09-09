@@ -1,6 +1,7 @@
 var agentModule = {
     isStreaming: false,
     selectedFocusWord: "",
+    discussionTopic: "",
     activeSource: null,
     activeRequest: null,
 
@@ -83,7 +84,7 @@ var agentModule = {
         retry.addEventListener("click", function() {
             if (self.isStreaming) return;
             request.msgEl.remove();
-            self.streamAnswer(request.sentence, request.question, request.articleId, request.focus);
+            self.streamAnswer(request.sentence, request.question, request.articleId, request.focus, request.discussionTopic);
         });
         request.actionsEl.appendChild(retry);
         if (request.answerEl.textContent.trim()) {
@@ -97,8 +98,11 @@ var agentModule = {
         }
     },
 
-    streamAnswer: function(sentence, question, articleId, focus) {
+    streamAnswer: function(sentence, question, articleId, focus, discussionTopic) {
         if (this.isStreaming) return;
+        // Highlight state may be cleared without discarding the conversation topic.
+        if (discussionTopic === undefined) discussionTopic = focus || this.discussionTopic;
+        this.discussionTopic = discussionTopic;
         this.setStreaming(true);
         var container = document.getElementById("chatMessages");
         var empty = document.getElementById("chatEmpty");
@@ -119,10 +123,11 @@ var agentModule = {
         var fullAnswer = "";
         var streamFinished = false;
         var startedAt = performance.now();
-        var source = api.askAgent(sentence, question, articleId, focus, (typeof getName === "function") ? getName() : "");
+        var source = api.askAgent(sentence, question, articleId, focus, (typeof getName === "function") ? getName() : "", discussionTopic);
         var request = { sentence: sentence, question: question, articleId: articleId, focus: focus, msgEl: msgEl, answerEl: answerEl, statusEl: statusEl, actionsEl: actionsEl };
         this.activeSource = source;
         this.activeRequest = request;
+        request.discussionTopic = discussionTopic;
         var timeout = setTimeout(function() {
             if (!streamFinished) {
                 streamFinished = true;

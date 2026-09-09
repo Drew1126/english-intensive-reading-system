@@ -70,6 +70,7 @@
 
 .focus-word-selected {
     background: #fef08a;
+    color: #713f12;
     border-bottom: 2px solid #eab308;
     border-radius: 2px;
 }

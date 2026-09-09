@@ -144,6 +144,7 @@ var articleModule = {
 
     _resetView: function() {
         agentModule.stopAnswer();
+        agentModule.discussionTopic = "";
         this.selectedSentenceIdx = null;
         window.__showTrans = false;
         this.editing = false;
@@ -260,55 +261,33 @@ var articleModule = {
     setupArticleInteractions: function(bodyEl) {
         var self = this;
         this.focusWords = [];
-        var clickTimer = null;
-        var pendingClickInfo = null;
 
         bodyEl.addEventListener("click", function(e) {
             if (self.editing) return;
             var sentenceEl = e.target.closest(".sentence");
             if (!sentenceEl) return;
-            var wordInfo = self.getWordInfoAtPoint(e.clientX, e.clientY);
-            if (!wordInfo) return;
-            clearTimeout(clickTimer);
-            pendingClickInfo = wordInfo;
-            clickTimer = setTimeout(function() {
-                if (!pendingClickInfo) return;
-                var info = pendingClickInfo;
-                pendingClickInfo = null;
-                var sentenceEl = info.sentenceEl;
-                var idx = sentenceEl ? sentenceEl.dataset.idx : null;
-                if (idx) {
-                    document.querySelectorAll(".sentence.selected").forEach(function(s) { s.classList.remove("selected"); });
-                    sentenceEl.classList.add("selected");
-                    self.selectedSentenceIdx = idx;
-                    window.__currentIdx = idx;
-                    agentModule.showSelectedSentence(sentenceEl.textContent.trim(), idx);
-                    if (typeof window.openMobileAgent === "function") window.openMobileAgent();
-                }
-                if (self.focusWords.length > 0 && self.focusWords[0].sentenceEl !== info.sentenceEl) { self.focusWords = []; }
-                var existingIdx = self.focusWords.findIndex(function(fw) { return fw.sentenceEl === info.sentenceEl && fw.offset === info.offset; });
-                if (existingIdx !== -1) { self.focusWords.splice(existingIdx, 1); } else { self.focusWords.push(info); }
-                self.updateFocusWordDisplay();
-            }, 220);
-        });
+            var wasSelected = sentenceEl.classList.contains("selected");
+            var idx = sentenceEl.dataset.idx;
 
-        bodyEl.addEventListener("dblclick", function(e) {
-            if (self.editing) return;
-            clearTimeout(clickTimer);
-            pendingClickInfo = null;
-            var sentenceSpan = e.target.closest(".sentence");
-            if (!sentenceSpan) return;
-            self.focusWords = [];
-            self.clearWordHighlight();
-            agentModule.clearFocus();
-            var text = sentenceSpan.textContent.trim();
-            var idx = sentenceSpan.dataset.idx;
-            document.querySelectorAll(".sentence.selected").forEach(function(s) { s.classList.remove("selected"); });
-            sentenceSpan.classList.add("selected");
-            self.selectedSentenceIdx = idx;
-            window.__currentIdx = idx;
-            agentModule.showSelectedSentence(text, idx);
-            if (typeof window.openMobileAgent === "function") window.openMobileAgent();
+            if (!wasSelected) {
+                self.focusWords = [];
+                self.clearWordHighlight();
+                agentModule.selectedFocusWord = "";
+                document.querySelectorAll(".sentence.selected").forEach(function(s) { s.classList.remove("selected"); });
+                sentenceEl.classList.add("selected");
+                self.selectedSentenceIdx = idx;
+                window.__currentIdx = idx;
+                agentModule.showSelectedSentence(sentenceEl.textContent.trim(), idx);
+                if (typeof window.openMobileAgent === "function") window.openMobileAgent();
+                return;
+            }
+
+            var info = self.getWordInfoAtPoint(e.clientX, e.clientY);
+            if (!info) return;
+            var existingIdx = self.focusWords.findIndex(function(fw) { return fw.sentenceEl === info.sentenceEl && fw.offset === info.offset; });
+            if (existingIdx !== -1) self.focusWords.splice(existingIdx, 1);
+            else self.focusWords.push(info);
+            self.updateFocusWordDisplay();
         });
 
         bodyEl.addEventListener("contextmenu", function(e) { e.preventDefault(); });

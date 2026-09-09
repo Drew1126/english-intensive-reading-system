@@ -1,0 +1,122 @@
+{
+  "title": "2007年考研英语阅读 Text 4",
+  "source": "考研真题 2007",
+  "category": "考研真题",
+  "word_count": 415,
+  "date": "2026-09-09",
+  "paragraphs": [
+    {
+      "index": 0,
+      "sentences": [
+        "It never rains but it pours.",
+        "Just as bosses and boards have finally sorted out their worst accounting and compliance troubles, and improved their feeble corporation governance, a new problem threatens to earn them—especially in America—the sort of nasty headlines that inevitably lead to heads rolling in the executive suite: data insecurity.",
+        "Left, until now, to odd, low-level IT staff to put right. and seen as a concern only of data-rich industries such as banking. telecoms and air travel, information protection is now high on the boss's agenda in businesses of every variety."
+      ],
+      "translations": [
+        "祸不单行。",
+        "正当老板和董事会终于解决了最糟糕的会计和合规问题，并改善了其薄弱的公司治理之际，一个新的问题又可能让他们——尤其是在美国——登上那种不可避免地导致高管层人事变动的恶劣头条：数据不安全。",
+        "迄今为止，信息保护一直交由古怪的、低级别的IT人员去处理，并且被视为只有银行、电信和航空等数据密集型行业才关心的问题，而现在，它已成为各类企业老板议程上的重中之重。"
+      ]
+    },
+    {
+      "index": 1,
+      "sentences": [
+        "Several massive leakages of customer and employee data this year—from organizations as diverse as Time Warner, the American defense contractor Science Applications International Corp and even the University of California, Berkeley—have left managers hurriedly peering into their intricate IT systems and business processes in search of potential vulnerabilities."
+      ],
+      "translations": [
+        "今年发生的几起大规模客户和员工数据泄露事件——涉及时代华纳、美国国防承包商科学应用国际公司甚至加州大学伯克利分校等各类机构——已使管理者们匆忙审视其复杂的IT系统和业务流程，以寻找潜在的弱点。"
+      ]
+    },
+    {
+      "index": 2,
+      "sentences": [
+        "\"Data is becoming an asset which needs to be guarded as much as any other asset,\" says Haim Mendelson of Stanford University's business school.",
+        "\"The ability to guard customer data is the key to market value, which the board is responsible for on behalf of shareholders.\"",
+        "Indeed, just as there is the concept of Generally Accepted Accounting Principles (GAAP), perhaps it is time for GASP, Generally Accepted Security Practices, suggested Eli Noam of New York's Columbia Business School.",
+        "\"Setting the proper investment level for security, redundancy, and recovery is a management issue, not a technical one,\" he says."
+      ],
+      "translations": [
+        "斯坦福大学商学院的海姆·门德尔森说：“数据正成为一种需要像其他任何资产一样受到保护的资产。”",
+        "“保护客户数据的能力是市场价值的关键，而董事会代表股东对此负责。”",
+        "事实上，正如存在“公认会计原则”(GAAP)的概念一样，纽约哥伦比亚商学院的伊莱·诺姆建议，或许现在是时候制定“公认安全实践”(GASP)了。",
+        "他说：“为安全、冗余和恢复设定适当的投资水平是一个管理问题，而不是技术问题。”"
+      ]
+    },
+    {
+      "index": 3,
+      "sentences": [
+        "The mystery is that this should come as a surprise to any boss.",
+        "Surely it should be obvious to the dimmest executive that trust, that most valuable of economic assets, is easily destroyed and hugely expensive to restore—and that few things are more likely to destroy trust than a company letting sensitive personal data get into the wrong hands."
+      ],
+      "translations": [
+        "神秘之处在于，这竟然会让任何老板感到惊讶。",
+        "当然，即使是最愚钝的管理者也应该明白，信任这种最宝贵的经济资产很容易被摧毁，且恢复起来代价高昂——而没有什么比公司让敏感的个人数据落入坏人之手更可能摧毁信任的了。"
+      ]
+    },
+    {
+      "index": 4,
+      "sentences": [
+        "The current state of affairs may have been encouraged—though not justified—by the lack of legal penalty (in America, but not Europe) for data leakage.",
+        "Until California recently passed a law, American firms did not have to tell anyone, even the victim, when data went astray.",
+        "That may change fast: lots of proposed data-security legislation is now doing the rounds in Washington, D.C.",
+        "Meanwhile, the theft of information about some 40 million credit-card accounts in America, disclosed on June 17th, overshadowed a hugely important decision a day earlier by America's Federal Trade Commission (FTC) that puts corporate America on notice that regulators will act if firms fail to provide adequate data security."
+      ],
+      "translations": [
+        "当前的事态可能因缺乏对数据泄露的法律惩罚（在美国，而非欧洲）而受到鼓励——尽管这并不合理。",
+        "在加州最近通过一项法律之前，当数据丢失时，美国公司不必告知任何人，甚至受害者。",
+        "这种情况可能很快改变：许多提议的数据安全立法正在华盛顿特区流传。",
+        "与此同时，6月17日披露的美国约4000万信用卡账户信息被盗事件，使美国联邦贸易委员会(FTC)前一天做出的一项极为重要的决定黯然失色，该决定警告美国企业界，如果公司未能提供充分的数据安全，监管机构将采取行动。"
+      ]
+    },
+    {
+      "index": 5,
+      "sentences": [
+        "36. The statement \"It never rains but it pours\" is used to introduce\nA. the fierce business competition\nB. the feeble boss-board relations\nC. the threat from news reports\nD. the severity of data leakage"
+      ],
+      "translations": [
+        "36. 引言“It never rains but it pours”用来引出\nA. 激烈的商业竞争\nB. 脆弱的老板-董事会关系\nC. 来自新闻报道的威胁\nD. 数据泄露的严重性"
+      ]
+    },
+    {
+      "index": 6,
+      "sentences": [
+        "37. According to Paragraph 2, some organizations check their systems to find out\nA. whether there is any weak point\nB. what sort of data has been stolen\nC. who is responsible for the leakage\nD. how the potential spies can be located"
+      ],
+      "translations": [
+        "37. 根据第二段，一些组织检查其系统是为了查明\nA. 是否存在任何弱点\nB. 哪种数据已被窃取\nC. 谁应对泄露负责\nD. 如何定位潜在的间谍"
+      ]
+    },
+    {
+      "index": 7,
+      "sentences": [
+        "38. In bringing up the concept of GASP the author is making the point that\nA. shareholders' interests should be properly attended to\nB. information protection should be given due attention\nC. businesses should enhance their level of accounting security\nD. the market value of customer data should be emphasized"
+      ],
+      "translations": [
+        "38. 作者提出GASP概念是要说明\nA. 股东利益应得到适当关注\nB. 信息保护应得到应有的重视\nC. 企业应提高其会计安全水平\nD. 应强调客户数据的市场价值"
+      ]
+    },
+    {
+      "index": 8,
+      "sentences": [
+        "39. According to Paragraph 4, what puzzles the author is that some bosses fail to\nA. see the link between trust and data protection\nB. perceive the sensitivity of personal data\nC. realize the high cost of data restoration\nD. appreciate the economic value of trust"
+      ],
+      "translations": [
+        "39. 根据第四段，令作者困惑的是，一些老板未能\nA. 看到信任与数据保护之间的联系\nB. 意识到个人数据的敏感性\nC. 认识到数据恢复的高昂成本\nD. 重视信任的经济价值"
+      ]
+    },
+    {
+      "index": 9,
+      "sentences": [
+        "40. It can be inferred from Paragraph 5 that\nA. data leakage is more severe in Europe\nB. FTC's decision is essential to data security\nC. California takes the lead in security legislation\nD. legal penalty is a major solution to data leakage"
+      ],
+      "translations": [
+        "40. 从第五段可以推断出\nA. 数据泄露在欧洲更为严重\nB. FTC的决定对数据安全至关重要\nC. 加州在安全立法方面领先\nD. 法律惩罚是解决数据泄露的主要方法"
+      ]
+    }
+  ],
+  "id": "zhenti_2007_4",
+  "zhenti": {
+    "year": 2007,
+    "text": 4
+  }
+}

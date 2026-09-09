@@ -37,8 +37,9 @@ var api = {
             body: JSON.stringify({ article_id: articleId, sentences: sentences })
         }).then(function(res) { return res.json(); });
     },
-    askAgent: function(sentence, question, articleId, focus, user) {
+    askAgent: function(sentence, question, articleId, focus, user, discussionTopic) {
         var url = BASE + "/agent/ask?sentence=" + encodeURIComponent(sentence) + "&question=" + encodeURIComponent(question) + "&article_id=" + encodeURIComponent(articleId) + "&focus=" + encodeURIComponent(focus || "") + "&user=" + encodeURIComponent(user || "");
+        url += "&discussion_topic=" + encodeURIComponent(discussionTopic || "");
         return new EventSource(url);
     },
     // Auth

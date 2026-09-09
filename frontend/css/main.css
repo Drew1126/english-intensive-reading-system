@@ -97,6 +97,18 @@ body {
     border-color: var(--text-muted);
 }
 
+.btn-settings {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-settings svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
 /* History panel overlay */
 .history-overlay {
     display: none;
@@ -546,6 +558,46 @@ body {
     margin: 0 auto;
     width: 100%;
 }
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+    --bg-primary: #0f172a;
+    --bg-secondary: #172033;
+    --bg-tertiary: #253249;
+    --text-primary: #e5e7eb;
+    --text-secondary: #bdc7d7;
+    --text-muted: #8793a7;
+    --border-color: #344258;
+    --accent-primary: #60a5fa;
+    --accent-hover: #3b82f6;
+    --selected-bg: #213a5c;
+    --selected-border: #60a5fa;
+    --shadow: 0 1px 4px rgba(0,0,0,.38);
+}
+
+.settings-overlay { position: fixed; inset: 0; z-index: 3700; background: rgba(15,23,42,.42); align-items: center; justify-content: center; padding: 16px; }
+.settings-panel { width: min(360px, 100%); padding: 20px; border: 1px solid var(--border-color); border-radius: 14px; background: var(--bg-secondary); color: var(--text-primary); box-shadow: 0 22px 60px rgba(15,23,42,.28); }
+.settings-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.settings-header h3 { font-size: 18px; }
+.settings-header button { border: 0; background: transparent; color: var(--text-muted); font-size: 26px; line-height: 1; cursor: pointer; }
+.settings-row { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 18px; border-top: 1px solid var(--border-color); font-size: 14px; }
+.settings-row select { min-width: 112px; padding: 5px 7px; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); background: var(--bg-tertiary); }
+.settings-row input[type="checkbox"] { width: 36px; height: 20px; accent-color: var(--accent-primary); cursor: pointer; }
+.settings-logout { padding: 6px 12px; border: 1px solid #fca5a5; border-radius: 6px; color: #dc2626; background: transparent; cursor: pointer; }
+.settings-logout:hover { color: white; background: #dc2626; }
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select,
+html[data-theme="dark"] .message-action,
+html[data-theme="dark"] .quick-btn,
+html[data-theme="dark"] .clear-selection-btn,
+html[data-theme="dark"] .account-actions button,
+html[data-theme="dark"] .vocabulary-dialog { color: var(--text-primary); background: var(--bg-secondary); border-color: var(--border-color); }
+html[data-theme="dark"] .chat-empty,
+html[data-theme="dark"] .account-form { background: var(--bg-tertiary); border-color: var(--border-color); }
+html[data-theme="dark"] .source-tag { background: var(--bg-tertiary); color: var(--text-secondary); }
+html[data-theme="dark"] .vocabulary-item button { background: #213a5c; color: #93c5fd; }
 
 .article-section {
     flex: 1;

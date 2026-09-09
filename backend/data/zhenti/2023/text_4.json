@@ -1,0 +1,134 @@
+{
+  "title": "2023年考研英语阅读 Text 4",
+  "source": "考研真题 2023",
+  "category": "考研真题",
+  "word_count": 437,
+  "date": "2026-09-09",
+  "paragraphs": [
+    {
+      "index": 0,
+      "sentences": [
+        "Scientific papers are the recordkeepers of progress in research.",
+        "Each year researchers publish millions of papers in more than 30,000 journals.",
+        "The scientific community measures the quality of those papers in a number of ways, including the perceived quality of the journal (as reflected by the title's impact factor) and the number of citations a specific paper accumulates.",
+        "The careers of scientists and the reputation of their institutions depend on the number and prestige of the papers they produce, but even more so on the citations attracted by these papers."
+      ],
+      "translations": [
+        "科学论文是研究进展的记录者。",
+        "每年，研究人员在超过3万种期刊上发表数百万篇论文。",
+        "科学界通过多种方式衡量这些论文的质量，包括期刊的感知质量（以该期刊的影响因子反映）以及特定论文累积的引用次数。",
+        "科学家的职业生涯及其所在机构的声誉取决于他们发表的论文数量与声望，但更取决于这些论文所吸引的引用。"
+      ]
+    },
+    {
+      "index": 1,
+      "sentences": [
+        "Citation cartels, where journals, authors, and institutions conspire to inflate citation numbers, have existed for a long time.",
+        "In 2016, researchers developed an algorithm to recognize suspicious citation patterns, including groups of authors that disproportionately cite one another and groups of journals that cite each other frequently to increase the impact factors of their publications.",
+        "Recently, another expression of this predatory behavior has emerged; so-called support service consultancies that provide language and other editorial support to individual authors and to journals sometimes advise contributors to add a number of citations to their articles."
+      ],
+      "translations": [
+        "引用联盟，即期刊、作者和机构合谋虚增引用数量的现象，早已存在。",
+        "2016年，研究人员开发了一种算法来识别可疑的引用模式，包括不成比例地相互引用的作者群体，以及为了提升其出版物影响因子而频繁相互引用的期刊群体。",
+        "最近，这种掠夺性行为的另一种表现形式出现了；所谓的支持服务咨询公司，为个别作者和期刊提供语言及其他编辑支持，有时会建议投稿人为其文章增加若干引用。"
+      ]
+    },
+    {
+      "index": 2,
+      "sentences": [
+        "The advent of electronic publishing and authors' need to find outlets for their papers resulted in thousands of new journals.",
+        "The birth of predatory journals wasn't far behind.",
+        "These journals can act as milk cows where every single article in an issue may cite a specific paper or a series of papers.",
+        "In some instances, there is absolutely no relationship between the content of the article and the citations.",
+        "The peculiar part is that the journal that the editor is supposedly working for is not profiting at all—it is just providing citations to other journals.",
+        "Such practices can lead an article to accrue more than 150 citations in the same year that it was published."
+      ],
+      "translations": [
+        "电子出版的到来以及作者为其论文寻找发表渠道的需求，催生了数千种新期刊。",
+        "掠夺性期刊的诞生紧随其后。",
+        "这些期刊可以充当“奶牛”，其中一期中的每一篇文章都可能引用某一特定论文或一系列论文。",
+        "在某些情况下，文章内容与引用之间毫无关联。",
+        "奇怪的是，编辑据称为其工作的期刊并未从中获利——它只是在为其他期刊提供引用。",
+        "这种做法可能导致一篇文章在发表的同一年内累积超过150次引用。"
+      ]
+    },
+    {
+      "index": 3,
+      "sentences": [
+        "How insidious is this type of citation manipulation?",
+        "In one example, an individual—acting as author, editor, and consultant—was able to use at least 15 journals as citation providers to articles published by five scientists at three universities.",
+        "The problem is rampant in Scopus, a citation database, which includes a high number of the new “international” journals.",
+        "In fact, a listing in Scopus seems to be a criterion to be targeted in this type of citation manipulation."
+      ],
+      "translations": [
+        "这种引用操纵行为有多隐蔽？",
+        "在一个例子中，一个人——身兼作者、编辑和顾问——能够利用至少15种期刊作为引用提供者，为三所大学的五位科学家发表的文章提供引用。",
+        "这个问题在Scopus（一个引文数据库）中十分普遍，该数据库收录了大量新兴的“国际”期刊。",
+        "事实上，被Scopus收录似乎成为成为此类引用操纵行为目标的一个标准。"
+      ]
+    },
+    {
+      "index": 4,
+      "sentences": [
+        "Scopus itself has all the data necessary to detect this malpractice.",
+        "Red flags include a large number of citations to an article within the first year.",
+        "And for authors who wish to steer clear of citation cartel activities; when an editor, a reviewer, or a support service asks you to add inappropriate references, do not oblige and do report the request to the journal."
+      ],
+      "translations": [
+        "Scopus本身拥有检测这种不当行为所需的所有数据。",
+        "危险信号包括一篇文章在发表后第一年内获得大量引用。",
+        "对于那些希望避开引用联盟活动的作者；当编辑、审稿人或支持服务机构要求你添加不恰当的参考文献时，不要遵从，并且一定要向期刊报告这一请求。"
+      ]
+    },
+    {
+      "index": 5,
+      "sentences": [
+        "36. According to Paragraph 1, the careers of scientists can be determined by\nA. how many citations their works contain\nB. how many times their papers are cited\nC. the prestige of the people they work with\nD. the status they have in scientific circles"
+      ],
+      "translations": [
+        "36. 根据第一段，科学家的职业生涯可以由什么决定？\nA. 他们的著作包含多少引用\nB. 他们的论文被引用了多少次\nC. 与他们共事的人的声望\nD. 他们在科学界的地位"
+      ]
+    },
+    {
+      "index": 6,
+      "sentences": [
+        "37. The support service consultancies tend to\nA. recommend journals to their clients\nB. list citation patterns for their clients\nC. ask authors to include extra citations\nD. advise contributors to cite each other"
+      ],
+      "translations": [
+        "37. 支持服务咨询公司倾向于做什么？\nA. 向客户推荐期刊\nB. 为客户列出引用模式\nC. 要求作者增加额外引用\nD. 建议投稿人相互引用"
+      ]
+    },
+    {
+      "index": 7,
+      "sentences": [
+        "38. The function of the “milk cow” journals is to\nA. boost citation counts for certain authors\nB. help scholars publish articles at low cost\nC. instruct first-time contributors in citation\nD. increase the readership of new journals"
+      ],
+      "translations": [
+        "38. “奶牛”期刊的功能是什么？\nA. 为某些作者增加引用次数\nB. 帮助学者以低成本发表文章\nC. 指导首次投稿人进行引用\nD. 增加新期刊的读者群"
+      ]
+    },
+    {
+      "index": 8,
+      "sentences": [
+        "39. What can be learned about Scopus from the last two paragraphs?\nA. It fosters competition among citation providers.\nB. It has the capability to identify suspicious citations.\nC. It hinders the growth of “international” journals.\nD. It is established to prevent citation manipulation."
+      ],
+      "translations": [
+        "39. 从最后两段可以了解到关于Scopus的什么信息？\nA. 它促进了引用提供者之间的竞争。\nB. 它有识别可疑引用的能力。\nC. 它阻碍了“国际”期刊的发展。\nD. 它的建立是为了防止引用操纵。"
+      ]
+    },
+    {
+      "index": 9,
+      "sentences": [
+        "40. What should an author do to deal with citation manipulators?\nA. Take legal action.\nB. Demand an apology.\nC. Seek professional advice.\nD. Reveal their misconduct."
+      ],
+      "translations": [
+        "40. 作者应该如何处理引用操纵者？\nA. 采取法律行动。\nB. 要求道歉。\nC. 寻求专业建议。\nD. 揭露他们的不当行为。"
+      ]
+    }
+  ],
+  "id": "zhenti_2023_4",
+  "zhenti": {
+    "year": 2023,
+    "text": 4
+  }
+}

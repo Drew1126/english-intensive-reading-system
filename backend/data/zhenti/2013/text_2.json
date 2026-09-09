@@ -1,0 +1,151 @@
+{
+  "title": "2013年考研英语阅读 Text 2",
+  "source": "考研真题 2013",
+  "category": "考研真题",
+  "word_count": 429,
+  "date": "2026-09-09",
+  "paragraphs": [
+    {
+      "index": 0,
+      "sentences": [
+        "An old saying has it that half of all advertising budgets are wasted—the trouble is, no one knows which half.",
+        "In the internet age, at least in theory, this fraction can be much reduced.",
+        "By watching what people search for, click on and say online, companies can aim “behavioural” ads at those most likely to buy."
+      ],
+      "translations": [
+        "有句老话说，一半的广告预算都被浪费了——问题是，没人知道是哪一半。",
+        "在互联网时代，至少在理论上，这一比例可以大大降低。",
+        "通过观察人们在网上搜索、点击和发表的内容，公司可以将“行为”广告瞄准那些最有可能购买的人。"
+      ]
+    },
+    {
+      "index": 1,
+      "sentences": [
+        "In the past couple of weeks a quarrel has illustrated the value to advertisers of such fine-grained information: Should advertisers assume that people are happy to be tracked and sent behavioural ads?",
+        "Or should they have explicit permission?"
+      ],
+      "translations": [
+        "在过去几周里，一场争论说明了这种精细信息对广告商的价值：广告商是否应该假设人们乐意被追踪并接收行为广告？",
+        "还是他们应该获得明确的许可？"
+      ]
+    },
+    {
+      "index": 2,
+      "sentences": [
+        "In December 2010 America’s Federal Trade Commission (FTC) proposed adding a “do not track” (DNT) option to internet browsers, so that users could tell advertisers that they did not want to be followed.",
+        "Microsoft’s Internet Explorer and Apple’s Safari both offer DNT; Google’s Chrome is due to do so this year.",
+        "In February the FTC and the Digital Advertising Alliance (DAA) agreed that the industry would get cracking on responding to DNT requests."
+      ],
+      "translations": [
+        "2010年12月，美国联邦贸易委员会（FTC）提议在互联网浏览器中添加“禁止追踪”（DNT）选项，以便用户能够告诉广告商他们不想被追踪。",
+        "微软的Internet Explorer和苹果的Safari都提供DNT；谷歌的Chrome计划今年也这样做。",
+        "2月份，FTC和数字广告联盟（DAA）同意，该行业将开始着手回应DNT请求。"
+      ]
+    },
+    {
+      "index": 3,
+      "sentences": [
+        "On May 31st Microsoft set off the row.",
+        "It said that Internet Explorer 10, the version due to appear with Windows 8, would have DNT as a default.",
+        "Advertisers are horrified.",
+        "Human nature being what it is, most people stick with default settings.",
+        "Few switch DNT on now, but if tracking is off it will stay off.",
+        "Bob Liodice, the chief executive of the Association of National Advertisers, says consumers will be worse off if the industry cannot collect information about their preferences.",
+        "People will not get fewer ads, he says.",
+        "“They’ll get less meaningful, less targeted ads.”"
+      ],
+      "translations": [
+        "5月31日，微软引发了这场争论。",
+        "它表示，即将随Windows 8一起推出的Internet Explorer 10版本将把DNT设为默认设置。",
+        "广告商们感到震惊。",
+        "人性如此，大多数人会坚持默认设置。",
+        "现在很少有人开启DNT，但如果追踪被关闭，它将保持关闭状态。",
+        "美国全国广告商协会的首席执行官鲍勃·利奥迪斯表示，如果该行业无法收集有关消费者偏好的信息，消费者的情况将会更糟。",
+        "他说，人们不会看到更少的广告。",
+        "“他们会得到更无意义、更不精准的广告。”"
+      ]
+    },
+    {
+      "index": 4,
+      "sentences": [
+        "It is not yet clear how advertisers will respond.",
+        "Getting a DNT signal does not oblige anyone to stop tracking, although some companies have promised to do so.",
+        "Unable to tell whether someone really objects to behavioural ads or whether they are sticking with Microsoft’s default, some may ignore a DNT signal and press on anyway."
+      ],
+      "translations": [
+        "目前尚不清楚广告商将如何回应。",
+        "收到DNT信号并不强制任何人停止追踪，尽管一些公司已承诺这样做。",
+        "由于无法判断某人是真的反对行为广告，还是他们在坚持微软的默认设置，一些公司可能会忽略DNT信号并继续追踪。"
+      ]
+    },
+    {
+      "index": 5,
+      "sentences": [
+        "Also unclear is why Microsoft has gone it alone.",
+        "After all, it has an ad business too, which it says will comply with DNT requests, though it is still working out how.",
+        "If it is trying to upset Google, which relies almost wholly on advertising, it has chosen an indirect method; There is no guarantee that DNT by default will become the norm.",
+        "DNT does not seem an obviously huge selling point for Windows 8—though the firm has compared some of its other products favourably with Google’s on that count before.",
+        "Brendon Lynch, Microsoft’s chief privacy officer, blogged: “We believe consumers should have more control.”",
+        "Could it really be that simple?"
+      ],
+      "translations": [
+        "同样不清楚的是，为什么微软要单干。",
+        "毕竟，它也有广告业务，它表示将遵守DNT请求，尽管仍在研究如何做到。",
+        "如果它试图扰乱几乎完全依赖广告的谷歌，它选择了一种间接的方法；无法保证默认DNT会成为常态。",
+        "DNT似乎并不是Windows 8的一个明显巨大卖点——尽管该公司此前曾在这方面将其一些其他产品与谷歌的产品进行有利比较。",
+        "微软首席隐私官布伦丹·林奇在博客中写道：“我们认为消费者应该有更多的控制权。”",
+        "事情真的能那么简单吗？"
+      ]
+    },
+    {
+      "index": 6,
+      "sentences": [
+        "26. It is suggested in Paragraph 1 that “behavioural” ads help advertisers to\nA. lower their operational costs\nB. ease competition among themselves\nC. avoid complaints from consumers\nD. provide better online services"
+      ],
+      "translations": [
+        "26. 第一段暗示，“行为”广告帮助广告商\nA. 降低运营成本\nB. 缓解彼此间的竞争\nC. 避免消费者的投诉\nD. 提供更好的在线服务"
+      ]
+    },
+    {
+      "index": 7,
+      "sentences": [
+        "27. “the industry” (Para. 3) refers to\nA. online advertisers\nB. e-commerce conductors\nC. digital information analysts\nD. internet browser developers"
+      ],
+      "translations": [
+        "27. “the industry”（第三段）指的是\nA. 在线广告商\nB. 电子商务运营商\nC. 数字信息分析师\nD. 互联网浏览器开发者"
+      ]
+    },
+    {
+      "index": 8,
+      "sentences": [
+        "28. Bob Liodice holds that setting DNT as a default\nA. goes against human nature\nB. fails to affect the ad industry\nC. will not benefit consumers\nD. may cut the number of junk ads"
+      ],
+      "translations": [
+        "28. 鲍勃·利奥迪斯认为，将DNT设为默认设置\nA. 违背人性\nB. 无法影响广告业\nC. 不会使消费者受益\nD. 可能会减少垃圾广告的数量"
+      ]
+    },
+    {
+      "index": 9,
+      "sentences": [
+        "29. Which of the following is true according to Paragraph 6?\nA. Advertisers are willing to implement DNT.\nB. DNT may not serve its intended purpose.\nC. DNT is losing its popularity among consumers.\nD. Advertisers are obliged to offer behavioural ads."
+      ],
+      "translations": [
+        "29. 根据第六段，以下哪项是正确的？\nA. 广告商愿意实施DNT。\nB. DNT可能无法达到其预期目的。\nC. DNT在消费者中正失去 popularity。\nD. 广告商有义务提供行为广告。"
+      ]
+    },
+    {
+      "index": 10,
+      "sentences": [
+        "30. The author’s attitude towards what Brendon Lynch said in his blog is one of\nA. appreciation\nB. understanding\nC. indulgence\nD. skepticism"
+      ],
+      "translations": [
+        "30. 作者对布伦丹·林奇在博客中所说的态度是\nA. 欣赏\nB. 理解\nC. 纵容\nD. 怀疑"
+      ]
+    }
+  ],
+  "id": "zhenti_2013_2",
+  "zhenti": {
+    "year": 2013,
+    "text": 2
+  }
+}

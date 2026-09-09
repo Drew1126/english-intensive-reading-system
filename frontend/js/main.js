@@ -161,6 +161,7 @@ function updateUserUI() {
     var loggedIn = token && name;
     document.getElementById("userInfo").style.display = loggedIn ? "flex" : "none";
     document.getElementById("notLoggedIn").style.display = loggedIn ? "none" : "flex";
+    document.getElementById("settingsLogoutRow").style.display = loggedIn ? "flex" : "none";
     if (loggedIn) {
         document.getElementById("userName").textContent = name;
         document.getElementById("userAvatar").src = getAvatarUrl(name);
@@ -278,10 +279,12 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("logoutBtn").addEventListener("click", function() {
         clearAuth();
         agentModule.stopAnswer();
+        agentModule.discussionTopic = "";
         document.getElementById('chatMessages').replaceChildren();
         reviewModule.reset();
         updateUserUI();
         document.getElementById("checkinArea").style.display = "none";
+        document.getElementById("settingsOverlay").style.display = "none";
         showLogin();
     });
 

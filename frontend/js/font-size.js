@@ -1,4 +1,22 @@
 document.addEventListener('DOMContentLoaded', function() {
+    var settingsOverlay = document.getElementById('settingsOverlay');
+    document.getElementById('btnSettings').addEventListener('click', function() {
+        settingsOverlay.style.display = 'flex';
+        document.getElementById('settingsClose').focus();
+    });
+    function closeSettings() { settingsOverlay.style.display = 'none'; }
+    document.getElementById('settingsClose').addEventListener('click', closeSettings);
+    settingsOverlay.addEventListener('click', function(event) { if (event.target === settingsOverlay) closeSettings(); });
+    document.addEventListener('keydown', function(event) { if (event.key === 'Escape' && settingsOverlay.style.display !== 'none') closeSettings(); });
+
+    var darkMode = document.getElementById('darkModeToggle');
+    darkMode.checked = document.documentElement.dataset.theme === 'dark';
+    darkMode.addEventListener('change', function() {
+        if (darkMode.checked) document.documentElement.dataset.theme = 'dark';
+        else delete document.documentElement.dataset.theme;
+        try { localStorage.setItem('reading_theme', darkMode.checked ? 'dark' : 'light'); } catch (e) {}
+    });
+
     var sizes = [12, 14, 15, 16, 18, 20, 22, 24];
     [
         { id: 'articleFontSize', key: 'reading_article_font_size', variable: '--article-font-size', initial: 15 },

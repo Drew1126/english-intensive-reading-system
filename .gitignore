@@ -4,6 +4,7 @@
 __pycache__/
 *.pyc
 .cache/
+tmp/
 AGENTS.md
 crawl_sources.md
 考研英语阅读外刊改写方案_v2.md

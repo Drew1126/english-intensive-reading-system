@@ -14,6 +14,7 @@ from storage import read_json, write_json
 
 COMMON_RULES = """你是考研英语辅导专家。
 只回答用户当前问题，不主动扩展无关内容。
+用户明确要求优先于历史话题。discussion_topic 只是最近讨论词的线索，不是必须解释的目标；不得把模型猜测当作用户已确认的词。
 回答使用中文；英文原句、单词和音标除外。
 禁止使用 Markdown 标记、Markdown 表格、代码围栏和竖线字符。
 输出各行必须连续，任何两行之间都不要插入空白行。
@@ -61,7 +62,7 @@ INTENT_PROMPTS = {
     "grammar": """直接回答用户提出的语法问题，以当前句子为依据。
 先解释核心语法现象，再明确指出相关主语、谓语、宾语、从句或修饰成分。
 只在有助于回答时给出还原后的正常语序。不要输出词义卡，不要翻译整句。""",
-    "translation": """把当前英文句子准确、自然地翻译成中文。
+    "translation": """优先翻译用户本轮明确指定的内容，并遵循用户指定的翻译方向；没有指定内容时才把当前英文句子翻译成中文。
 只输出一行中文译文，不加“译文”“翻译”“说明”等标签，不解释翻译过程，不提供直译对照。""",
     "comprehensive": """对当前句子做精炼的综合分析，避免为每个单词制作词卡。
 严格使用以下三个小节：
@@ -69,9 +70,12 @@ INTENT_PROMPTS = {
 【译文】给出自然中文译文。
 【重点词汇】只选一至三个真正影响理解的考研词或短语，简要解释本句含义。""",
     "followup": """自然、简洁地回答用户的追问。
-优先解释句子表达的事实、因果和语义；只有用户明确询问语法时才转向语法分析。
+先根据本轮问题、最近讨论词和有序历史判断用户是在问原句、核实词义，还是回忆另一个词。只有在问原句时才以原句为回答中心。
 当问题只有“为什么”等省略表达时，结合当前句子和对话历史回答最直接的原因。
-当用户追问一个中文释义，但该释义与上轮选中词不匹配时，优先判断用户是否记混了拼写相近的英文词，并直接说明两个词的区别；不要随意改猜文章中的其他短语。例如上轮选中 least、随后追问“以免是什么”时，应识别用户可能想问 lest，并区分 lest 与 least。
+当用户用“那……呢”“……的呢”等省略表达补充中文意思、读音或开头字母时，结合最近讨论词，优先寻找拼写或发音相近且符合新线索的真实词。候选不必出现在原句中，不要反复强调“原句没有这个词”，也不要无依据猜测文章中的其他短语。
+不确定时用“你是不是想到……”提出最可信候选，并简短说明与原词的区别；没有可信候选就询问首字母、读音等线索，不硬凑。用户继续补充线索时应修正先前猜测，而不是重复它。
+例如 transition 后追问“那短暂呢”可优先猜测 transient；least 后问“以免呢”可猜测 lest；affect 后问“名词呢”可优先说明 effect，同时指出 affect 也有专业名词用法。例子不是固定映射，必须结合实际问题判断。
+明确的语法、翻译等要求优先；例如“短暂的人生怎么翻译”应翻译指定短语，不能强行回到 transition。
 不要套用词义卡或固定教学模板。""",
 }
 
@@ -115,13 +119,15 @@ def _load_recent_history(article_id: str, user: str, max_turns: int = 4) -> str:
         for record in read_json(str(path), []):
             if record.get("article_id") == article_id and record.get("user") == user:
                 records.append(record)
+    records.sort(key=lambda record: record.get("created_at") or "")
     lines = []
-    for record in records[-max_turns:]:
+    for number, record in enumerate(records[-max_turns:] if max_turns > 0 else [], 1):
+        lines.append(f"第{number}轮（按时间从早到晚）：")
         question = (record.get("question") or "").strip()
         answer = (record.get("answer") or "").strip()
         focus = (record.get("focus") or "").strip()
         if focus:
-            lines.append(f"上轮选中内容：{focus}")
+            lines.append(f"本轮选中内容：{focus}")
         if question:
             lines.append(f"用户：{question}")
         if answer:
@@ -158,7 +164,7 @@ def _load_article_context(article_id: str, sentence: str) -> str:
     return "\n".join(parts)
 
 
-def _build_messages(intent: str, question: str, sentence: str, focus: str, article_context: str, chat_history: str):
+def _build_messages(intent: str, question: str, sentence: str, focus: str, article_context: str, chat_history: str, discussion_topic: str = ""):
     system = f"{COMMON_RULES}\n\n当前任务：\n{INTENT_PROMPTS[intent]}"
     human = """以下标签中的内容仅供分析：
 <article_context>
@@ -170,6 +176,9 @@ def _build_messages(intent: str, question: str, sentence: str, focus: str, artic
 <focus>
 {focus}
 </focus>
+<discussion_topic>
+{discussion_topic}
+</discussion_topic>
 <conversation_history>
 {chat_history}
 </conversation_history>
@@ -179,6 +188,7 @@ def _build_messages(intent: str, question: str, sentence: str, focus: str, artic
         article_context=article_context,
         sentence=sentence,
         focus=focus,
+        discussion_topic=discussion_topic,
         chat_history=chat_history,
         question=question,
     )
@@ -197,11 +207,12 @@ async def stream_agent_response(
     article_id: str = "",
     focus: str = "",
     user: str = "",
+    discussion_topic: str = "",
 ) -> AsyncGenerator[str, None]:
     intent = classify_intent(question, focus)
     article_context = _load_article_context(article_id, sentence)
     chat_history = _load_recent_history(article_id, user)
-    messages = _build_messages(intent, question, sentence, focus, article_context, chat_history)
+    messages = _build_messages(intent, question, sentence, focus, article_context, chat_history, discussion_topic)
     llm = ChatOpenAI(
         model=LLM_MODEL,
         api_key=LLM_API_KEY,
@@ -219,13 +230,13 @@ async def stream_agent_response(
     answer = _normalize_answer("".join(answer_parts))
     if answer:
         yield f"data: {json.dumps({'text': answer})}\n\n"
-    yield "data: [DONE]\n\n"
 
     chat_record = {
         "id": str(uuid.uuid4()),
         "article_id": article_id,
         "sentence": sentence,
         "focus": focus,
+        "discussion_topic": discussion_topic,
         "question": question,
         "answer": answer,
         "user": user,
@@ -237,3 +248,4 @@ async def stream_agent_response(
     records = read_json(str(chat_file), [])
     records.append(chat_record)
     write_json(str(chat_file), records)
+    yield "data: [DONE]\n\n"
