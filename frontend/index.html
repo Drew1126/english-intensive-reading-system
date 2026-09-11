@@ -6,8 +6,8 @@
     <title>外刊阅读</title>
     <script>try{if(localStorage.getItem('reading_theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
     <link rel="stylesheet" href="css/main.css?v=10">
-    <link rel="stylesheet" href="css/article.css?v=5">
-    <link rel="stylesheet" href="css/panel.css?v=15">
+    <link rel="stylesheet" href="css/article.css?v=6">
+    <link rel="stylesheet" href="css/panel.css?v=16">
 </head>
 <body>
     <!-- Login overlay -->
@@ -75,15 +75,12 @@
 
         <aside class="agent-panel" id="agentPanel">
             <section class="agent-context-section" id="agentContextSection">
-                <button class="agent-context-toggle" id="agentContextToggle" type="button" aria-expanded="true" aria-controls="agentContextBody">
-                    <span class="agent-context-title">选中内容</span>
-                    <span class="agent-context-action">
-                        <span id="agentContextToggleText">收起</span>
-                    </span>
-                </button>
                 <div class="agent-context-body" id="agentContextBody">
                     <div class="selected-sentence" id="selectedSentence">
-                        <p class="placeholder">点击文章中的句子开始提问</p>
+                        <div class="selection-guide" aria-label="选择内容操作指引">
+                            <div><span>1</span><p>点击文章中的任意单词，先选中整句</p></div>
+                            <div><span>2</span><p>再次点击句中单词，可选择焦点词</p></div>
+                        </div>
                     </div>
                     <div class="translation-toggle-row">
                         <label class="toggle-switch">
@@ -94,6 +91,9 @@
                         <button class="clear-selection-btn" id="clearSelectionBtn" type="button">清除选择</button>
                     </div>
                 </div>
+                <button class="agent-context-toggle" id="agentContextToggle" type="button" aria-expanded="true" aria-controls="agentContextBody" aria-label="收起选中内容">
+                    <span class="agent-context-chevron" aria-hidden="true"></span>
+                </button>
             </section>
             <div class="chat-scroll-area">
             <div class="chat-messages" id="chatMessages" aria-live="polite">
@@ -218,9 +218,9 @@
     <script src="js/font-size.js?v=2"></script>
     <script src="js/api.js?v=4"></script>
     <script src="js/review.js?v=2"></script>
-    <script src="js/article.js?v=6"></script>
+    <script src="js/article.js?v=7"></script>
     <script src="js/zhenti.js?v=3"></script>
-    <script src="js/agent.js?v=6"></script>
-    <script src="js/main.js?v=9"></script>
+    <script src="js/agent.js?v=7"></script>
+    <script src="js/main.js?v=10"></script>
 </body>
 </html>

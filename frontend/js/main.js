@@ -135,19 +135,18 @@ function initAgentContextToggle() {
     var section = document.getElementById("agentContextSection");
     var button = document.getElementById("agentContextToggle");
     var body = document.getElementById("agentContextBody");
-    var buttonText = document.getElementById("agentContextToggleText");
-    if (!section || !button || !body || !buttonText) return;
+    if (!section || !button || !body) return;
 
     function setCollapsed(collapsed) {
         section.classList.toggle("is-collapsed", collapsed);
-        body.hidden = collapsed;
         button.setAttribute("aria-expanded", String(!collapsed));
-        buttonText.textContent = collapsed ? "展开" : "收起";
         button.setAttribute("aria-label", collapsed ? "展开选中内容" : "收起选中内容");
         localStorage.setItem("agent_context_collapsed", collapsed ? "1" : "0");
     }
     setCollapsed(localStorage.getItem("agent_context_collapsed") === "1");
-    button.addEventListener("click", function() { setCollapsed(!body.hidden); });
+    button.addEventListener("click", function() {
+        setCollapsed(!section.classList.contains("is-collapsed"));
+    });
 }
 
 function getAvatarUrl(name) { return BASE + "/auth/avatar/" + encodeURIComponent(name) + "?t=" + Date.now(); }

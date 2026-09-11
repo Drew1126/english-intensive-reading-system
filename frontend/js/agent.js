@@ -43,7 +43,7 @@ var agentModule = {
         if (p && (p.dataset.en || p.textContent).trim()) {
             this.showSelectedSentence(p.dataset.en || p.textContent, window.__currentIdx);
         } else {
-            document.getElementById("selectedSentence").innerHTML = '<p style="color:var(--text-muted);text-align:center;font-style:italic;">点击文章中的句子开始提问</p>';
+            document.getElementById("selectedSentence").innerHTML = '<div class="selection-guide" aria-label="选择内容操作指引"><div><span>1</span><p>点击文章中的任意单词，先选中整句</p></div><div><span>2</span><p>再次点击句中单词，可选择焦点词</p></div></div>';
         }
     },
 

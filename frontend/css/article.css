@@ -171,3 +171,27 @@
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
 }
+.selection-hint {
+    position: fixed;
+    z-index: 4100;
+    max-width: min(270px, calc(100vw - 24px));
+    padding: 7px 10px;
+    border: 1px solid color-mix(in srgb, var(--accent-primary) 22%, var(--border-color));
+    border-radius: 8px;
+    color: var(--text-secondary);
+    background: color-mix(in srgb, var(--bg-secondary) 94%, var(--accent-primary));
+    box-shadow: 0 5px 16px rgba(15, 23, 42, .11);
+    font-size: 12px;
+    line-height: 1.45;
+    opacity: 0;
+    transform: translateY(-3px);
+    transition: opacity .18s ease, transform .18s ease;
+    cursor: pointer;
+    pointer-events: none;
+}
+
+.selection-hint.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}

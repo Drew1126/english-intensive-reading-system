@@ -278,6 +278,7 @@ var articleModule = {
                 self.selectedSentenceIdx = idx;
                 window.__currentIdx = idx;
                 agentModule.showSelectedSentence(sentenceEl.textContent.trim(), idx);
+                self.showFocusSelectionHint(sentenceEl);
                 if (typeof window.openMobileAgent === "function") window.openMobileAgent();
                 return;
             }
@@ -294,6 +295,37 @@ var articleModule = {
         bodyEl.addEventListener("keydown", function(e) {
             if (self.editing && e.key === "Enter") { e.preventDefault(); }
         });
+    },
+
+    showFocusSelectionHint: function(sentenceEl) {
+        var storageKey = "reading_focus_selection_hint_seen";
+        try {
+            if (localStorage.getItem(storageKey) === "1") return;
+            localStorage.setItem(storageKey, "1");
+        } catch (err) { /* show the hint when storage is unavailable */ }
+
+        document.querySelectorAll(".selection-hint").forEach(function(el) { el.remove(); });
+        var hint = document.createElement("div");
+        hint.className = "selection-hint";
+        hint.setAttribute("role", "status");
+        hint.textContent = "再次点击已选句中的单词，可选择焦点词";
+        document.body.appendChild(hint);
+
+        var rect = sentenceEl.getBoundingClientRect();
+        var left = Math.min(window.innerWidth - hint.offsetWidth - 12, Math.max(12, rect.left + Math.min(rect.width, 120) / 2 - hint.offsetWidth / 2));
+        var top = rect.bottom + 8;
+        if (top + hint.offsetHeight > window.innerHeight - 12) top = rect.top - hint.offsetHeight - 8;
+        hint.style.left = left + "px";
+        hint.style.top = Math.max(12, top) + "px";
+        requestAnimationFrame(function() { hint.classList.add("is-visible"); });
+
+        var timer = setTimeout(remove, 3600);
+        function remove() {
+            clearTimeout(timer);
+            hint.classList.remove("is-visible");
+            setTimeout(function() { hint.remove(); }, 180);
+        }
+        hint.addEventListener("click", remove, { once: true });
     },
 
     getWordInfoAtPoint: function(x, y) {

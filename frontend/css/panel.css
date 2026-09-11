@@ -13,70 +13,104 @@
 }
 
 .agent-context-section {
+    position: relative;
     flex: 0 0 auto;
+    margin: 0 2px 17px;
+    padding: 9px 11px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 11px;
+    background: color-mix(in srgb, var(--bg-tertiary) 58%, var(--bg-secondary));
+    box-shadow: 0 2px 7px rgba(15, 23, 42, 0.045);
+    transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
 }
 
 .agent-context-toggle {
-    width: 100%;
+    position: absolute;
+    left: 50%;
+    bottom: -10px;
+    width: 34px;
+    height: 18px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 0 10px 2px;
-    border: 0;
-    background: transparent;
-    color: var(--text-secondary);
-    font: inherit;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.agent-context-title {
-    color: var(--text-primary);
-    font-weight: 600;
-    letter-spacing: 0.02em;
-}
-
-.agent-context-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    min-width: 62px;
     justify-content: center;
-    padding: 5px 10px;
-    border: 1px solid #dbe3ef;
-    border-radius: 999px;
-    color: #475569;
-    background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    transition: color 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.12s, background 0.18s;
+    padding: 0 0 5px;
+    border: 1px solid var(--border-color);
+    border-top: 0;
+    border-radius: 0 0 9px 9px;
+    background: color-mix(in srgb, var(--bg-tertiary) 58%, var(--bg-secondary));
+    color: var(--text-muted);
+    cursor: pointer;
+    transform: translateX(-50%);
+    transition: color .16s ease, border-color .16s ease, background .16s ease;
 }
 
-.agent-context-toggle:hover .agent-context-action,
-.agent-context-toggle:focus-visible .agent-context-action {
+.agent-context-toggle::before {
+    content: "";
+    position: absolute;
+    inset: -7px -6px;
+}
+
+.agent-context-chevron {
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(225deg) translate(-1px, -1px);
+    transition: transform .18s ease;
+}
+
+.agent-context-section.is-collapsed .agent-context-chevron {
+    transform: rotate(45deg) translate(-1px, -1px);
+}
+
+.agent-context-section:hover,
+.agent-context-section:focus-within {
+    border-color: color-mix(in srgb, var(--accent-primary) 26%, var(--border-color));
+    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.065);
+}
+
+.agent-context-toggle:hover,
+.agent-context-toggle:focus-visible {
     color: var(--accent-primary);
-    border-color: #93c5fd;
-    background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%);
-    box-shadow: 0 3px 8px rgba(59, 130, 246, 0.16), inset 0 1px 0 #ffffff;
-}
-
-.agent-context-toggle:active .agent-context-action {
-    transform: translateY(1px);
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+    border-color: color-mix(in srgb, var(--accent-primary) 40%, var(--border-color));
 }
 
 .agent-context-toggle:focus-visible {
-    outline: none;
+    outline: 2px solid color-mix(in srgb, var(--accent-primary) 28%, transparent);
+    outline-offset: 2px;
 }
 
 .selected-sentence {
-    padding: 10px 14px 8px;
-    border-bottom: 1px solid var(--border-color);
-    background: var(--bg-tertiary);
-    border-radius: var(--radius);
-    margin-bottom: 12px;
-    min-height: 40px;
-    font-size: 13px;
-    line-height: 1.5;
+    padding: 4px 5px 6px;
+    border: 0;
+    background: transparent;
+    border-radius: 7px;
+    margin-bottom: 6px;
+    min-height: 24px;
+    font-size: 12px;
+    line-height: 1.55;
+    transition: max-height .2s ease;
+}
+
+.agent-context-section.is-collapsed {
+    padding-top: 6px;
+    padding-bottom: 5px;
+}
+
+.agent-context-section.is-collapsed .selected-sentence {
+    display: -webkit-box;
+    min-height: 20px;
+    max-height: 24px;
+    margin-bottom: 0;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
+
+.agent-context-section.is-collapsed .translation-toggle-row {
+    display: none;
 }
 
 .selected-sentence .placeholder {
@@ -91,7 +125,7 @@
     color: #92400e;
     padding: 1px 6px;
     border-radius: 3px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     border-bottom: 2px solid #f59e0b;
     margin-left: 4px;
@@ -202,9 +236,47 @@
 .translation-toggle-row {
     display: flex;
     align-items: center;
-    padding: 4px 0 8px;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 12px;
+    padding: 5px 4px 2px;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 0;
+    margin-bottom: 0;
+}
+
+.selection-guide {
+    display: grid;
+    gap: 5px;
+    padding: 1px 0;
+    color: var(--text-muted);
+}
+
+.selection-guide > div {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.selection-guide span {
+    display: inline-flex;
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: color-mix(in srgb, var(--accent-primary) 75%, var(--text-muted));
+    background: color-mix(in srgb, var(--accent-primary) 8%, transparent);
+    font-size: 10px;
+    font-style: normal;
+}
+
+.selection-guide p {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.agent-context-section.is-collapsed .selection-guide > div + div {
+    display: none;
 }
 
 .clear-selection-btn {
@@ -352,7 +424,8 @@
 .font-size-control { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted); }
 .font-size-control select { font: inherit; color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: 5px; padding: 2px 4px; background: var(--bg-secondary); }
 .article-body .paragraph { font-size: var(--article-font-size, 15px); }
-.chat-messages .message .answer-content, .chat-messages .message .question-label, #selectedSentence .sentence-text, .vocabulary-item p { font-size: var(--chat-font-size, 14px); }
+.chat-messages .message .answer-content, .chat-messages .message .question-label, .vocabulary-item p { font-size: var(--chat-font-size, 14px); }
+#selectedSentence .sentence-text { font-size: max(11px, calc(var(--chat-font-size, 14px) - 2px)); }
 
 /* Keep both desktop panels aligned and fill the viewport inside the 24px page inset. */
 @media (min-width: 1051px) {
