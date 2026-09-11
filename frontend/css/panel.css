@@ -425,7 +425,7 @@
 .font-size-control select { font: inherit; color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: 5px; padding: 2px 4px; background: var(--bg-secondary); }
 .article-body .paragraph { font-size: var(--article-font-size, 15px); }
 .chat-messages .message .answer-content, .chat-messages .message .question-label, .vocabulary-item p { font-size: var(--chat-font-size, 14px); }
-#selectedSentence .sentence-text { font-size: max(11px, calc(var(--chat-font-size, 14px) - 2px)); }
+#selectedSentence .sentence-text { font-size: var(--chat-font-size, 14px); }
 
 /* Keep both desktop panels aligned and fill the viewport inside the 24px page inset. */
 @media (min-width: 1051px) {

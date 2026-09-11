@@ -334,6 +334,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("btnUploadPdf").addEventListener("click", function() { document.getElementById("pdfFileInput").click(); });
     document.getElementById("pdfFileInput").addEventListener("change", function(e) {
         if (e.target.files && e.target.files.length > 0) {
+            document.getElementById("historyOverlay").style.display = "none";
             articleModule.loadFromPdf(e.target.files[0]);
             e.target.value = "";
         }

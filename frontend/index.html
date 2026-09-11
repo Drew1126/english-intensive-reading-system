@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>外刊阅读</title>
     <script>try{if(localStorage.getItem('reading_theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
-    <link rel="stylesheet" href="css/main.css?v=10">
+    <link rel="stylesheet" href="css/main.css?v=11">
     <link rel="stylesheet" href="css/article.css?v=6">
-    <link rel="stylesheet" href="css/panel.css?v=16">
+    <link rel="stylesheet" href="css/panel.css?v=17">
 </head>
 <body>
     <!-- Login overlay -->
@@ -40,14 +40,12 @@
                         <button class="btn-login" id="loginBtnHeader">登录</button>
                     </div>
                     <nav class="article-nav-bar">
-                        <button class="btn-history" id="btnHistory" title="历史文章">&#x1F4C2;</button>
+                        <button class="btn-history" id="btnHistory" title="文章库" aria-label="文章库">&#x1F4C2;</button>
                         <button class="btn-history btn-settings" id="btnSettings" type="button" title="设置" aria-label="设置">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M19.43 12.98c.04-.32.07-.65.07-.98s-.03-.66-.07-.98l2.11-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.6-.22l-2.49 1a7.3 7.3 0 0 0-1.69-.98l-.38-2.65A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.5.42l-.38 2.65c-.61.25-1.17.58-1.69.98l-2.49-1a.5.5 0 0 0-.6.22l-2 3.46a.5.5 0 0 0 .12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65a.5.5 0 0 0-.12.64l2 3.46a.5.5 0 0 0 .6.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.38-2.65c.61-.25 1.17-.58 1.69-.98l2.49 1a.5.5 0 0 0 .6-.22l2-3.46a.5.5 0 0 0-.12-.64l-2.11-1.65ZM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z"></path>
                             </svg>
                         </button>
-                        <button class="btn-upload-pdf" id="btnUploadPdf">上传 PDF</button>
-                        <input type="file" id="pdfFileInput" accept=".pdf" style="display:none">
                     </nav>
                 </div>
             </header>
@@ -159,16 +157,17 @@
 
     <div class="history-overlay" id="historyOverlay">
         <div class="history-panel">
-            <div class="history-header">
-                <h3>历史文章</h3>
-                <button class="history-close" id="historyClose">&times;</button>
-            </div>
             <div class="history-tabs">
                 <button class="history-tab active" data-tab="waikan" id="tabWaikanBtn">外刊</button>
                 <button class="history-tab" data-tab="zhenti" id="tabZhentiBtn">考研真题</button>
+                <button class="history-close" id="historyClose" title="关闭" aria-label="关闭">&times;</button>
             </div>
             <div class="history-body">
                 <div class="history-tab-content" id="tabWaikanContent">
+                    <div class="waikan-toolbar">
+                        <button class="btn-upload-pdf" id="btnUploadPdf">上传 PDF</button>
+                        <input type="file" id="pdfFileInput" accept=".pdf" style="display:none">
+                    </div>
                     <div class="history-list" id="historyList"></div>
                 </div>
                 <div class="history-tab-content" id="tabZhentiContent" style="display:none">
@@ -221,6 +220,6 @@
     <script src="js/article.js?v=7"></script>
     <script src="js/zhenti.js?v=3"></script>
     <script src="js/agent.js?v=7"></script>
-    <script src="js/main.js?v=10"></script>
+    <script src="js/main.js?v=11"></script>
 </body>
 </html>
