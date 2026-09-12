@@ -16,31 +16,46 @@
     position: relative;
     flex: 0 0 auto;
     margin: 0 2px 17px;
-    padding: 9px 11px 8px;
-    border: 1px solid var(--border-color);
-    border-radius: 11px;
-    background: color-mix(in srgb, var(--bg-tertiary) 58%, var(--bg-secondary));
-    box-shadow: 0 2px 7px rgba(15, 23, 42, 0.045);
+    padding: 10px;
+    border: 1px solid color-mix(in srgb, var(--text-muted) 32%, var(--border-color));
+    border-radius: 14px;
+    background: var(--bg-secondary);
+    box-shadow: 0 -5px 18px rgba(15, 23, 42, 0.075), 0 2px 5px rgba(15, 23, 42, 0.04);
     transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+.article-context-section {
+    margin: 12px 24px 18px;
+}
+
+.agent-context-body {
+    display: flow-root;
+    max-height: min(220px, 28dvh);
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.agent-panel > .chat-scroll-area {
+    padding-top: 0;
 }
 
 .agent-context-toggle {
     position: absolute;
     left: 50%;
-    bottom: -10px;
-    width: 34px;
-    height: 18px;
+    top: -9px;
+    width: 30px;
+    height: 17px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 0 5px;
-    border: 1px solid var(--border-color);
-    border-top: 0;
-    border-radius: 0 0 9px 9px;
-    background: color-mix(in srgb, var(--bg-tertiary) 58%, var(--bg-secondary));
+    padding: 0 0 2px;
+    border: 1px solid color-mix(in srgb, var(--text-muted) 38%, var(--border-color));
+    border-radius: 999px;
+    background: var(--bg-secondary);
     color: var(--text-muted);
     cursor: pointer;
     transform: translateX(-50%);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
     transition: color .16s ease, border-color .16s ease, background .16s ease;
 }
 
@@ -51,22 +66,22 @@
 }
 
 .agent-context-chevron {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-right: 1.5px solid currentColor;
     border-bottom: 1.5px solid currentColor;
-    transform: rotate(225deg) translate(-1px, -1px);
+    transform: rotate(45deg) translate(-1px, -1px);
     transition: transform .18s ease;
 }
 
 .agent-context-section.is-collapsed .agent-context-chevron {
-    transform: rotate(45deg) translate(-1px, -1px);
+    transform: rotate(225deg) translate(-1px, -1px);
 }
 
 .agent-context-section:hover,
 .agent-context-section:focus-within {
-    border-color: color-mix(in srgb, var(--accent-primary) 26%, var(--border-color));
-    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.065);
+    border-color: color-mix(in srgb, var(--accent-primary) 25%, var(--border-color));
+    box-shadow: 0 -7px 22px rgba(15, 23, 42, 0.09), 0 2px 6px rgba(15, 23, 42, 0.05);
 }
 
 .agent-context-toggle:hover,
@@ -81,11 +96,16 @@
 }
 
 .selected-sentence {
-    padding: 4px 5px 6px;
+    padding: 3px 12px;
     border: 0;
+    border-left: 2px solid color-mix(in srgb, var(--accent-primary) 30%, var(--border-color));
     background: transparent;
-    border-radius: 7px;
-    margin-bottom: 6px;
+    border-radius: 0;
+    min-width: 0;
+    overflow: visible;
+    overflow-wrap: anywhere;
+    scrollbar-width: thin;
+    margin-bottom: 0;
     min-height: 24px;
     font-size: 12px;
     line-height: 1.55;
@@ -93,8 +113,12 @@
 }
 
 .agent-context-section.is-collapsed {
-    padding-top: 6px;
-    padding-bottom: 5px;
+    padding: 7px 9px;
+    cursor: pointer;
+}
+
+.agent-context-section.is-collapsed .agent-context-body {
+    grid-template-columns: minmax(0, 1fr);
 }
 
 .agent-context-section.is-collapsed .selected-sentence {
@@ -102,14 +126,49 @@
     min-height: 20px;
     max-height: 24px;
     margin-bottom: 0;
-    padding-top: 1px;
-    padding-bottom: 1px;
+    padding: 3px 8px;
     overflow: hidden;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
 }
 
 .agent-context-section.is-collapsed .translation-toggle-row {
+    display: none;
+}
+
+.agent-context-section:not(:has(.sentence-text)) .translation-toggle-row {
+    display: none;
+}
+
+.agent-context-section.is-collapsed .selected-sentence:has(.sentence-text) {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.agent-context-section.is-collapsed .sentence-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap !important;
+}
+
+.agent-context-section.is-collapsed .focus-wrapper {
+    order: -1;
+    flex: 0 1 auto;
+    max-width: 45%;
+    min-width: 0;
+}
+
+.agent-context-section.is-collapsed .focus-word {
+    display: block;
+    margin-left: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.agent-context-section.is-collapsed .clear-focus {
     display: none;
 }
 
@@ -127,7 +186,7 @@
     border-radius: 3px;
     font-size: 11px;
     font-weight: 500;
-    border-bottom: 2px solid #f59e0b;
+    border-bottom: 0;
     margin-left: 4px;
 }
 
@@ -234,11 +293,14 @@
 }
 
 .translation-toggle-row {
+    float: right;
+    margin: 0 0 0 10px;
     display: flex;
+    flex-direction: row;
     align-items: center;
-    padding: 5px 4px 2px;
-    border-top: 1px solid var(--border-color);
-    border-bottom: 0;
+    gap: 4px;
+    padding: 0;
+    border-left: 0;
     margin-bottom: 0;
 }
 
@@ -280,34 +342,82 @@
 }
 
 .clear-selection-btn {
-    margin-left: auto;
-    padding: 4px 9px;
+    margin-left: 0;
+    width: 26px;
+    min-height: 24px;
+    padding: 2px 5px;
     border: 1px solid var(--border-color);
-    border-radius: 999px;
-    background: white;
+    border-radius: 6px;
+    background: var(--bg-secondary);
     color: var(--text-secondary);
-    font-size: 12px;
+    font-size: 19px;
+    line-height: 1;
     cursor: pointer;
 }
 
-.clear-selection-btn:hover { color: #b45309; border-color: #f59e0b; background: #fffbeb; }
+.translation-toggle-row .clear-selection-btn,
+.translation-toggle-row .toggle-switch {
+    position: relative;
+    border-color: transparent;
+    background: var(--bg-tertiary);
+    white-space: nowrap;
+    font-family: inherit;
+    transition: background .16s ease, color .16s ease;
+}
+
+.translation-toggle-row .clear-selection-btn:hover,
+.translation-toggle-row .toggle-switch:hover {
+    color: var(--accent-primary);
+    background: color-mix(in srgb, var(--accent-primary) 8%, var(--bg-tertiary));
+}
 
 .translation-toggle-row .toggle-switch {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 4px;
+    width: 26px;
+    min-height: 24px;
+    padding: 2px 5px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: var(--bg-tertiary);
     cursor: pointer;
     user-select: none;
 }
 
+.translation-toggle-row .toggle-switch:hover {
+    color: var(--accent-primary);
+    border-color: transparent;
+}
+
+.translation-toggle-row .toggle-switch:has(input:checked) {
+    color: var(--accent-primary);
+    border-color: color-mix(in srgb, var(--accent-primary) 30%, transparent);
+    background: color-mix(in srgb, var(--accent-primary) 12%, var(--bg-secondary));
+}
+
 .translation-toggle-row .toggle-switch input {
-    display: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.translation-toggle-row .toggle-switch:has(input:focus-visible),
+.translation-toggle-row .clear-selection-btn:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
 }
 
 .translation-toggle-row .slider {
-    width: 36px;
-    height: 20px;
-    background: var(--bg-tertiary);
+    width: 24px;
+    flex: 0 0 24px;
+    height: 14px;
+    background: var(--border-color);
     border-radius: 10px;
     position: relative;
     transition: background 0.2s;
@@ -316,8 +426,8 @@
 .translation-toggle-row .slider::after {
     content: "";
     position: absolute;
-    width: 16px;
-    height: 16px;
+    width: 10px;
+    height: 10px;
     background: white;
     border-radius: 50%;
     top: 2px;
@@ -331,12 +441,15 @@
 }
 
 .translation-toggle-row .toggle-switch input:checked + .slider::after {
-    transform: translateX(16px);
+    transform: translateX(10px);
 }
 
 .translation-toggle-row .label-text {
     font-size: 12px;
-    color: var(--text-secondary);
+    font-weight: 500;
+    line-height: 1;
+    color: inherit;
+    white-space: nowrap;
 }
 
 .input-area {
@@ -451,5 +564,20 @@
     .agent-panel {
         position: relative;
         top: auto;
+    }
+}
+
+@media (max-width: 1050px) {
+    .article-context-section {
+        margin: 0 16px 18px;
+    }
+}
+
+@media (max-width: 520px) {
+    .agent-context-body {
+        gap: 6px;
+    }
+    .translation-toggle-row {
+        padding-left: 7px;
     }
 }

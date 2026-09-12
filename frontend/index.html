@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>外刊阅读</title>
     <script>try{if(localStorage.getItem('reading_theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
-    <link rel="stylesheet" href="css/main.css?v=11">
+    <link rel="stylesheet" href="css/main.css?v=13">
     <link rel="stylesheet" href="css/article.css?v=6">
-    <link rel="stylesheet" href="css/panel.css?v=17">
+    <link rel="stylesheet" href="css/panel.css?v=29">
 </head>
 <body>
     <!-- Login overlay -->
@@ -23,33 +23,41 @@
         </div>
     </div>
 
+    <button class="mobile-sidebar-trigger" id="mobileSidebarTrigger" type="button" aria-label="打开菜单" aria-controls="appSidebar" aria-expanded="false">☰</button>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+    <aside class="app-sidebar" id="appSidebar" aria-label="全局菜单">
+        <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="收起菜单" aria-expanded="true">
+            <span aria-hidden="true">‹</span>
+        </button>
+        <div class="sidebar-profile">
+            <div class="user-info" id="userInfo" style="display:none">
+                <img class="user-avatar" id="userAvatar" src="default-avatar.svg" alt="用户头像">
+                <div class="sidebar-user-text">
+                    <span class="user-name" id="userName"></span>
+                    <span class="role-badge" id="roleBadge"></span>
+                </div>
+            </div>
+            <div class="user-info not-logged-in" id="notLoggedIn">
+                <button class="btn-login sidebar-login" id="loginBtnHeader"><span class="sidebar-item-icon" aria-hidden="true">↪</span><span class="sidebar-label">登录</span></button>
+            </div>
+        </div>
+        <nav class="article-nav-bar">
+            <button class="btn-history" id="btnHistory" title="文章库" aria-label="文章库"><span class="sidebar-item-icon" aria-hidden="true">📁</span><span class="sidebar-label">文章库</span></button>
+            <button class="btn-account-manage admin-only" id="btnAccountManage" style="display:none" title="账号管理">
+                <span class="sidebar-item-icon" aria-hidden="true">♙</span><span class="sidebar-label">账号管理</span>
+            </button>
+            <button class="btn-history btn-settings" id="btnSettings" type="button" title="设置" aria-label="设置">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M19.43 12.98c.04-.32.07-.65.07-.98s-.03-.66-.07-.98l2.11-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.6-.22l-2.49 1a7.3 7.3 0 0 0-1.69-.98l-.38-2.65A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.5.42l-.38 2.65c-.61.25-1.17.58-1.69.98l-2.49-1a.5.5 0 0 0-.6.22l-2 3.46a.5.5 0 0 0 .12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65a.5.5 0 0 0-.12.64l2 3.46a.5.5 0 0 0 .6.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.38-2.65c.61-.25 1.17-.58 1.69-.98l2.49 1a.5.5 0 0 0 .6-.22l2-3.46a.5.5 0 0 0-.12-.64l-2.11-1.65ZM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z"></path>
+                </svg>
+                <span class="sidebar-label">设置</span>
+            </button>
+        </nav>
+        <span class="today-date" id="todayDate"></span>
+    </aside>
+
     <main class="main-content">
         <section class="article-section">
-            <header class="header">
-                <div class="header-left">
-                    <span class="today-date" id="todayDate"></span>
-                </div>
-                <div class="header-right">
-                    <div class="user-info" id="userInfo" style="display:none">
-                        <img class="user-avatar" id="userAvatar" src="default-avatar.svg" alt="avatar">
-                        <span class="user-name" id="userName"></span>
-                        <span class="role-badge" id="roleBadge"></span>
-                        <button class="btn-account-manage admin-only" id="btnAccountManage" style="display:none">账号管理</button>
-                    </div>
-                    <div class="user-info not-logged-in" id="notLoggedIn">
-                        <button class="btn-login" id="loginBtnHeader">登录</button>
-                    </div>
-                    <nav class="article-nav-bar">
-                        <button class="btn-history" id="btnHistory" title="文章库" aria-label="文章库">&#x1F4C2;</button>
-                        <button class="btn-history btn-settings" id="btnSettings" type="button" title="设置" aria-label="设置">
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M19.43 12.98c.04-.32.07-.65.07-.98s-.03-.66-.07-.98l2.11-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.6-.22l-2.49 1a7.3 7.3 0 0 0-1.69-.98l-.38-2.65A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.5.42l-.38 2.65c-.61.25-1.17.58-1.69.98l-2.49-1a.5.5 0 0 0-.6.22l-2 3.46a.5.5 0 0 0 .12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65a.5.5 0 0 0-.12.64l2 3.46a.5.5 0 0 0 .6.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.38-2.65c.61-.25 1.17-.58 1.69-.98l2.49 1a.5.5 0 0 0 .6-.22l2-3.46a.5.5 0 0 0-.12-.64l-2.11-1.65ZM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z"></path>
-                            </svg>
-                        </button>
-                    </nav>
-                </div>
-            </header>
-
             <div class="article-content">
                 <div class="article-header">
                     <span class="source-tag" id="sourceTag"></span>
@@ -67,32 +75,31 @@
                     <button class="btn-checkin" id="btnVocabularyReview" type="button">生词回顾（0）</button>
                 </div>
             </div>
-        </section>
-
-        <div class="layout-resizer" id="layoutResizer" role="separator" aria-label="调整文章与问答面板宽度" aria-orientation="vertical" aria-valuemin="380" tabindex="0"></div>
-
-        <aside class="agent-panel" id="agentPanel">
-            <section class="agent-context-section" id="agentContextSection">
+            <section class="agent-context-section article-context-section" id="agentContextSection">
                 <div class="agent-context-body" id="agentContextBody">
+                    <div class="translation-toggle-row">
+                        <label class="toggle-switch" title="显示翻译">
+                            <input type="checkbox" id="sentenceTranslationToggle" aria-label="显示翻译">
+                            <span class="label-text" aria-hidden="true">译</span>
+                        </label>
+                        <button class="clear-selection-btn" id="clearSelectionBtn" type="button" title="清除选择" aria-label="清除选择">×</button>
+                    </div>
                     <div class="selected-sentence" id="selectedSentence">
                         <div class="selection-guide" aria-label="选择内容操作指引">
                             <div><span>1</span><p>点击文章中的任意单词，先选中整句</p></div>
                             <div><span>2</span><p>再次点击句中单词，可选择焦点词</p></div>
                         </div>
                     </div>
-                    <div class="translation-toggle-row">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="sentenceTranslationToggle">
-                            <span class="slider"></span>
-                            <span class="label-text">显示翻译</span>
-                        </label>
-                        <button class="clear-selection-btn" id="clearSelectionBtn" type="button">清除选择</button>
-                    </div>
                 </div>
                 <button class="agent-context-toggle" id="agentContextToggle" type="button" aria-expanded="true" aria-controls="agentContextBody" aria-label="收起选中内容">
                     <span class="agent-context-chevron" aria-hidden="true"></span>
                 </button>
             </section>
+        </section>
+
+        <div class="layout-resizer" id="layoutResizer" role="separator" aria-label="调整文章与问答面板宽度" aria-orientation="vertical" aria-valuemin="380" tabindex="0"></div>
+
+        <aside class="agent-panel" id="agentPanel">
             <div class="chat-scroll-area">
             <div class="chat-messages" id="chatMessages" aria-live="polite">
                 <div class="chat-empty" id="chatEmpty">点击左侧文章中的单词或句子，然后选择快捷问题，也可以直接输入问题。</div>
@@ -217,9 +224,9 @@
     <script src="js/font-size.js?v=2"></script>
     <script src="js/api.js?v=4"></script>
     <script src="js/review.js?v=2"></script>
-    <script src="js/article.js?v=7"></script>
+    <script src="js/article.js?v=8"></script>
     <script src="js/zhenti.js?v=3"></script>
     <script src="js/agent.js?v=7"></script>
-    <script src="js/main.js?v=11"></script>
+    <script src="js/main.js?v=14"></script>
 </body>
 </html>

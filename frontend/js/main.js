@@ -147,6 +147,60 @@ function initAgentContextToggle() {
     button.addEventListener("click", function() {
         setCollapsed(!section.classList.contains("is-collapsed"));
     });
+    section.addEventListener("click", function(event) {
+        if (button.contains(event.target)) return;
+        if (section.classList.contains("is-collapsed")) {
+            setCollapsed(false);
+        }
+    });
+}
+
+function initAppSidebar() {
+    var sidebar = document.getElementById("appSidebar");
+    var toggle = document.getElementById("sidebarToggle");
+    var mobileTrigger = document.getElementById("mobileSidebarTrigger");
+    var backdrop = document.getElementById("sidebarBackdrop");
+    var mobile = window.matchMedia("(max-width: 1050px)");
+    if (!sidebar || !toggle || !mobileTrigger || !backdrop) return;
+
+    function setDesktopCollapsed(collapsed) {
+        sidebar.classList.toggle("is-collapsed", collapsed);
+        toggle.setAttribute("aria-expanded", String(!collapsed));
+        toggle.setAttribute("aria-label", collapsed ? "展开菜单" : "收起菜单");
+        toggle.querySelector("span").textContent = collapsed ? "›" : "‹";
+        localStorage.setItem("app_sidebar_collapsed", collapsed ? "1" : "0");
+    }
+    function setMobileOpen(open) {
+        sidebar.classList.toggle("mobile-open", open);
+        backdrop.classList.toggle("visible", open);
+        document.body.classList.toggle("mobile-sidebar-open", open);
+        mobileTrigger.setAttribute("aria-expanded", String(open));
+        toggle.setAttribute("aria-label", open ? "关闭菜单" : "打开菜单");
+        toggle.querySelector("span").textContent = open ? "×" : "›";
+    }
+    function syncMode() {
+        if (mobile.matches) {
+            sidebar.classList.remove("is-collapsed");
+            setMobileOpen(false);
+        } else {
+            setMobileOpen(false);
+            setDesktopCollapsed(localStorage.getItem("app_sidebar_collapsed") === "1");
+        }
+    }
+    toggle.addEventListener("click", function() {
+        if (mobile.matches) setMobileOpen(false);
+        else setDesktopCollapsed(!sidebar.classList.contains("is-collapsed"));
+    });
+    mobileTrigger.addEventListener("click", function() { setMobileOpen(true); });
+    backdrop.addEventListener("click", function() { setMobileOpen(false); });
+    sidebar.querySelector(".article-nav-bar").addEventListener("click", function() {
+        if (mobile.matches) setMobileOpen(false);
+    });
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape" && mobile.matches) setMobileOpen(false);
+    });
+    mobile.addEventListener("change", syncMode);
+    syncMode();
 }
 
 function getAvatarUrl(name) { return BASE + "/auth/avatar/" + encodeURIComponent(name) + "?t=" + Date.now(); }
@@ -166,7 +220,7 @@ function updateUserUI() {
         document.getElementById("userAvatar").src = getAvatarUrl(name);
     }
     var admin = loggedIn && isAdmin();
-    document.getElementById("btnAccountManage").style.display = admin ? "inline-block" : "none";
+    document.getElementById("btnAccountManage").style.display = admin ? "flex" : "none";
     document.getElementById("btnUploadPdf").style.display = admin ? "inline-block" : "none";
     if (articleModule.currentArticle) document.getElementById("btnEditArticle").style.display = admin ? "inline-block" : "none";
     var roleBadge = document.getElementById("roleBadge");
@@ -228,6 +282,7 @@ function updateCheckinArea() {
 
 document.addEventListener("DOMContentLoaded", function() {
     initFeedbackUI();
+    initAppSidebar();
     reviewModule.init();
     initMobileAgentDrawer();
     initResizableLayout();
@@ -376,6 +431,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // Translation toggle
     document.getElementById("sentenceTranslationToggle").addEventListener("change", function(e) {
         window.__showTrans = e.target.checked;
+        var translationLabel = e.target.checked ? "隐藏翻译" : "显示翻译";
+        e.target.closest("label").title = translationLabel;
+        e.target.setAttribute("aria-label", translationLabel);
         var p = document.querySelector("#selectedSentence .sentence-text");
         if (p && window.__currentIdx) {
             var en = p.dataset.en || p.textContent;
