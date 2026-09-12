@@ -364,7 +364,10 @@ var articleModule = {
 
     updateFocusWordDisplay: function() {
         this.clearWordHighlight();
-        if (this.focusWords.length === 0) { agentModule.selectedFocusWord = ""; return; }
+        if (this.focusWords.length === 0) {
+            agentModule.selectFocusWord("");
+            return;
+        }
         var sorted = Array.prototype.slice.call(this.focusWords).sort(function(a, b) { return a.offset - b.offset; });
         var sentenceText = sorted[0].sentenceEl.textContent;
         var groups = [[sorted[0]]];

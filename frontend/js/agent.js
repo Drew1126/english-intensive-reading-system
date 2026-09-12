@@ -110,7 +110,7 @@ var agentModule = {
         var msgEl = document.createElement("div");
         msgEl.className = "message";
         var focusLabel = focus ? '<span class="focus-tag">' + this.escapeHtml(focus) + '</span> ' : "";
-        msgEl.innerHTML = '<div class="question-label">' + focusLabel + 'Q: ' + this.escapeHtml(question) + '</div><div class="answer-status"><span class="thinking-dot"></span><span>正在思考…</span></div><div class="answer-content"></div><div class="message-actions"></div>';
+        msgEl.innerHTML = '<div class="question-label" aria-label="你的提问">' + focusLabel + this.escapeHtml(question) + '</div><div class="answer-status"><span class="thinking-dot"></span><span>正在思考…</span></div><div class="answer-content" aria-label="AI 回答"></div><div class="message-actions"></div>';
         container.appendChild(msgEl);
         reviewModule.cursor = null;
         reviewModule.updateNavigation();

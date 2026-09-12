@@ -7,7 +7,7 @@
     <script>try{if(localStorage.getItem('reading_theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
     <link rel="stylesheet" href="css/main.css?v=13">
     <link rel="stylesheet" href="css/article.css?v=6">
-    <link rel="stylesheet" href="css/panel.css?v=29">
+    <link rel="stylesheet" href="css/panel.css?v=31">
 </head>
 <body>
     <!-- Login overlay -->
@@ -130,6 +130,7 @@
             <div class="settings-header"><h3 id="settingsTitle">设置</h3><button id="settingsClose" type="button" aria-label="关闭设置">&times;</button></div>
             <label class="settings-row"><span>文章字号</span><select id="articleFontSize" aria-label="文章字号"></select></label>
             <label class="settings-row"><span>对话字号</span><select id="chatFontSize" aria-label="对话字号"></select></label>
+            <label class="settings-row"><span>选中内容字号</span><select id="selectionFontSize" aria-label="选中内容字号"></select></label>
             <label class="settings-row"><span>夜间模式</span><input id="darkModeToggle" type="checkbox" role="switch"></label>
             <div class="settings-row" id="settingsLogoutRow"><span>当前账号</span><button class="settings-logout" id="logoutBtn" type="button">退出登录</button></div>
         </section>
@@ -221,12 +222,12 @@
         </div>
     </div>
 
-    <script src="js/font-size.js?v=2"></script>
+    <script src="js/font-size.js?v=3"></script>
     <script src="js/api.js?v=4"></script>
     <script src="js/review.js?v=2"></script>
-    <script src="js/article.js?v=8"></script>
+    <script src="js/article.js?v=9"></script>
     <script src="js/zhenti.js?v=3"></script>
-    <script src="js/agent.js?v=7"></script>
+    <script src="js/agent.js?v=8"></script>
     <script src="js/main.js?v=14"></script>
 </body>
 </html>

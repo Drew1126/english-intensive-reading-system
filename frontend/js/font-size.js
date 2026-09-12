@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var sizes = [12, 14, 15, 16, 18, 20, 22, 24];
     [
         { id: 'articleFontSize', key: 'reading_article_font_size', variable: '--article-font-size', initial: 15 },
-        { id: 'chatFontSize', key: 'reading_chat_font_size', variable: '--chat-font-size', initial: 14 }
+        { id: 'chatFontSize', key: 'reading_chat_font_size', variable: '--chat-font-size', initial: 14 },
+        { id: 'selectionFontSize', key: 'reading_selection_font_size', variable: '--selection-font-size', initial: 16 }
     ].forEach(function(setting) {
         var select = document.getElementById(setting.id);
         sizes.forEach(function(size) {
