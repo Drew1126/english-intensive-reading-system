@@ -83,6 +83,7 @@ function initResizableLayout() {
     }
 
     function setPanelWidth(width, persist) {
+        if (document.body.classList.contains("home-active")) return;
         if (!desktopQuery.matches) {
             panel.style.width = "";
             return;
@@ -478,5 +479,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    articleModule.loadCurrent();
+    homeModule.init();
 });

@@ -28,6 +28,7 @@ var articleModule = {
     loadByIndex: function(index) {
         var self = this;
         if (this.isLoading) return;
+        homeModule.showReader();
         this.isLoading = true;
         this._resetView();
         document.getElementById("articleBody").innerHTML = '<div class="loading">加载中...</div>';
@@ -43,6 +44,7 @@ var articleModule = {
     loadFromPdf: function(file) {
         var self = this;
         if (this.isLoading) return;
+        homeModule.showReader();
         this.isLoading = true;
         document.getElementById("btnUploadPdf").disabled = true;
         document.getElementById("articleBody").innerHTML = '<div class="loading">解析 PDF 中...</div>';
@@ -62,6 +64,7 @@ var articleModule = {
     loadZhenti: function(year, text) {
         var self = this;
         if (this.isLoading) return;
+        homeModule.showReader();
         this.isLoading = true;
         this._resetView();
         document.getElementById("articleBody").innerHTML = '<div class="loading">加载中...</div>';
@@ -78,7 +81,7 @@ var articleModule = {
         var overlay = document.getElementById("historyOverlay");
         overlay.style.display = "flex";
         if (typeof zhentiModule !== "undefined" && zhentiModule.showTab) {
-            zhentiModule.showTab("waikan");
+            zhentiModule.showTab("zhenti");
         } else {
             this.renderHistoryList();
         }

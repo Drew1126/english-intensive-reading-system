@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 ZHENTI_DIR = DATA_DIR / "zhenti"
 ZHENTI_YEARS = list(range(2000, 2027))
-ZHENTI_TEXTS = [1, 2, 3, 4]
+ZHENTI_TEXTS = [1, 2, 3, 4, 5]  # Slot 5 is English-I Part B.
 
 _TRANSLATE_SYSTEM = """You are processing a single English reading passage for the Chinese graduate entrance exam (考研英语阅读).
 

@@ -103,7 +103,7 @@ var zhentiModule = {
                 item.className = "zhenti-year";
                 var count = 0;
                 for (var i = 1; i <= 4; i++) { if (y["text" + i]) count++; }
-                item.innerHTML = '<span class="zhenti-year-num">' + y.year + '</span><span class="zhenti-year-count">' + count + '/4</span>';
+                item.innerHTML = '<span class="zhenti-year-num">' + y.year + '</span><span class="zhenti-year-count">Part A ' + count + '/4 · Part B ' + (y.text5 ? '已收录' : '未收录') + '</span>';
                 item.addEventListener("click", function(yr) {
                     return function() { self.showTexts(yr); };
                 }(y));
@@ -123,11 +123,11 @@ var zhentiModule = {
         document.getElementById("zhentiYearTitle").textContent = yearData.year + "年考研英语阅读";
         var grid = document.getElementById("zhentiTextGrid");
         grid.innerHTML = "";
-        for (var i = 1; i <= 4; i++) {
+        for (var i = 1; i <= 5; i++) {
             var exists = yearData["text" + i];
             var cell = document.createElement("div");
             cell.className = "zhenti-text" + (exists ? " exists" : " empty");
-            cell.innerHTML = '<div class="zhenti-text-label">Text ' + i + '</div><div class="zhenti-text-status">' + (exists ? "已收录" : "未收录") + '</div>';
+            cell.innerHTML = '<div class="zhenti-text-label">' + (i === 5 ? 'Part B · 新题型' : 'Part A · Text ' + i) + '</div><div class="zhenti-text-status">' + (exists ? "已收录" : "未收录") + '</div>';
             if (exists && typeof isAdmin === "function" && isAdmin()) {
                 var delBtn = document.createElement("button");
                 delBtn.className = "zhenti-text-del";
@@ -136,7 +136,7 @@ var zhentiModule = {
                 delBtn.addEventListener("click", function(yr, t) {
                     return function(e) {
                         e.stopPropagation();
-                        showConfirm("确定删除 " + yr + "年 Text " + t + " 吗？", function() {
+                        showConfirm("确定删除 " + yr + "年 " + (t === 5 ? "Part B" : "Text " + t) + " 吗？", function() {
                         api.deleteZhenti(yr, t, getToken()).then(function() {
                             if (articleModule.currentArticle && articleModule.currentArticle.id === "zhenti_" + yr + "_" + t) {
                                 articleModule.currentArticle = null;
@@ -161,7 +161,7 @@ var zhentiModule = {
                 return function() {
                     if (ex) {
                         zhentiModule.loadArticle(t);
-                    } else if (typeof isAdmin === "function" && isAdmin()) {
+                    } else if (t !== 5 && typeof isAdmin === "function" && isAdmin()) {
                         zhentiModule.showUpload(t);
                     }
                 };

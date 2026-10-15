@@ -71,6 +71,7 @@ body {
 .sidebar-user-text .user-name { max-width: 102px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sidebar-login { width: 100%; }
 .sidebar-item-icon { width: 22px; flex: 0 0 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; }
+.sidebar-line-icon { display: block; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .sidebar-label { white-space: nowrap; }
 .mobile-sidebar-trigger, .sidebar-backdrop { display: none; }
 

@@ -30,8 +30,8 @@ async def zhenti_list():
 
 @router.get("/{year}/{text_num}")
 async def zhenti_article(year: int, text_num: int):
-    if text_num not in (1, 2, 3, 4):
-        raise HTTPException(status_code=400, detail="text_num must be 1-4")
+    if text_num not in (1, 2, 3, 4, 5):
+        raise HTTPException(status_code=400, detail="text_num must be 1-5 (5 = Part B)")
     article = get_article(year, text_num)
     if not article:
         raise HTTPException(status_code=404, detail="文章不存在")
@@ -41,8 +41,8 @@ async def zhenti_article(year: int, text_num: int):
 @router.delete("/{year}/{text_num}")
 async def zhenti_delete(year: int, text_num: int, token: str = Query(...)):
     _require_admin(token)
-    if text_num not in (1, 2, 3, 4):
-        raise HTTPException(status_code=400, detail="text_num must be 1-4")
+    if text_num not in (1, 2, 3, 4, 5):
+        raise HTTPException(status_code=400, detail="text_num must be 1-5 (5 = Part B)")
     if not delete_article(year, text_num):
         raise HTTPException(status_code=404, detail="文章不存在")
     return {"success": True}
