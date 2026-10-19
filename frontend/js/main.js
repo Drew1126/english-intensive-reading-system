@@ -225,6 +225,7 @@ function updateUserUI() {
     var admin = loggedIn && isAdmin();
     document.getElementById("btnAccountManage").style.display = admin ? "flex" : "none";
     document.getElementById("btnUploadPdf").style.display = admin ? "inline-block" : "none";
+    document.getElementById("homeUpload").hidden = !admin || homeModule.tab !== "external";
     if (articleModule.currentArticle) document.getElementById("btnEditArticle").style.display = admin ? "inline-block" : "none";
     var roleBadge = document.getElementById("roleBadge");
     roleBadge.textContent = admin ? "管理员" : "只读";
@@ -477,8 +478,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll(".quick-btn[data-question]").forEach(function(btn) {
         btn.addEventListener("click", function() {
             if (btn.dataset.nofocus === "1") {
-                agentModule.selectedFocusWord = "";
-                articleModule.clearWordHighlight();
+                agentModule.clearFocus();
             }
             agentModule.sendQuestion(btn.dataset.question);
         });

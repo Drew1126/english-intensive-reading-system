@@ -88,6 +88,7 @@ var agentModule = {
         retry.textContent = "重新生成";
         retry.addEventListener("click", function() {
             if (self.isStreaming) return;
+            if (typeof collocationModule !== "undefined" && collocationModule.active && request.msgEl.contains(collocationModule.active.button)) collocationModule.clear();
             request.msgEl.remove();
             self.streamAnswer(request.sentence, request.question, request.articleId, request.focus, request.discussionTopic);
         });
@@ -138,6 +139,7 @@ var agentModule = {
         var request = { sentence: sentence, question: question, articleId: articleId, focus: focus, msgEl: msgEl, answerEl: answerEl, statusEl: statusEl, actionsEl: actionsEl };
         this.activeSource = source;
         this.activeRequest = request;
+        request.collocationTarget = typeof collocationModule !== "undefined" ? collocationModule.capture(articleId, sentence) : null;
         request.coreTarget = typeof structureFocus !== "undefined" ? structureFocus.begin(articleId, sentence, question) : null;
         request.discussionTopic = discussionTopic;
         var timeout = setTimeout(function() {
@@ -159,12 +161,14 @@ var agentModule = {
                 statusEl.innerHTML = "<span>回答完成 · " + ((performance.now() - startedAt) / 1000).toFixed(1) + " 秒</span>";
                 self.addMessageActions(request);
                 if (typeof structureFocus !== "undefined") structureFocus.complete(request.coreTarget, request.coreData);
+                if (typeof collocationModule !== "undefined" && vocabularyToken === getToken()) collocationModule.render(request);
                 if (vocabularyToken === getToken()) reviewModule.recordAnswer(focus, question, fullAnswer, vocabularySource, vocabularyToken);
                 return;
             }
             try {
                 var p = JSON.parse(e.data);
                 if (Object.prototype.hasOwnProperty.call(p, "core")) request.coreData = p.core;
+                if (Object.prototype.hasOwnProperty.call(p, "collocations")) request.collocations = p.collocations;
                 fullAnswer = (fullAnswer + (p.text || "")).replace(/\n[ \t]*\n+/g, "\n");
                 answerEl.textContent = fullAnswer;
             } catch (err) { console.error("Parse SSE error:", err); }

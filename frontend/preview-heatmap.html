@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模拟预览 · 阅读进度日历</title>
+    <link rel="stylesheet" href="css/main.css?v=14">
+    <link rel="stylesheet" href="css/home.css?v=1">
+    <link rel="stylesheet" href="css/refinement.css?v=15">
+    <style>
+        .preview-tools { display:flex; flex-wrap:wrap; gap:10px; align-items:center; max-width:1120px; margin:0 auto 22px; padding:12px 16px; border-radius:10px; background:var(--selected-bg); color:var(--text-secondary); font-size:12px; }
+        .preview-tools strong { color:var(--accent-primary); margin-right:auto; font-weight:500; }
+        .preview-tools button,.preview-tools a { padding:5px 10px; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-secondary); color:var(--text-primary); font:inherit; cursor:pointer; text-decoration:none; }
+        #previewStatus { max-width:1120px; margin:10px auto; min-height:22px; color:var(--text-secondary); font-size:12px; }
+    </style>
+</head>
+<body class="home-active">
+    <main class="reading-home" aria-label="模拟阅读目录">
+        <div class="preview-tools">
+            <strong>模拟数据 · 不会写入真实打卡记录</strong>
+            <button id="randomize">换一组随机次数</button>
+            <button id="toggleTheme">切换明暗</button>
+            <a href="/">返回真实首页</a>
+        </div>
+        <header class="home-hero">
+            <div class="home-eyebrow">YOUR READING SPACE</div>
+            <h1>从一篇文章，<br>开始今天的精读。</h1>
+            <p>读懂每一句，积累每一次进步。</p>
+            <div class="home-hero-mark" aria-hidden="true">Aa<span>READ · THINK · GROW</span></div>
+        <div class="home-continue"><button id="homeResume" class="home-resume-link" hidden>继续阅读：<span id="homeResumeTitle"></span></button></div>
+            <div class="home-toolbar">
+                <div class="home-tabs" role="group" aria-label="文章分类">
+                    <button id="homeExamTab" aria-pressed="true">考研真题 <span>英语一</span></button>
+                    <button id="homeExternalTab" aria-pressed="false">外刊</button>
+                </div>
+                <div class="home-header-actions">
+                    <button class="home-manage" id="homeVocabulary">生词复习 · 待掌握 36 词</button>
+                    <button class="home-manage" id="homeUpload" hidden>上传 PDF</button>
+                </div>
+            </div>
+        </header>
+        <section class="home-library">
+            <div id="homeHeatLegend" class="home-heat-legend" aria-label="绿色越深打卡次数越多">
+                <span>打卡次数</span><span>少</span><i class="heat-level-0"></i><i class="heat-level-1"></i><i class="heat-level-2"></i><i class="heat-level-3"></i><i class="heat-level-4"></i><span>多</span>
+            </div>
+            <div id="homeCards" class="home-directory" aria-live="polite"></div>
+        </section>
+        <p id="previewStatus" role="status"></p>
+    </main>
+    <div hidden><button id="btnHome"></button><div id="agentPanel"></div><div id="mobileAgentBackdrop"></div></div>
+    <script src="js/checkin.js?v=5"></script>
+    <script src="js/home.js?v=8"></script>
+    <script>
+        // Preview-only adapters. No authentication, fetch, storage or write API calls.
+        var demoYears = [2026,2025,2024,2023,2022,2021,2020].map(function(year) {
+            return {year:year,text1:true,text2:true,text3:true,text4:true,text5:year!==2024};
+        });
+        var demoArticles = [
+            {id:'demo_1',index:1,title:'How cities are adapting to a warmer world',source:'模拟外刊',date:'2026-10-18'},
+            {id:'demo_2',index:2,title:'The changing nature of work',source:'模拟外刊',date:'2026-10-12'},
+            {id:'demo_3',index:3,title:'Why curiosity matters',source:'模拟外刊',date:'2026-10-06'}
+        ];
+        function getToken() { return ''; }
+        function isAdmin() { return false; }
+        function explain(message) { document.getElementById('previewStatus').textContent=message; }
+        var articleModule = {
+            currentArticle:null,isLoading:false,
+            loadZhenti:function(year,n) { explain('模拟入口：'+year+' 年 · '+(n===5?'Part B':'阅读 '+n)+'。仅预览颜色，不打开或修改真实文章。'); },
+            loadByIndex:function() { explain('这是模拟外刊入口，不会打开真实文章。'); }
+        };
+        var api = {
+            getZhentiList:function() { return Promise.resolve({years:demoYears}); },
+            getArticleList:function() { return Promise.resolve({articles:demoArticles}); }
+        };
+        checkinModule.refresh=function() { this.repaint();return Promise.resolve(); };
+        function randomize() {
+            var pool=[0,0,1,1,2,3,4,6,8,10,15];
+            var counts={};
+            demoYears.forEach(function(y) {
+                [1,2,3,4,5].forEach(function(n) { counts['zhenti_'+y.year+'_'+n]=pool[Math.floor(Math.random()*pool.length)]; });
+            });
+            // Ensure the first visible row always demonstrates the full color range.
+            var first=[0,1,3,7,15];
+            for(var i=first.length-1;i>0;i--) { var j=Math.floor(Math.random()*(i+1)),temp=first[i];first[i]=first[j];first[j]=temp; }
+            first.forEach(function(count,i) { counts['zhenti_2026_'+(i+1)]=count; });
+            demoArticles.forEach(function(a) { counts[a.id]=pool[Math.floor(Math.random()*pool.length)]; });
+            checkinModule.counts=counts;checkinModule.repaint();
+            explain('当前为随机模拟次数：0～15 次；2024 年 Part B 演示“未收录”。');
+        }
+        document.getElementById('randomize').onclick=randomize;
+        document.getElementById('toggleTheme').onclick=function() {
+            document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';
+        };
+        document.getElementById('homeVocabulary').onclick=function() { explain('生词复习也是模拟入口，不会读取你的个人词库。'); };
+        randomize();homeModule.init();
+    </script>
+</body>
+</html>

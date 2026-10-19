@@ -49,6 +49,7 @@ var structureFocus = {
         button.title = !entry ? '先点击「句子结构」生成分析' : entry.status === 'pending' ? '正在提取主干…' : !ready ? '未能准确定位，可重新分析' : entry.enabled ? '显示完整句子' : '突出句子主干';
         button.setAttribute('aria-label', button.title);
         if (ready && entry.enabled) { this.rebuild(el, entry.ranges); this.active = el; }
+        if (typeof collocationModule !== 'undefined') collocationModule.sync();
     },
     begin: function(articleId, sentence, question) {
         if (!/句子结构|括号标注|逐层划分|划分这个句子/.test(question)) return null;

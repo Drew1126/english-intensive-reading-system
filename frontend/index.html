@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/article.css?v=6">
     <link rel="stylesheet" href="css/panel.css?v=31">
     <link rel="stylesheet" href="css/home.css?v=1">
-    <link rel="stylesheet" href="css/refinement.css?v=8">
+    <link rel="stylesheet" href="css/refinement.css?v=15">
 </head>
 <body class="home-active">
     <!-- Login overlay -->
@@ -66,21 +66,24 @@
             <div class="home-eyebrow">YOUR READING SPACE</div>
             <h1>从一篇文章，<br>开始今天的精读。</h1>
             <p>读懂每一句，积累每一次进步。</p>
-            <button id="homeResume" class="home-resume" hidden><span class="home-resume-label">继续本次阅读</span><span id="homeResumeTitle"></span><span class="home-resume-arrow" aria-hidden="true">↗</span></button>
             <div class="home-hero-mark" aria-hidden="true">Aa<span>READ · THINK · GROW</span></div>
-        </header>
-        <section class="home-library" aria-label="文章选择">
+        <div class="home-continue"><button id="homeResume" class="home-resume-link" hidden>继续阅读：<span id="homeResumeTitle"></span><span aria-hidden="true"> ↗</span></button></div>
             <div class="home-toolbar">
                 <div class="home-tabs" role="group" aria-label="文章分类">
                     <button id="homeExamTab" aria-pressed="true">考研真题 <span>英语一</span></button>
                     <button id="homeExternalTab" aria-pressed="false">外刊</button>
                 </div>
-                <div class="home-library-actions"><button class="home-manage" id="homeVocabulary">生词回顾</button><button class="home-manage" id="homeLibrary">打开文章库 <span aria-hidden="true">↗</span></button></div>
+                <div class="home-header-actions">
+                    <button class="home-manage" id="homeVocabulary">生词回顾</button>
+                    <button class="home-manage" id="homeUpload" hidden>上传 PDF</button>
+                </div>
             </div>
-            <div class="home-section-heading"><div><h2 id="homeSectionTitle">历年阅读，逐篇精读</h2><p id="homeSectionHint">选择年份，再挑选一篇文章。</p></div><label class="home-year-label" id="homeYearLabel">年份 <select id="homeYear" aria-label="选择真题年份"></select></label></div>
-            <div id="homeRecentYears" class="home-recent-years" role="group" aria-label="最近收录年份"></div>
-            <div id="homeCards" class="home-cards" aria-live="polite"></div>
-            <p class="home-footnote">点击文章进入精读 · 选中句子提问 · 随时回顾生词</p>
+        </header>
+        <section class="home-library" aria-label="文章选择">
+            <div id="homeHeatLegend" class="home-heat-legend" aria-label="颜色表示打卡次数：未打卡为浅灰，绿色越深次数越多">
+                <span>打卡次数</span><span>少</span><i class="heat-level-0" aria-hidden="true"></i><i class="heat-level-1" aria-hidden="true"></i><i class="heat-level-2" aria-hidden="true"></i><i class="heat-level-3" aria-hidden="true"></i><i class="heat-level-4" aria-hidden="true"></i><span>多</span>
+            </div>
+            <div id="homeCards" class="home-directory" aria-live="polite"></div>
         </section>
     </main>
     <main class="main-content">
@@ -139,6 +142,7 @@
             <div class="quick-questions">
                 <button class="quick-btn" data-question="解释选中内容在句子释义">句中释义</button>
                 <button class="quick-btn" data-nofocus="1" data-question="解释句子结构">句子结构</button>
+                <button class="quick-btn" id="btnSentenceCollocations" data-nofocus="1" data-question="查找句中搭配" disabled title="查找整句中的固定搭配和不连续表达">句中搭配</button>
                 <button class="quick-btn" data-question="请列出与选中内容相似的单词并辨析">相似词</button>
             </div>
             <div class="input-area">
@@ -259,14 +263,15 @@
 
     <script src="js/font-size.js?v=3"></script>
     <script src="js/api.js?v=5"></script>
-    <script src="js/checkin.js?v=1"></script>
+    <script src="js/checkin.js?v=5"></script>
     <script src="js/review.js?v=9"></script>
     <script src="js/spaced-review.js?v=9"></script>
     <script src="js/article.js?v=12"></script>
     <script src="js/zhenti.js?v=5"></script>
-    <script src="js/structure-focus.js?v=1"></script>
-    <script src="js/agent.js?v=12"></script>
-    <script src="js/home.js?v=3"></script>
-    <script src="js/main.js?v=17"></script>
+    <script src="js/structure-focus.js?v=2"></script>
+    <script src="js/collocations.js?v=1"></script>
+    <script src="js/agent.js?v=13"></script>
+    <script src="js/home.js?v=8"></script>
+    <script src="js/main.js?v=19"></script>
 </body>
 </html>

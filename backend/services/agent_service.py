@@ -11,6 +11,7 @@ from langchain_openai import ChatOpenAI
 from config import ARTICLES_DIR, CHAT_HISTORY_DIR, DATA_DIR, LLM_API_BASE, LLM_API_KEY, LLM_MODEL
 from storage import read_json, write_json
 from services.structure_markup import RULES as STRUCTURE_MARKUP_RULES, extract_structure
+from services.collocations import PROMPT as COLLOCATION_PROMPT, extract_collocations
 
 
 COMMON_RULES = """你是考研英语辅导专家。
@@ -24,6 +25,7 @@ COMMON_RULES = """你是考研英语辅导专家。
 
 
 INTENT_PROMPTS = {
+    "collocations": COLLOCATION_PROMPT,
     "structure": """分析整个句子，重点帮助学习者通过意思看懂结构。即使 focus 非空，也必须忽略 focus，不要输出词义卡。
 采用“最简主干 → 联系意思补回信息 → 整句串起来”的顺序，不先展示带满标签或括号的原句，不堆砌语法术语。
 第一行直接给出主句的英文结构骨架，不以字数最少为目标。保留否定、频率限制、情态、时态、被动及必要补语；省略普通修饰即可。并列主句分别提取。首行必须与后文解释一致，不能先给错误骨架再在后文纠正。
@@ -124,6 +126,8 @@ VOCABULARY_WORDS = ("释义", "词义", "什么意思", "怎么用", "是什么�
 
 def classify_intent(question: str, focus: str = "") -> str:
     q = (question or "").strip().lower()
+    if "句中搭配" in q or "句子中的搭配" in q:
+        return "collocations"
     if any(word in q for word in COMPARISON_WORDS):
         return "comparison"
     if any(word in q for word in STRUCTURE_WORDS):
@@ -255,7 +259,7 @@ async def stream_agent_response(
         base_url=LLM_API_BASE,
         streaming=True,
         temperature=0.1,
-        max_tokens=2600 if intent == 'structure' else 1800,
+        max_tokens=2600 if intent in ('structure', 'collocations') else 1800,
     )
     answer_parts = []
     async for chunk in llm.astream(messages):
@@ -265,13 +269,18 @@ async def stream_agent_response(
         answer_parts.append(content)
     raw_answer = "".join(answer_parts)
     core = None
+    collocations = None
     if intent == 'structure':
         raw_answer, core = extract_structure(raw_answer, sentence)
+    elif intent == 'collocations':
+        raw_answer, collocations = extract_collocations(raw_answer, sentence)
     answer = _normalize_answer(raw_answer)
     if answer:
         payload = {'text': answer}
         if intent == 'structure':
             payload['core'] = core
+        if intent == 'collocations':
+            payload['collocations'] = collocations
         yield f"data: {json.dumps(payload)}\n\n"
 
     chat_record = {

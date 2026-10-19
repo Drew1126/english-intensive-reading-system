@@ -2,15 +2,19 @@
 var homeModule = {
     tab: "exam",
     years: [],
+    expandedYears: new Map(),
+    yearNodes: [],
+    renderedOrder: '',
     requestId: 0,
     init: function() {
         var self = this;
         document.getElementById("btnHome").addEventListener("click", function() { self.show(); });
         document.getElementById("homeResume").addEventListener("click", function() { self.showReader(); });
-        document.getElementById("homeLibrary").addEventListener("click", function() { articleModule.showHistory(); });
+        document.getElementById("homeUpload").addEventListener("click", function() {
+            if (typeof isAdmin === 'function' && isAdmin()) document.getElementById("pdfFileInput").click();
+        });
         document.getElementById("homeExamTab").addEventListener("click", function() { self.tab = "exam"; self.refresh(); });
         document.getElementById("homeExternalTab").addEventListener("click", function() { self.tab = "external"; self.refresh(); });
-        document.getElementById("homeYear").addEventListener("change", function() { self.renderExams(); });
         self.show();
     },
     show: function() {
@@ -49,69 +53,111 @@ var homeModule = {
         var self = this, exam = this.tab === "exam", request = ++this.requestId;
         document.getElementById("homeExamTab").setAttribute("aria-pressed", String(exam));
         document.getElementById("homeExternalTab").setAttribute("aria-pressed", String(!exam));
-        document.getElementById("homeYearLabel").hidden = !exam;
-        document.getElementById("homeRecentYears").hidden = !exam;
-        document.getElementById("homeRecentYears").replaceChildren();
-        document.getElementById("homeSectionTitle").textContent = exam ? "历年阅读，逐篇精读" : "换一个视角，读更大的世界";
-        document.getElementById("homeSectionHint").textContent = exam ? "选择年份，再挑选一篇文章。" : "从已收录的外刊中，选择今天感兴趣的话题。";
+        document.getElementById("homeHeatLegend").hidden = !exam;
+        document.getElementById("homeUpload").hidden = exam || !(typeof isAdmin === 'function' && isAdmin());
         this.message("正在整理文章…");
         (exam ? api.getZhentiList() : api.getArticleList(getToken())).then(function(data) {
             if (request !== self.requestId) return;
             if (exam) {
                 self.years = (data.years || []).filter(function(y) { return [1,2,3,4,5].some(function(n) { return y["text" + n]; }); }).sort(function(a,b) { return b.year - a.year; });
-                var select = document.getElementById("homeYear"), previous = select.value;
-                select.replaceChildren();
-                self.years.forEach(function(y) { var option = self.node("option", "", y.year + " 年"); option.value = y.year; select.appendChild(option); });
-                if (self.years.some(function(y) { return String(y.year) === previous; })) select.value = previous;
                 self.renderExams();
             } else {
                 var cards = document.getElementById("homeCards");
                 cards.replaceChildren();
-                if (!(data.articles || []).length) { self.message("还没有外刊文章，可在文章库中由管理员上传 PDF。"); return; }
+                if (!(data.articles || []).length) { self.message("暂无外刊，管理员可上传 PDF。"); return; }
                 data.articles.forEach(function(a) {
-                    var card = self.card("外刊阅读", a.title || "未命名文章", [a.source, a.word_count ? a.word_count + " 词" : "", a.date].filter(Boolean).join(" · "), function() { articleModule.loadByIndex(a.index); });
+                    var card = self.node("button", "home-external-row", "");
+                    card.type = "button";
+                    card.dataset.compactCheckin = "true";
+                    card.appendChild(self.node("span", "home-external-title", a.title || "未命名文章"));
+                    card.appendChild(self.node("span", "home-external-meta", [a.source, a.date].filter(Boolean).join(" · ")));
+                    card.addEventListener("click", function() { articleModule.loadByIndex(a.index); });
                     if (typeof checkinModule !== 'undefined') checkinModule.paint(card, a.id);
                     cards.appendChild(card);
                 });
             }
         }).catch(function() { if (request === self.requestId) self.message("暂时无法获取文章，请确认服务已连接后重试。", true); });
     },
-    card: function(label, title, detail, action) {
-        var card = this.node("button", "home-article-card", "");
-        card.type = "button";
-        card.appendChild(this.node("span", "home-card-label", label));
-        card.appendChild(this.node("span", "home-card-title", title));
-        card.appendChild(this.node("span", "home-card-detail", detail));
-        card.appendChild(this.node("span", "home-card-action", "开始精读 ↗"));
-        card.addEventListener("click", action);
-        return card;
+    sortedYears: function() {
+        var counts = typeof checkinModule !== 'undefined' ? checkinModule.counts : {};
+        function total(data) {
+            return [1,2,3,4,5].reduce(function(sum, n) {
+                return sum + (data['text'+n] ? Number(counts['zhenti_'+data.year+'_'+n] || 0) : 0);
+            }, 0);
+        }
+        return this.years.slice().sort(function(a,b) { return total(b)-total(a) || b.year-a.year; });
+    },
+    reorderExams: function() {
+        if (this.tab !== 'exam' || !this.years.length) return;
+        var cards = document.getElementById('homeCards');
+        var expected = this.sortedYears().map(function(y) { return 'homeYear-'+y.year; }).join(',');
+        // Do not replace loading/error messages, or rebuild an unchanged layout.
+        if (this.yearNodes.some(function(el) { return el.isConnected; }) && this.renderedOrder !== expected) this.renderExams();
+    },
+    arrangeYears: function() {
+        var cards = document.getElementById('homeCards'), count = 0, self = this;
+        this.yearNodes.forEach(function(section) {
+            if (section.open) cards.appendChild(section);
+            else { self.closedYearGrid.appendChild(section); count++; }
+        });
+        this.closedYearArea.hidden = count === 0;
+        cards.appendChild(this.closedYearArea);
     },
     renderExams: function() {
-        var self = this, year = Number(document.getElementById("homeYear").value);
-        var recent = document.getElementById("homeRecentYears");
-        recent.replaceChildren();
-        this.years.slice(0, 5).forEach(function(y) {
-            var button = self.node("button", "home-year-chip", String(y.year));
-            button.type = "button";
-            button.setAttribute("aria-pressed", String(y.year === year));
-            button.addEventListener("click", function() {
-                document.getElementById("homeYear").value = String(y.year);
-                self.renderExams();
-                var active = document.querySelector('.home-year-chip[aria-pressed="true"]');
-                if (active) active.focus();
-            });
-            recent.appendChild(button);
-        });
-        var data = this.years.find(function(y) { return y.year === year; });
-        var cards = document.getElementById("homeCards");
+        var self = this, cards = document.getElementById("homeCards");
         cards.replaceChildren();
-        if (!data) { this.message("暂无已收录的真题，请在文章库中添加。"); return; }
-        [1,2,3,4,5].forEach(function(n) {
-            var card = self.card(year + " · 英语一", n === 5 ? "Part B · 新题型" : "Part A · Text " + n, n === 5 ? "阅读原文与候选内容 · 专注精翻" : "阅读理解 · 句子精读与词汇积累", function() { articleModule.loadZhenti(year, n); });
-            if (n === 5) card.classList.add("home-part-b");
-            if (typeof checkinModule !== 'undefined') checkinModule.paint(card, 'zhenti_' + year + '_' + n);
-            if (!data["text" + n]) { card.disabled = true; card.querySelector(".home-card-action").textContent = "暂未收录"; }
-            cards.appendChild(card);
+        this.yearNodes = [];
+        if (!this.years.length) { this.message("暂无已收录的真题。"); return; }
+        this.closedYearArea = this.node('section', 'home-other-years', '');
+        this.closedYearArea.appendChild(this.node('h2', 'home-other-heading', '其他年份'));
+        this.closedYearGrid = this.node('div', 'home-other-grid', '');
+        this.closedYearArea.appendChild(this.closedYearGrid);
+        this.renderedOrder = this.sortedYears().map(function(y) { return 'homeYear-'+y.year; }).join(',');
+        this.sortedYears().forEach(function(data, index) {
+            var year = data.year, section = self.node("details", "home-year-group", "");
+            section.id = "homeYear-" + year;
+            section.open = self.expandedYears.has(year) ? self.expandedYears.get(year) : index < 3;
+            section.addEventListener("toggle", function(event) {
+                if (self.tab !== 'exam' || self.yearNodes.indexOf(section) < 0) return;
+                self.expandedYears.set(year, section.open);
+                self.arrangeYears();
+                if (event && event.isTrusted) heading.focus({preventScroll:true});
+            });
+            section.setAttribute("aria-label", year + " 年英语一");
+            var heading = self.node("summary", "home-year-heading", "");
+            heading.appendChild(self.node("span", "home-year-number", String(year)));
+            heading.appendChild(self.node("span", "home-year-subtitle", "英语一"));
+            var preview = self.node('span', 'home-year-mini', '');
+            [1,2,3,4,5].forEach(function(n) {
+                var dot = self.node('span', 'home-mini-cell', '');
+                dot.dataset.miniCheckin = 'true';
+                dot.dataset.readingLabel = year + ' · ' + (n === 5 ? 'Part B' : '阅读 '+n);
+                if (data['text'+n]) {
+                    if (typeof checkinModule !== 'undefined') checkinModule.paint(dot, 'zhenti_'+year+'_'+n);
+                } else { dot.classList.add('is-unavailable'); dot.title = dot.dataset.readingLabel+' · 未收录'; }
+                preview.appendChild(dot);
+            });
+            heading.appendChild(preview);
+            section.appendChild(heading);
+            var links = self.node("div", "home-exam-links", "");
+            [1,2,3,4,5].forEach(function(n) {
+                var card = self.node("button", "home-exam-link", n === 5 ? "Part B" : "阅读 " + n);
+                card.type = "button";
+                card.dataset.heatmapCheckin = "true";
+                card.dataset.readingLabel = year + " 年英语一 " + (n === 5 ? "Part B 新题型" : "阅读 " + n);
+                card.setAttribute("aria-label", card.dataset.readingLabel + (data["text"+n] ? "" : "，暂未收录"));
+                if (!data["text" + n]) {
+                    card.disabled = true; card.title = "暂未收录";
+                    card.appendChild(self.node("span", "home-cell-count", "未收录"));
+                }
+                else {
+                    card.addEventListener("click", function() { articleModule.loadZhenti(year, n); });
+                    if (typeof checkinModule !== 'undefined') checkinModule.paint(card, 'zhenti_' + year + '_' + n);
+                }
+                links.appendChild(card);
+            });
+            section.appendChild(links); self.yearNodes.push(section);
         });
+        this.arrangeYears();
     }
 };
