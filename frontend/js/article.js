@@ -32,7 +32,7 @@ var articleModule = {
         this.isLoading = true;
         this._resetView();
         document.getElementById("articleBody").innerHTML = '<div class="loading">加载中...</div>';
-        api.getArticle(index).then(function(data) {
+        return api.getArticle(index).then(function(data) {
             self.currentArticle = data.article;
             self._buildTranslations();
             self.renderArticle(data.article);
@@ -68,7 +68,7 @@ var articleModule = {
         this.isLoading = true;
         this._resetView();
         document.getElementById("articleBody").innerHTML = '<div class="loading">加载中...</div>';
-        api.getZhentiArticle(year, text).then(function(data) {
+        return api.getZhentiArticle(year, text).then(function(data) {
             self.currentArticle = data.article;
             self._buildTranslations();
             self.renderArticle(data.article);
@@ -163,6 +163,8 @@ var articleModule = {
         agentModule.clearFocus();
         document.getElementById("chatMessages").innerHTML = '<div class="chat-empty" id="chatEmpty">点击左侧文章中的单词或句子，然后选择快捷问题，也可以直接输入问题。</div>';
         reviewModule.reset();
+        document.querySelectorAll("#articleBody .sentence.selected").forEach(function(el) { el.classList.remove("selected"); });
+        if (typeof structureFocus !== "undefined") structureFocus.sync();
     },
 
     _buildTranslations: function() {
@@ -200,6 +202,7 @@ var articleModule = {
         bodyEl.innerHTML = "";
         bodyEl.appendChild(container);
         this.setupArticleInteractions(container);
+        if (typeof structureFocus !== "undefined") structureFocus.sync();
         if (typeof updateCheckinArea === "function") { updateCheckinArea(); }
     },
 
@@ -218,6 +221,7 @@ var articleModule = {
         agentModule.clearFocus();
         if (this.focusWords) { this.focusWords = []; this.clearWordHighlight(); }
         this.selectedSentenceIdx = null;
+        if (typeof structureFocus !== "undefined") structureFocus.sync();
     },
 
     exitEditMode: function() {

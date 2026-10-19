@@ -59,8 +59,8 @@ var api = {
             return res.json();
         });
     },
-    checkin: function(articleId, token) {
-        return fetch(BASE + "/auth/checkin/" + articleId + "?token=" + encodeURIComponent(token), { method: "POST" }).then(function(res) { return res.json(); });
+    checkin: function(articleId, token, sessionId) {
+        return fetch(BASE + "/auth/checkin/" + encodeURIComponent(articleId) + "?token=" + encodeURIComponent(token) + "&session_id=" + encodeURIComponent(sessionId || ''), { method: "POST" }).then(handleJson);
     },
     getCheckinStatus: function(articleId) {
         return fetch(BASE + "/auth/checkin-status/" + articleId).then(function(res) { return res.json(); });

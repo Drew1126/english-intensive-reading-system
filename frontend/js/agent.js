@@ -23,6 +23,7 @@ var agentModule = {
             focusEl.innerHTML = '<span class="focus-word">' + this.escapeHtml(this.selectedFocusWord) + '</span> <span class="clear-focus" onclick="agentModule.clearFocus()">\u00d7</span>';
             el.appendChild(focusEl);
         }
+        if (typeof structureFocus !== "undefined") structureFocus.sync();
     },
 
     selectFocusWord: function(word) {
@@ -68,6 +69,10 @@ var agentModule = {
         if (this.activeSource) this.activeSource.close();
         this.activeSource = null;
         if (this.activeRequest && this.activeRequest.timeout) clearTimeout(this.activeRequest.timeout);
+        if (this.activeRequest) {
+            this.activeRequest.cancelled = true;
+            if (typeof structureFocus !== "undefined") structureFocus.fail(this.activeRequest.coreTarget);
+        }
         this.setStreaming(false);
         if (this.activeRequest && this.activeRequest.statusEl) {
             this.activeRequest.statusEl.innerHTML = "<span>已停止生成</span>";
@@ -114,7 +119,6 @@ var agentModule = {
         container.appendChild(msgEl);
         reviewModule.cursor = null;
         reviewModule.updateNavigation();
-        var vocabularyEntry = reviewModule.record(focus, question);
         var answerEl = msgEl.querySelector(".answer-content");
         var statusEl = msgEl.querySelector(".answer-status");
         var actionsEl = msgEl.querySelector(".message-actions");
@@ -123,14 +127,23 @@ var agentModule = {
         var fullAnswer = "";
         var streamFinished = false;
         var startedAt = performance.now();
+        var vocabularySource = {
+            article_id: articleId,
+            article_title: (articleModule.currentArticle || {}).title || articleId,
+            sentence: sentence,
+            sentence_idx: articleModule.selectedSentenceIdx || ''
+        };
+        var vocabularyToken = getToken();
         var source = api.askAgent(sentence, question, articleId, focus, (typeof getName === "function") ? getName() : "", discussionTopic);
         var request = { sentence: sentence, question: question, articleId: articleId, focus: focus, msgEl: msgEl, answerEl: answerEl, statusEl: statusEl, actionsEl: actionsEl };
         this.activeSource = source;
         this.activeRequest = request;
+        request.coreTarget = typeof structureFocus !== "undefined" ? structureFocus.begin(articleId, sentence, question) : null;
         request.discussionTopic = discussionTopic;
         var timeout = setTimeout(function() {
             if (!streamFinished) {
                 streamFinished = true;
+                if (typeof structureFocus !== "undefined") structureFocus.fail(request.coreTarget);
                 source.close(); self.activeSource = null; self.setStreaming(false);
                 statusEl.innerHTML = '<span class="message-error">请求超时，服务器在 90 秒内没有完成回答。</span>';
                 self.addMessageActions(request);
@@ -138,25 +151,28 @@ var agentModule = {
         }, 90000);
         request.timeout = timeout;
         source.onmessage = function(e) {
-            if (streamFinished) return;
+            if (streamFinished || request.cancelled) return;
             if (e.data === "[DONE]") {
                 streamFinished = true;
                 clearTimeout(timeout); source.close(); self.activeSource = null; self.setStreaming(false);
                 self.selectedFocusWord = "";
                 statusEl.innerHTML = "<span>回答完成 · " + ((performance.now() - startedAt) / 1000).toFixed(1) + " 秒</span>";
                 self.addMessageActions(request);
-                if (vocabularyEntry && fullAnswer.trim()) vocabularyEntry.meaning = fullAnswer.trim();
+                if (typeof structureFocus !== "undefined") structureFocus.complete(request.coreTarget, request.coreData);
+                if (vocabularyToken === getToken()) reviewModule.recordAnswer(focus, question, fullAnswer, vocabularySource, vocabularyToken);
                 return;
             }
             try {
                 var p = JSON.parse(e.data);
-                fullAnswer = (fullAnswer + p.text).replace(/\n[ \t]*\n+/g, "\n");
+                if (Object.prototype.hasOwnProperty.call(p, "core")) request.coreData = p.core;
+                fullAnswer = (fullAnswer + (p.text || "")).replace(/\n[ \t]*\n+/g, "\n");
                 answerEl.textContent = fullAnswer;
             } catch (err) { console.error("Parse SSE error:", err); }
         };
         source.onerror = function() {
-            if (streamFinished) return;
+            if (streamFinished || request.cancelled) return;
             streamFinished = true;
+            if (typeof structureFocus !== "undefined") structureFocus.fail(request.coreTarget);
             clearTimeout(timeout); source.close(); self.activeSource = null; self.setStreaming(false);
             statusEl.innerHTML = '<span class="message-error">连接中断，可能是网络异常或服务暂时不可用。</span>';
             self.addMessageActions(request);

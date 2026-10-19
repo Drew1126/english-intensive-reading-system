@@ -164,34 +164,23 @@ def delete_user(username: str):
 
 
 def get_user_checkins(username: str) -> set:
-    users = _get_users()
-    user = users.get(username, {})
-    return set(user.get("checkins", {}).keys())
-
-
-def toggle_checkin(username: str, article_id: str) -> dict:
-    users = _get_users()
-    user = users.setdefault(username, {"name": username, "avatar": None, "checkins": {}})
-    checkins = user.setdefault("checkins", {})
-    if article_id in checkins:
-        del checkins[article_id]
-        status = False
-    else:
-        checkins[article_id] = True
-        status = True
-    _save_users(users)
-    return {"checked_in": status}
+    from services.checkin_service import counts
+    return set(counts(username))
 
 
 def get_checkin_status(article_id: str) -> list[dict]:
+    from services.checkin_service import extra_counts
     users = _get_users()
+    extras = {r['owner']:r['count'] for r in extra_counts(article_id=article_id)}
     result = []
     for username, data in users.items():
         checkins = data.get("checkins", {})
-        if article_id in checkins:
+        count = int(article_id in checkins) + extras.get(username, 0)
+        if count:
             result.append({
                 "name": data["name"],
                 "has_avatar": data.get("avatar") is not None,
+                "count": count,
             })
     return result
 

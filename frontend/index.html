@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/article.css?v=6">
     <link rel="stylesheet" href="css/panel.css?v=31">
     <link rel="stylesheet" href="css/home.css?v=1">
-    <link rel="stylesheet" href="css/refinement.css?v=2">
+    <link rel="stylesheet" href="css/refinement.css?v=8">
 </head>
 <body class="home-active">
     <!-- Login overlay -->
@@ -75,7 +75,7 @@
                     <button id="homeExamTab" aria-pressed="true">考研真题 <span>英语一</span></button>
                     <button id="homeExternalTab" aria-pressed="false">外刊</button>
                 </div>
-                <button class="home-manage" id="homeLibrary">打开文章库 <span aria-hidden="true">↗</span></button>
+                <div class="home-library-actions"><button class="home-manage" id="homeVocabulary">生词回顾</button><button class="home-manage" id="homeLibrary">打开文章库 <span aria-hidden="true">↗</span></button></div>
             </div>
             <div class="home-section-heading"><div><h2 id="homeSectionTitle">历年阅读，逐篇精读</h2><p id="homeSectionHint">选择年份，再挑选一篇文章。</p></div><label class="home-year-label" id="homeYearLabel">年份 <select id="homeYear" aria-label="选择真题年份"></select></label></div>
             <div id="homeRecentYears" class="home-recent-years" role="group" aria-label="最近收录年份"></div>
@@ -99,7 +99,6 @@
                     <div class="checkin-label">已打卡</div>
                     <div class="checkin-users" id="checkinUsers"></div>
                     <button class="btn-checkin" id="btnCheckin">打卡</button>
-                    <button class="btn-checkin" id="btnVocabularyReview" type="button">生词回顾（0）</button>
                 </div>
             </div>
             <section class="agent-context-section article-context-section" id="agentContextSection">
@@ -109,6 +108,7 @@
                             <input type="checkbox" id="sentenceTranslationToggle" aria-label="显示翻译">
                             <span class="label-text" aria-hidden="true">译</span>
                         </label>
+                        <button class="structure-focus-toggle" id="structureFocusToggle" type="button" disabled aria-pressed="false" title="先点击「句子结构」生成分析" aria-label="先点击「句子结构」生成分析">干</button>
                         <button class="clear-selection-btn" id="clearSelectionBtn" type="button" title="清除选择" aria-label="清除选择">×</button>
                     </div>
                     <div class="selected-sentence" id="selectedSentence">
@@ -138,7 +138,7 @@
             </div>
             <div class="quick-questions">
                 <button class="quick-btn" data-question="解释选中内容在句子释义">句中释义</button>
-                <button class="quick-btn" data-nofocus="1" data-question="请用括号标注法分析这个句子的句子结构，逐层划分并说明各成分">句子结构</button>
+                <button class="quick-btn" data-nofocus="1" data-question="解释句子结构">句子结构</button>
                 <button class="quick-btn" data-question="请列出与选中内容相似的单词并辨析">相似词</button>
             </div>
             <div class="input-area">
@@ -163,8 +163,16 @@
         </section>
     </div>
     <dialog id="vocabularyDialog" class="vocabulary-dialog" aria-labelledby="vocabularyTitle">
-        <div class="vocabulary-header"><h3 id="vocabularyTitle">本次对话 · 生词回顾</h3><button id="vocabularyClose" type="button" aria-label="关闭生词回顾">×</button></div>
-        <p class="vocabulary-hint">先回忆意思，再点击单词或词组查看句中释义。刷新页面或切换文章后清空。</p>
+        <div class="vocabulary-header"><h3 id="vocabularyTitle">全局生词回顾</h3><button id="vocabularyClose" type="button" aria-label="关闭生词回顾">×</button></div>
+        <p class="vocabulary-hint" id="vocabularyHint">先看单词回忆，再查看原句与句中释义，评分一次；全部原句掌握后可归档或删除。</p>
+        <div class="review-tabs" id="reviewTabs" role="group" aria-label="复习分类">
+            <button id="reviewToday" type="button" aria-pressed="true">本轮复习</button>
+            <button id="reviewLibrary" type="button" aria-pressed="false">待掌握词库</button>
+            <button id="reviewMastered" type="button" aria-pressed="false">已掌握</button>
+        </div>
+        <div id="reviewSummary" role="status"></div>
+        <div id="reviewSession"></div>
+        <p id="vocabularyStatus" role="status"></p>
         <div id="vocabularyList"></div>
     </dialog>
 
@@ -250,12 +258,15 @@
     </div>
 
     <script src="js/font-size.js?v=3"></script>
-    <script src="js/api.js?v=4"></script>
-    <script src="js/review.js?v=2"></script>
-    <script src="js/article.js?v=10"></script>
-    <script src="js/zhenti.js?v=4"></script>
-    <script src="js/agent.js?v=8"></script>
-    <script src="js/home.js?v=2"></script>
-    <script src="js/main.js?v=15"></script>
+    <script src="js/api.js?v=5"></script>
+    <script src="js/checkin.js?v=1"></script>
+    <script src="js/review.js?v=9"></script>
+    <script src="js/spaced-review.js?v=9"></script>
+    <script src="js/article.js?v=12"></script>
+    <script src="js/zhenti.js?v=5"></script>
+    <script src="js/structure-focus.js?v=1"></script>
+    <script src="js/agent.js?v=12"></script>
+    <script src="js/home.js?v=3"></script>
+    <script src="js/main.js?v=17"></script>
 </body>
 </html>

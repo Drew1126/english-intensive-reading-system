@@ -14,6 +14,7 @@ var homeModule = {
         self.show();
     },
     show: function() {
+        if (typeof checkinModule !== 'undefined') checkinModule.refresh();
         document.body.classList.add("home-active");
         document.body.classList.remove("mobile-agent-open");
         document.getElementById("agentPanel").classList.remove("mobile-open", "mobile-full");
@@ -68,7 +69,9 @@ var homeModule = {
                 cards.replaceChildren();
                 if (!(data.articles || []).length) { self.message("还没有外刊文章，可在文章库中由管理员上传 PDF。"); return; }
                 data.articles.forEach(function(a) {
-                    cards.appendChild(self.card(a.checked_in ? "外刊 · 已打卡" : "外刊阅读", a.title || "未命名文章", [a.source, a.word_count ? a.word_count + " 词" : "", a.date].filter(Boolean).join(" · "), function() { articleModule.loadByIndex(a.index); }));
+                    var card = self.card("外刊阅读", a.title || "未命名文章", [a.source, a.word_count ? a.word_count + " 词" : "", a.date].filter(Boolean).join(" · "), function() { articleModule.loadByIndex(a.index); });
+                    if (typeof checkinModule !== 'undefined') checkinModule.paint(card, a.id);
+                    cards.appendChild(card);
                 });
             }
         }).catch(function() { if (request === self.requestId) self.message("暂时无法获取文章，请确认服务已连接后重试。", true); });
@@ -106,6 +109,7 @@ var homeModule = {
         [1,2,3,4,5].forEach(function(n) {
             var card = self.card(year + " · 英语一", n === 5 ? "Part B · 新题型" : "Part A · Text " + n, n === 5 ? "阅读原文与候选内容 · 专注精翻" : "阅读理解 · 句子精读与词汇积累", function() { articleModule.loadZhenti(year, n); });
             if (n === 5) card.classList.add("home-part-b");
+            if (typeof checkinModule !== 'undefined') checkinModule.paint(card, 'zhenti_' + year + '_' + n);
             if (!data["text" + n]) { card.disabled = true; card.querySelector(".home-card-action").textContent = "暂未收录"; }
             cards.appendChild(card);
         });

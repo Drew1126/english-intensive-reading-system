@@ -1,5 +1,56 @@
 /* Shared visual finish. Layout, adjustable type sizes and selection behavior
    remain owned by their original component styles. */
+.home-library-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 14px; }
+.vocabulary-dialog {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    max-height: min(75vh, calc(100dvh - 32px));
+}
+.article-body .structure-muted { color: #a4a9b0; }
+html[data-theme="dark"] .article-body .structure-muted { color: #697381; }
+.article-body .focus-word-selected .structure-muted { color: inherit; }
+.translation-toggle-row .structure-focus-toggle {
+    width: 26px; min-height: 24px; padding: 2px 5px; flex-shrink: 0;
+    border: 1px solid transparent; border-radius: 6px;
+    background: var(--bg-tertiary); color: var(--text-secondary);
+    font: 12px/1.4 var(--ui-font); cursor: pointer;
+}
+.structure-focus-toggle:disabled { opacity: .5; cursor: default; }
+.translation-toggle-row .structure-focus-toggle[aria-pressed="true"] {
+    color: var(--accent-primary);
+    border-color: color-mix(in srgb, var(--accent-primary) 30%, transparent);
+    background: color-mix(in srgb, var(--accent-primary) 12%, var(--bg-secondary));
+}
+.structure-focus-toggle:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+.checkin-progress { display: inline-flex; align-items: center; border-radius: 6px; padding: 3px 8px; font: 500 11px/1.5 var(--ui-font); white-space: nowrap; }
+.home-article-card > .checkin-progress { margin-top: 12px; }
+.zhenti-text > .checkin-progress { margin-top: 8px; }
+.checkin-users { flex-wrap: wrap; }
+.vocabulary-source { margin-top: 14px; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; }
+.vocabulary-source > p:first-child { color: var(--text-secondary); font-size: 12px; margin-bottom: 8px; }
+.vocabulary-source blockquote { border-left: 2px solid var(--selected-border); padding-left: 10px; margin: 8px 0; font-family: "Times New Roman", serif; overflow-wrap: anywhere; }
+.vocabulary-item .vocabulary-locate { font-size: 12px; padding: 5px 9px; margin-bottom: 10px; }
+#vocabularyStatus { color: var(--text-secondary); font-size: 12px; }
+.review-tabs { display: flex; gap: 6px; margin: 16px 0 12px; flex-wrap: wrap; }
+.review-tabs button, #reviewSession button, .review-library-actions button { border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; background: var(--bg-secondary); color: var(--text-primary); cursor: pointer; font-size: 12px; }
+.review-tabs button[aria-pressed="true"] { background: var(--selected-bg); color: var(--accent-primary); border-color: var(--selected-border); }
+#reviewSummary { color: var(--text-secondary); font-size: 12px; margin-bottom: 14px; }
+#reviewSession { border-radius: 12px; background: var(--bg-tertiary); padding: 16px; }
+#reviewSession:empty { display: none; }
+.review-word { font: 600 24px/1.4 Georgia, "Times New Roman", serif; margin: 10px 0 16px; overflow-wrap: anywhere; }
+.review-step, .review-help { font-size: 12px; line-height: 1.7; color: var(--text-secondary); margin: 10px 0; }
+.review-definition { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.8; font-size: 14px; padding: 12px 0; }
+.review-sentence { font: 18px/1.8 "Times New Roman", serif; margin: 12px 0; padding: 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; overflow-wrap: anywhere; }
+.review-sentence mark { background: #fef08a; color: #713f12; border-radius: 3px; }
+.review-grades { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+#reviewSession .review-primary { background: #356a9e; color: white; border-color: transparent; }
+#reviewSession > button { margin: 6px 8px 6px 0; }
+#reviewSession button:disabled { opacity: .45; cursor: not-allowed; }
+.review-library-actions { display: flex; gap: 8px; margin-top: 8px; }
+.review-library-actions .review-danger, #reviewSession .review-danger { color: #bd4545; }
+html[data-theme="dark"] .review-danger { color: #f0a3a3; }
+.vocabulary-dialog [hidden] { display: none !important; }
 :root {
     --bg-primary: #f5f5f2;
     --bg-secondary: #ffffff;

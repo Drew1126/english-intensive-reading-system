@@ -128,6 +128,7 @@ var zhentiModule = {
             var cell = document.createElement("div");
             cell.className = "zhenti-text" + (exists ? " exists" : " empty");
             cell.innerHTML = '<div class="zhenti-text-label">' + (i === 5 ? 'Part B · 新题型' : 'Part A · Text ' + i) + '</div><div class="zhenti-text-status">' + (exists ? "已收录" : "未收录") + '</div>';
+            if (typeof checkinModule !== 'undefined') checkinModule.paint(cell, 'zhenti_' + this.currentYear + '_' + i);
             if (exists && typeof isAdmin === "function" && isAdmin()) {
                 var delBtn = document.createElement("button");
                 delBtn.className = "zhenti-text-del";

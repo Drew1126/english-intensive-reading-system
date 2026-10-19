@@ -210,6 +210,8 @@ function showLogin() { document.getElementById("loginOverlay").style.display = "
 function hideLogin() { document.getElementById("loginOverlay").style.display = "none"; }
 
 function updateUserUI() {
+    reviewModule.syncAccount();
+    if (typeof checkinModule !== 'undefined') checkinModule.refresh();
     var token = getToken();
     var name = getName();
     var loggedIn = token && name;
@@ -265,19 +267,22 @@ function updateCheckinArea() {
     var name = getName();
     var list = document.getElementById("checkinUsers");
     var btn = document.getElementById("btnCheckin");
-    btn.textContent = "打卡";
+    btn.textContent = "回顾本篇并打卡";
     btn.disabled = false;
     api.getCheckinStatus(art.id).then(function(data) {
+        if (!articleModule.currentArticle || articleModule.currentArticle.id !== art.id || getToken() !== token) return;
         list.innerHTML = "";
         var checkins = data.checkins || [];
         checkins.forEach(function(u) {
             var el = document.createElement("div");
             el.className = "checkin-user";
-            el.innerHTML = '<img class="checkin-avatar" src="' + getAvatarUrl(u.name) + '" alt=""><span>' + u.name + '</span>';
+            var avatar = document.createElement('img'); avatar.className = 'checkin-avatar'; avatar.src = getAvatarUrl(u.name); avatar.alt = '';
+            var nameLabel = document.createElement('span'); nameLabel.textContent = u.name;
+            el.append(avatar, nameLabel, checkinModule.badge(u.count || 1));
             list.appendChild(el);
         });
-        var checkedByMe = checkins.some(function(u) { return u.name === name; });
-        if (checkedByMe) { btn.textContent = "已打卡"; btn.disabled = true; }
+        var mine = checkins.find(function(u) { return u.name === name; });
+        if (mine) btn.textContent = '再次回顾并打卡（已 ' + mine.count + ' 次）';
     });
 }
 
@@ -363,7 +368,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!token) { showLogin(); return; }
         var btn = document.getElementById("btnCheckin");
         btn.disabled = true;
-        api.checkin(art.id, token).then(function() { updateCheckinArea(); }).catch(function() { btn.disabled = false; });
+        spacedReview.beginArticle(art).finally(function() { btn.disabled = false; });
     });
 
     // Avatar change

@@ -5,7 +5,7 @@ from typing import Optional
 from pydantic import BaseModel
 from services.auth_service import (
     verify_login, get_user_by_token, get_user_info,
-    toggle_checkin, get_checkin_status, save_avatar, get_avatar_path,
+    get_checkin_status, save_avatar, get_avatar_path,
     require_admin_token, list_users, create_user, update_user, delete_user
 )
 import logging
@@ -94,17 +94,26 @@ async def users_delete(username: str, token: str = Query(...)):
 
 
 @router.post("/checkin/{article_id}")
-async def checkin(article_id: str, token: str = Query(...)):
+async def checkin(article_id: str, token: str = Query(...), session_id: str = Query(default='')):
     username = get_user_by_token(token)
     if not username:
         raise HTTPException(status_code=401, detail="请重新登录")
-    result = toggle_checkin(username, article_id)
+    from services.checkin_service import consume
+    result = consume(username, article_id, session_id)
     return result
 
 
 @router.get("/checkin-status/{article_id}")
 async def checkin_status(article_id: str):
     return {"checkins": get_checkin_status(article_id)}
+
+@router.get('/checkin-summary')
+async def checkin_summary(token: str = Query(...)):
+    username = get_user_by_token(token)
+    if not username:
+        raise HTTPException(401, '请重新登录')
+    from services.checkin_service import counts
+    return {'counts': counts(username)}
 
 
 @router.post("/avatar")
