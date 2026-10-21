@@ -1,0 +1,153 @@
+{
+  "sentence": "But in her new book Join the Club, Tina Rosenberg contends that peer pressure can also be a positive force through what she calls the social cure, in which organizations and officials use the power of group dynamics to help individuals improve their lives and possibly the world.",
+  "answer": "But Tina Rosenberg contends that peer pressure can also be a positive force.\n\n但蒂娜·罗森伯格认为，同伴压力也可以成为积极力量。\n\n◆ 补充信息\n\nin her new book Join the Club\n在她名为《加入俱乐部》的新书中，交代言论出处\n\nthrough what she calls the social cure\n通过她所称的“社会疗法”这一途径\n\n◆ 难点拆解：社会疗法如何运作\n\nin which organizations and officials use the power of group dynamics\n在这种社会疗法中，组织和官员利用群体动力的力量\n\nto help individuals\n目的是帮助个人\n\nimprove their lives and possibly the world\n改善他们的生活，甚至可能改善世界\n",
+  "core": {
+    "sentence": "But in her new book Join the Club, Tina Rosenberg contends that peer pressure can also be a positive force through what she calls the social cure, in which organizations and officials use the power of group dynamics to help individuals improve their lives and possibly the world.",
+    "ranges": [
+      [
+        0,
+        3
+      ],
+      [
+        35,
+        58
+      ],
+      [
+        59,
+        106
+      ]
+    ],
+    "reveal": {
+      "sentence": "But in her new book Join the Club, Tina Rosenberg contends that peer pressure can also be a positive force through what she calls the social cure, in which organizations and officials use the power of group dynamics to help individuals improve their lives and possibly the world.",
+      "nodes": [
+        {
+          "id": "n1",
+          "ranges": [
+            [
+              4,
+              33
+            ]
+          ],
+          "text": "in her new book Join the Club",
+          "parts": [
+            "in her new book Join the Club"
+          ],
+          "meaning": "在她名为《加入俱乐部》的新书中，交代言论出处",
+          "depends_on": [
+            "core"
+          ],
+          "references": []
+        },
+        {
+          "id": "n2",
+          "ranges": [
+            [
+              107,
+              145
+            ]
+          ],
+          "text": "through what she calls the social cure",
+          "parts": [
+            "through what she calls the social cure"
+          ],
+          "meaning": "通过她所称的“社会疗法”这一途径",
+          "depends_on": [
+            "core"
+          ],
+          "references": []
+        },
+        {
+          "id": "n3",
+          "ranges": [
+            [
+              147,
+              215
+            ]
+          ],
+          "text": "in which organizations and officials use the power of group dynamics",
+          "parts": [
+            "in which organizations and officials use the power of group dynamics"
+          ],
+          "meaning": "在这种社会疗法中，组织和官员利用群体动力的力量",
+          "depends_on": [
+            "n2"
+          ],
+          "references": [
+            {
+              "source": "which",
+              "target": "the social cure",
+              "source_ranges": [
+                [
+                  150,
+                  155
+                ]
+              ],
+              "target_ranges": [
+                [
+                  130,
+                  145
+                ]
+              ],
+              "explanation": "in which 指代前面的 the social cure，说明社会疗法的具体内容"
+            }
+          ]
+        },
+        {
+          "id": "n4",
+          "ranges": [
+            [
+              216,
+              235
+            ]
+          ],
+          "text": "to help individuals",
+          "parts": [
+            "to help individuals"
+          ],
+          "meaning": "目的是帮助个人",
+          "depends_on": [
+            "n3"
+          ],
+          "references": []
+        },
+        {
+          "id": "n5",
+          "ranges": [
+            [
+              236,
+              278
+            ]
+          ],
+          "text": "improve their lives and possibly the world",
+          "parts": [
+            "improve their lives and possibly the world"
+          ],
+          "meaning": "改善他们的生活，甚至可能改善世界",
+          "depends_on": [
+            "n4"
+          ],
+          "references": [
+            {
+              "source": "their",
+              "target": "individuals",
+              "source_ranges": [
+                [
+                  244,
+                  249
+                ]
+              ],
+              "target_ranges": [
+                [
+                  224,
+                  235
+                ]
+              ],
+              "explanation": "their 指代前面的 individuals"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "source": "Validated DeepSeek demo response"
+}

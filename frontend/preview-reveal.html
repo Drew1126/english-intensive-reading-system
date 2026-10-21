@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>分层阅读 · 交互试用</title>
+<link rel="stylesheet" href="css/main.css?v=14"><link rel="stylesheet" href="css/article.css?v=6"><link rel="stylesheet" href="css/panel.css?v=31"><link rel="stylesheet" href="css/refinement.css?v=18">
+<style>
+body{display:block;overflow:auto;height:auto;padding:24px;background:var(--bg-primary);color:var(--text-primary)}
+.demo-header{max-width:1400px;margin:0 auto 20px;display:flex;flex-wrap:wrap;align-items:center;gap:12px}.demo-header p{flex:1;min-width:240px;color:var(--text-secondary)}
+.demo-header button,.demo-header a{font:inherit;border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);padding:8px 12px;border-radius:8px;text-decoration:none;cursor:pointer}
+.demo-grid{max-width:1400px;margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}.demo-pane{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:16px;padding:24px;min-width:0}
+.demo-pane h2{font-size:16px;margin:0 0 20px}.demo-pane:first-child{position:sticky;top:20px}.demo-pane .article-body{padding:0;max-height:none;overflow:visible}.demo-pane .article-body .sentence{cursor:default}.demo-pane .message{margin:0;padding:0;border:0;background:transparent}
+.demo-pane .answer-content{font-size:16px}.demo-note{font-size:13px;color:var(--text-secondary);line-height:1.7;margin-top:20px}
+#selectedSentence,#btnSentenceCollocations{display:none}@media(max-width:800px){body{padding:12px}.demo-grid{grid-template-columns:1fr}.demo-pane:first-child{position:static}}
+</style></head><body>
+<header class="demo-header"><strong>分层阅读 · 交互试用</strong><p>回放真实模型数据，不调用 API、不写入账号或学习记录。</p><button id="resetDemo">重置展开</button><button id="themeDemo">切换明暗</button><a href="/">返回系统</a></header>
+<main class="demo-grid"><section class="demo-pane"><h2>原文 <button id="structureFocusToggle" type="button">干</button></h2><div id="articleBody" class="article-body"><span class="sentence selected" data-idx="0-0"></span></div><p class="demo-note">点击右侧英文片段，看原文逐段恢复。紫色底纹表示当前片段的指代关系。点击“干”可退出分层，恢复完整原文。</p></section>
+<section class="demo-pane"><h2>点击解释中的英文片段</h2><div class="message"><div id="demoAnswer" class="answer-content"></div></div><p id="demoToast" class="demo-note" role="status"></p></section></main>
+<div id="selectedSentence"></div><button id="btnSentenceCollocations"></button>
+<script>
+var articleModule={currentArticle:{id:'reveal-demo'},editing:false,focusWords:[],clearWordHighlight:function(){},highlightWordAtOffset:function(){}};
+function getToken(){return 'demo-only'} function showToast(text){document.getElementById('demoToast').textContent=text}
+</script>
+<script src="js/structure-focus.js?v=3"></script><script src="js/collocations.js?v=2"></script><script src="js/structure-reveal.js?v=2"></script><script src="js/agent.js?v=16"></script>
+<script>
+document.addEventListener('DOMContentLoaded',async function(){
+ try {
+  var response=await fetch('preview-reveal-data.json'); if(!response.ok)throw new Error('试用数据加载失败'); var data=await response.json();
+  var el=document.querySelector('#articleBody .sentence'); el.textContent=data.sentence;
+  function reset(){
+   structureReveal.bindings=[]; structureReveal.clearReferences();
+   var answer=document.getElementById('demoAnswer'); agentModule.renderAnswer(answer,data.answer,true);
+   var ticket=structureFocus.begin('reveal-demo',data.sentence,'解释句子结构'); structureFocus.complete(ticket,data.core);
+   structureReveal.attach({sentence:data.sentence,answerEl:answer,coreData:data.core,coreTarget:ticket,authToken:getToken(),collocationTarget:collocationModule.capture('reveal-demo',data.sentence)});
+  }
+  reset(); document.getElementById('resetDemo').onclick=reset;
+  document.getElementById('themeDemo').onclick=function(){document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'};
+ }catch(error){showToast(error.message)}
+});
+</script></body></html>

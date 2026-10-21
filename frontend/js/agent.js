@@ -80,6 +80,46 @@ var agentModule = {
         }
     },
 
+    renderAnswer: function(el, text, structured) {
+        el.dataset.rawAnswer = text;
+        el.classList.toggle('structure-answer', !!structured);
+        el.replaceChildren();
+        if (!structured) { el.textContent = text; return; }
+        // Small, safe presentation grammar: no HTML or general Markdown execution.
+        var inline = function(node, value) {
+            value.split(/(\*\*[^*\n]+\*\*)/g).forEach(function(part) {
+                if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
+                    var strong = document.createElement('strong');
+                    strong.textContent = part.slice(2, -2); node.appendChild(strong);
+                } else node.appendChild(document.createTextNode(part));
+            });
+        };
+        var heading = document.createElement('h4'); heading.textContent = '句子主干'; el.appendChild(heading);
+        var depth = 0, gap = false, first = true;
+        text.split('\n').forEach(function(line) {
+            if (!line.trim()) { gap = true; return; }
+            var title = /^\s*◆\s*(.+)$/.exec(line);
+            var branch = /^\s*(↳↳|↳)\s*/.exec(line);
+            if (title) depth = 0;
+            else if (branch) depth = branch[1].length;
+            else if (gap) depth = 0;
+            var node = document.createElement(title ? 'h4' : 'p');
+            node.className = title ? 'structure-heading' : 'structure-line';
+            var plain = line.replace(/\*\*/g, '').trim();
+            var question = !!branch || /^\s*\*\*[^*]+[？?]\*\*\s*$/.test(line);
+            if (!title && !first) {
+                if (question) node.classList.add('structure-question');
+                else if (/[A-Za-z]/.test(plain) && !/[\u3400-\u9fff]/.test(plain)) node.classList.add('structure-english');
+                else node.classList.add('structure-explanation');
+            }
+            if (first) node.classList.add('structure-skeleton');
+            if (gap) node.classList.add('structure-gap');
+            if (depth) node.classList.add('structure-depth-' + depth);
+            inline(node, title ? title[1] : line);
+            el.appendChild(node); first = false; gap = false;
+        });
+    },
+
     addMessageActions: function(request) {
         if (request.actionsEl.childElementCount) return;
         var self = this;
@@ -98,7 +138,7 @@ var agentModule = {
             copy.className = "message-action";
             copy.textContent = "复制回答";
             copy.addEventListener("click", function() {
-                navigator.clipboard.writeText(request.answerEl.textContent).then(function() { showToast("回答已复制", "success"); });
+                navigator.clipboard.writeText(request.answerEl.dataset.rawAnswer || request.answerEl.textContent).then(function() { showToast("回答已复制", "success"); });
             });
             request.actionsEl.appendChild(copy);
         }
@@ -139,6 +179,7 @@ var agentModule = {
         var request = { sentence: sentence, question: question, articleId: articleId, focus: focus, msgEl: msgEl, answerEl: answerEl, statusEl: statusEl, actionsEl: actionsEl };
         this.activeSource = source;
         this.activeRequest = request;
+        request.authToken = vocabularyToken;
         request.collocationTarget = typeof collocationModule !== "undefined" ? collocationModule.capture(articleId, sentence) : null;
         request.coreTarget = typeof structureFocus !== "undefined" ? structureFocus.begin(articleId, sentence, question) : null;
         request.discussionTopic = discussionTopic;
@@ -160,17 +201,19 @@ var agentModule = {
                 self.selectedFocusWord = "";
                 statusEl.innerHTML = "<span>回答完成 · " + ((performance.now() - startedAt) / 1000).toFixed(1) + " 秒</span>";
                 self.addMessageActions(request);
-                if (typeof structureFocus !== "undefined") structureFocus.complete(request.coreTarget, request.coreData);
+                if (typeof structureFocus !== "undefined") structureFocus.complete(request.coreTarget, vocabularyToken === getToken() ? request.coreData : null);
+                if (typeof structureReveal !== 'undefined' && vocabularyToken === getToken()) structureReveal.attach(request);
                 if (typeof collocationModule !== "undefined" && vocabularyToken === getToken()) collocationModule.render(request);
                 if (vocabularyToken === getToken()) reviewModule.recordAnswer(focus, question, fullAnswer, vocabularySource, vocabularyToken);
                 return;
             }
             try {
                 var p = JSON.parse(e.data);
-                if (Object.prototype.hasOwnProperty.call(p, "core")) request.coreData = p.core;
+                if (Object.prototype.hasOwnProperty.call(p, "core")) { request.coreData = p.core; request.isStructure = true; }
                 if (Object.prototype.hasOwnProperty.call(p, "collocations")) request.collocations = p.collocations;
-                fullAnswer = (fullAnswer + (p.text || "")).replace(/\n[ \t]*\n+/g, "\n");
-                answerEl.textContent = fullAnswer;
+                fullAnswer = fullAnswer + (p.text || "");
+                if (!request.isStructure) fullAnswer = fullAnswer.replace(/\n[ \t]*\n+/g, "\n");
+                self.renderAnswer(answerEl, fullAnswer, request.isStructure);
             } catch (err) { console.error("Parse SSE error:", err); }
         };
         source.onerror = function() {

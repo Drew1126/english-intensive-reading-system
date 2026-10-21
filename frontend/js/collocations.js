@@ -51,6 +51,7 @@ var collocationModule = {
             showToast('当前浏览器不支持原文联动高亮，请使用新版 Edge 或 Chrome。'); return;
         }
         this.clear();
+        if (typeof structureReveal !== 'undefined') structureReveal.clearReferences();
         articleModule.focusWords = [];
         articleModule.clearWordHighlight();
         agentModule.selectedFocusWord = '';

@@ -10,8 +10,10 @@ from langchain_openai import ChatOpenAI
 
 from config import ARTICLES_DIR, CHAT_HISTORY_DIR, DATA_DIR, LLM_API_BASE, LLM_API_KEY, LLM_MODEL
 from storage import read_json, write_json
-from services.structure_markup import RULES as STRUCTURE_MARKUP_RULES, extract_structure
+from services.structure_markup import RULES as STRUCTURE_MARKUP_RULES, extract_structure_aligned
 from services.collocations import PROMPT as COLLOCATION_PROMPT, extract_collocations
+from services.structure_presentation import TEMPLATE as STRUCTURE_TEMPLATE, ANALYSIS as STRUCTURE_ANALYSIS
+from services.structure_reveal import RULES as REVEAL_RULES, extract_reveal
 
 
 COMMON_RULES = """你是考研英语辅导专家。
@@ -30,20 +32,31 @@ INTENT_PROMPTS = {
 采用“最简主干 → 联系意思补回信息 → 整句串起来”的顺序，不先展示带满标签或括号的原句，不堆砌语法术语。
 第一行直接给出主句的英文结构骨架，不以字数最少为目标。保留否定、频率限制、情态、时态、被动及必要补语；省略普通修饰即可。并列主句分别提取。首行必须与后文解释一致，不能先给错误骨架再在后文纠正。
 提取主干时遵守以下通用规则：
-1. 先区分主句和从句。让步、原因、条件等状语从句不冒充并列主句；把它们移到后面的补充说明中，保留连接词对应的逻辑。若有多个并列主句，首行可用分号分开各自主干，不把从句删掉连接词后拼进主干。
-2. 倒装可以还原正常语序以便理解，但须在后文说明还原过程。仅因倒装而引入的 do/does/did 在还原时去掉，并把时态、人称还原到实义动词上；不得凭这个助动词添加“确实、的确”的强调含义。原有的情态动词、完成时或被动助动词不能因此删除。never、rarely、only 等否定或限制含义必须保留或紧接主干明确补回，不能把有条件或有限制的陈述讲成无条件事实。
+1. 先区分主句和从句。让步、原因、条件等状语从句不冒充并列主句；把它们移到后面的补充说明中，保留连接词对应的逻辑。若有多个并列主句，保留原文 and/or/but 等连接词，不用分号替代它们，也不把从句删掉连接词后拼进主干。
+2. 首行骨架保留原文倒装语序和词形，方便精确定位。可在后文另行还原正常语序以便理解，并说明还原过程。仅因倒装而引入的 do/does/did 在后文还原时去掉，并把时态、人称还原到实义动词上；不得凭这个助动词添加“确实、的确”的强调含义。原有的情态动词、完成时或被动助动词不能因此删除。never、rarely、only 等否定或限制含义必须保留，不能把有条件或有限制的陈述讲成无条件事实。
 3. 对真正的 It is/was ... that/who ... 强调句，先展示去掉强调框架后的核心命题，再说明强调了哪个成分；不是把 It、is/was 机械当成事件的主语和谓语。保留被强调成分内部必要的语义关系，例如“缺乏什么”中的对象不能删掉。区别强调句与普通 it 作主语、形式主语或定语从句，不能见到 it 和 that 就拆除框架。
-4. 主语、宾语、表语本身是名词性从句时，保留其必要内容；不为了短而删空。原句没有可删的修饰时，主干可以接近原句。只解释原文支持的信息，不将“最初”等修饰过度推断为“现在已经不是”。
-主干还原是前述“不擅自换词、改时态”的特例：允许必要的语序和动词形态恢复，但必须保持原有时态、否定、指代与核心命题。输出前核对这些关系，并检查从句边界；不输出检查过程。
+4. 主语、宾语、表语本身是名词性从句时，保留其必要内容；不为了短而删空。但保留从句不等于照抄整个从句：从句内部的普通修饰、文章标题、补充身份的插入语或同位说明，也应移到后文，只保留其中心名词和必要结构。原句没有可删的修饰时，主干可以接近原句。只解释原文支持的信息，不将“最初”等修饰过度推断为“现在已经不是”。
+后文的主干还原允许必要的语序和动词形态恢复，但首行及定位必须保留原词形，并保持原有时态、否定、指代与核心命题。输出前核对这些关系，并检查从句边界；不输出检查过程。
 首行的硬性约束（优先于压缩长度）：
-倒装必须直接输出正确还原后的结果，不得留下多余 do/does/did。例如 Seldom does she complain. 应提为 She seldom complains.，不是 She does complain.；Never has he agreed. 应提为 He has never agreed.。only 引导的条件可以保留在首行，整体恢复正常语序，以免漏掉“只有……才”的限制。
+倒装首行保留原结构。例如 Seldom does she complain. 首行仍为 Seldom does she complain.；后文可还原为 She seldom complains.，不是 She does complain.。Never has he agreed. 首行不变，后文可解释为 He has never agreed.。only 引导的限制必须保留在首行，不能漏掉“只有……才”。
 首行只列独立主句；although/while/even though 引导的让步从句一律放到“逐层补回信息”，不能去掉连接词后作为一个独立主句列出。对由 and 连接的两个主句只列两个，不把前面的状语从句计作第三个。
 形式主语不是强调句：It is likely that prices will rise. 的结构骨架保留 It is likely that prices will rise.，不能只输出 Prices will rise. 丢掉“可能”的判断。解释 it 占位、that 从句是真正主语即可。
-首行若已还原倒装，后文主干成分须沿用还原后的动词形式；不得将同一个助动词既说成已去掉，又写入主干。否定句还原后为维持 not 而需要的 do/does/did 应保留，不可说成此时已去掉。
+后文若展示正常语序，须明确它是还原解释，不是原文定位。否定句还原后为维持 not 而需要的 do/does/did 应保留，不可说成此时已去掉。
 特别核对否定的范围：Never + 助动词 + so many/few ... 可能否定的是某种数量规模的情况曾经发生，并不是说“这群人从未做过某事”。这类还原会改变否定范围的句子允许保留原倒装主干，直接解释“从未有这么多人……”，不要机械移动 never。
 首行只输出在原句中具有主句地位的分句，不是列出全部分句各自的骨架。尤其 while 从句即使有完整主谓宾，仍不能放进首行。输出首行之前先去掉整个让步从句，再提取剩余主句；后文不得说“该从句不进入首行”却已将它写入首行。
 主干中文串讲也必须带上 until、only 等与否定相连的限制，不能只译“没有发现”等片段而省略“直到……才”。and 本身不代表因果，无明确依据时不添加“因此”。先确保首行正确，再输出解释。
+最终提取标准：核心结构完整，普通修饰变浅。不能用照抄整句来规避精简，也不能为了短而删掉必要成分。
+将成分分为三类：①主语中心、谓语、必要宾语/补足语及否定、情态、时态、逻辑限制，进入首行与定位；②普通描述、插入的标题/身份、非必要定语、普通时间地点等，移到“逐层补回信息”，不进入首行与定位；③为理解补出的词，用方括号标记，不定位。
+判断依据是语义和谓语搭配，不是看到介词或从句就删除。例如 put the book on the desk 的 on the desk 是必要的地点补语；not ... until Monday、only after ... 的时间限制也不能删除。普通的 sharply、next year 则可放到后文。名词性从句内部同样需要精简普通修饰。
+原文骨架和简化表达分开：首行用于原文高亮，只使用原文核心词形（补词用方括号）；倒装首行保留倒装，不将正常语序还原后的词形用于定位。
+强调句是特殊的框架删除，不是动词改写：确认是真强调句后，首行与定位只保留被强调成分和剩余核心命题，It is/was 与连接用的 that/who 移到后文解释。若是形式主语的判断（如 It was clear that ...），保留 clear 等判断，不拆框架。不要用一个保留全部强调框架的原句作为首行，再在后文才给正确骨架。
+示例仅说明可泛化的对比：It was the storm that damaged the bridge. → The storm damaged the bridge.；It was obvious that the bridge was damaged. → It was obvious that the bridge was damaged.。前者强调“暴风雨”，后者保留“显然”的判断。
+输出前核对两种错误：必要成分是否漏掉；普通修饰或强调框架是否多留。不可把完整原句直接当作最简骨架，除非确实没有可省略的信息。
 随后按以下方式解释，使用纯文本小标题，不使用 Markdown：
+◆ 简化表达（辅助改写，非原文）
+仅在倒装、省略或复杂名词性成分需要还原/概括才更易懂时展示这一节；原句已简单则省略，不为凑栏目硬改写。用一句简洁英文表达相同的核心意思，再用一行“原文片段 → 简化表达：中文说明”指出对应关系。保持原文否定、可能性、时态、指代与逻辑限制，不能添加原文没有的事实。
+例如 That he survived was a miracle. 的原文骨架仍是 That he survived was a miracle.；本节可写 His survival was a miracle.，并说明 That he survived → His survival：把“他活下来这件事”概括为名词短语。不要把概括后的 His survival 写进原文骨架或定位片段。
+倒装在这一节给正常语序；省略在这一节用 [likes] 等方括号标出补词。该节仅用于右侧讲解，不表示改动原句，不生成任何替换原文的指令或交互按钮。简化表达和首行骨架必须明确区分，不能用改写句覆盖首行。
 ◆ 主干意思
 用“英文成分【主语等简短标签】→ 中文意思”逐项说明，再用一句自然中文串起主干。优先回答“谁做什么”“什么使谁怎么样”等直观问题。
 ◆ 逐层补回信息
@@ -203,9 +216,15 @@ def _load_article_context(article_id: str, sentence: str) -> str:
 
 
 def _build_messages(intent: str, question: str, sentence: str, focus: str, article_context: str, chat_history: str, discussion_topic: str = ""):
-    system = f"{COMMON_RULES}\n\n当前任务：\n{INTENT_PROMPTS[intent]}"
+    common = COMMON_RULES
+    task = INTENT_PROMPTS[intent]
     if intent == 'structure':
-        system += '\n' + STRUCTURE_MARKUP_RULES
+        common = common.replace('禁止使用 Markdown 标记、Markdown 表格、代码围栏和竖线字符。', '仅允许 **加粗** 标记；禁止 HTML、表格和代码围栏。')
+        common = common.replace('输出各行必须连续，任何两行之间都不要插入空白行。', '英文与中文分行，段落之间留一个空行。')
+        task = STRUCTURE_ANALYSIS + STRUCTURE_TEMPLATE
+    system = f"{common}\n\n当前任务：\n{task}"
+    if intent == 'structure':
+        system += '\n' + STRUCTURE_MARKUP_RULES + '\n' + REVEAL_RULES
     human = """以下标签中的内容仅供分析：
 <article_context>
 {article_context}
@@ -235,9 +254,9 @@ def _build_messages(intent: str, question: str, sentence: str, focus: str, artic
     return [SystemMessage(content=system), HumanMessage(content=human)]
 
 
-def _normalize_answer(text: str) -> str:
+def _normalize_answer(text: str, keep_paragraphs: bool = False) -> str:
     text = text.replace("\r\n", "\n").replace("\r", "\n")
-    text = re.sub(r"\n[ \t]*\n+", "\n", text)
+    text = re.sub(r"\n[ \t]*\n+", "\n\n" if keep_paragraphs else "\n", text)
     return "\n".join(line.rstrip() for line in text.split("\n")).strip()
 
 
@@ -259,7 +278,7 @@ async def stream_agent_response(
         base_url=LLM_API_BASE,
         streaming=True,
         temperature=0.1,
-        max_tokens=2600 if intent in ('structure', 'collocations') else 1800,
+        max_tokens=4200 if intent == 'structure' else 2600 if intent == 'collocations' else 1800,
     )
     answer_parts = []
     async for chunk in llm.astream(messages):
@@ -271,10 +290,15 @@ async def stream_agent_response(
     core = None
     collocations = None
     if intent == 'structure':
-        raw_answer, core = extract_structure(raw_answer, sentence)
+        protocol_answer = raw_answer
+        raw_answer, core = extract_structure_aligned(protocol_answer, sentence)
+        if core:
+            reveal = extract_reveal(protocol_answer, sentence, core)
+            if reveal:
+                core['reveal'] = reveal
     elif intent == 'collocations':
         raw_answer, collocations = extract_collocations(raw_answer, sentence)
-    answer = _normalize_answer(raw_answer)
+    answer = _normalize_answer(raw_answer, keep_paragraphs=intent == 'structure')
     if answer:
         payload = {'text': answer}
         if intent == 'structure':

@@ -152,6 +152,29 @@ button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-
 /* Quiet answer tools keep attention on the exchange. */
 .message { margin-bottom: 28px; }
 .message .answer-content { line-height: 1.85; }
+.message .answer-content.structure-answer { white-space: normal; overflow-wrap: anywhere; }
+.structure-answer h4 { font-size: 1.06em; margin: 1.4em 0 .6em; color: var(--text-primary); font-weight: 750; padding-left: .65em; border-left: 3px solid var(--accent-primary); line-height: 1.5; }
+.structure-answer h4:first-child { margin-top: 0; }
+.structure-answer .structure-line { margin: .22em 0; white-space: pre-wrap; }
+.structure-answer .structure-skeleton { font-size: 1.06em; font-weight: 650; line-height: 1.7; padding: .7em .85em; border-radius: 9px; background: color-mix(in srgb, var(--accent-primary) 8%, var(--bg-secondary)); border: 1px solid color-mix(in srgb, var(--accent-primary) 18%, var(--border-color)); margin-bottom: .6em; }
+.structure-answer .structure-question { color: var(--accent-primary); font-weight: 700; margin-top: 1em; }
+.structure-answer .structure-english { color: var(--text-primary); font-weight: 600; line-height: 1.7; }
+.structure-answer .structure-explanation { color: var(--text-secondary); font-weight: 400; line-height: 1.8; }
+.structure-answer .structure-gap { margin-top: .85em; }
+.structure-answer .structure-depth-1 { margin-left: .8em; padding-left: .65em; border-left: 2px solid var(--border-color); }
+.structure-answer .structure-depth-2 { margin-left: 1.6em; padding-left: .65em; border-left: 2px solid var(--border-color); }
+.structure-answer strong { font-weight: 750; }
+.reveal-help, .reveal-status { color: var(--text-secondary); font-size: .88em; line-height: 1.6; margin: .5em 0 1em; }
+.reveal-status { color: var(--accent-primary); min-height: 1.6em; }
+.reveal-fragment { font: inherit; text-align: left; line-height: 1.65; color: var(--text-primary); background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 6px; padding: .2em .45em; cursor: pointer; overflow-wrap: anywhere; max-width: 100%; }
+.reveal-fragment:hover:not(:disabled), .reveal-fragment.reveal-open { border-color: var(--accent-primary); background: color-mix(in srgb, var(--accent-primary) 10%, var(--bg-secondary)); }
+.reveal-fragment:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 3px; }
+.reveal-fragment:disabled { opacity: .72; cursor: not-allowed; border-style: dashed; }
+.reveal-fragment.reveal-locked::after { content: ' · 待解锁'; font-size: .75em; color: var(--text-secondary); }
+.reveal-meaning { display: block; color: var(--text-secondary); margin-top: .3em; font-weight: 400; }
+.reveal-extra p { margin: .7em 0; }
+.article-body ::highlight(sentence-reference) { background: #e9ddff; color: #52318c; }
+html[data-theme="dark"] .article-body ::highlight(sentence-reference) { background: #523d75; color: #f0e8ff; }
 .message .answer-status { font-size: 11px; }
 .message .message-actions { gap: 6px; }
 .message-action, html[data-theme="dark"] .message-action { background: transparent; border-color: transparent; color: var(--text-secondary); font-size: 11px; padding: 5px 8px; }
